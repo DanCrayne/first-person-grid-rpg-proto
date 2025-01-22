@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 680c1c6a48849f24e8f64d82533b473e, type: 3}
+  m_Name: GoblinData
+  m_EditorClassIdentifier: 
+  creatureName: Goblin
+  maxHp: 10
+  currentHp: 10
+  attack: 5
+  defense: 4
+  speed: 6
+  level: 1
+  experience: 12
