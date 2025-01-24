@@ -1,5 +1,6 @@
 using UnityEngine;
-//using GridRpgLibraries;
+
+// TODO: For mockup only - this class will go away once the wandering monster group class is finished
 
 public class MonsterManager : MonoBehaviour
 {

@@ -1,7 +1,4 @@
-using UnityEngine;
-
-[CreateAssetMenu(fileName = "Creature", menuName = "Scriptable Objects/Creature")]
-public class Creature : ScriptableObject
+public class Creature
 {
     public string creatureName;
     public int maxHp;

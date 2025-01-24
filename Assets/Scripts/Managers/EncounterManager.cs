@@ -6,25 +6,16 @@ public class EncounterManager : MonoBehaviour
 {
     public GameObject battleMenuPanel;
     public PartyManager partyManager;
-    public GameObject wanderingMonster;
     public GameObject battleCam;
     public GameObject currentlySelectedMonster;
 
     private Vector3 battleStartingPosition;
-    private List<GameObject> monsters;
+    private List<GameObject> monsters = new List<GameObject>();
 
     void Start()
     {
         if (battleMenuPanel != null)
             battleMenuPanel.SetActive(false);
-    }
-
-    private void Update()
-    {
-        if (monsters.Count < 0)
-        {
-            EndBattle();
-        }
     }
 
     public void NotifyOfAiCollision(Vector3 collisionPoint, GameObject collidingObject)
@@ -95,7 +86,12 @@ public class EncounterManager : MonoBehaviour
         battleCam.SetActive(false);
     }
 
-    private void SpawnMonsters()
+    private void PositionMonsters(List<GameObject> monsters)
+    {
+
+    }
+
+    private void PositionPlayerParty(List<GameObject> partyMembers)
     {
 
     }
