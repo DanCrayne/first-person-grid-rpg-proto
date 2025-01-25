@@ -9,8 +9,8 @@ public class MonsterManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Creature.currentHp = Creature.maxHp;
-        Debug.Log($"{Creature.creatureName} spawned with {Creature.currentHp} health!");
+        //Creature.currentHp = Creature.maxHp;
+        //Debug.Log($"{Creature.creatureName} spawned with {Creature.currentHp} health!");
     }
 
     public void TakeDamage(int damage)

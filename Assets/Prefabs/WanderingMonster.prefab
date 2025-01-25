@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6334014827037904654}
   - component: {fileID: 7818797988359877170}
   - component: {fileID: -2960888483139314142}
-  - component: {fileID: 416624936099181215}
+  - component: {fileID: 1681029503972641983}
   m_Layer: 0
   m_Name: WanderingMonster
   m_TagString: Enemy
@@ -33,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 10, y: 1.47, z: 20}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -137,7 +137,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -175,7 +175,7 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &416624936099181215
+--- !u!114 &1681029503972641983
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,10 +184,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 72728143739338263}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82141ba8a5483a74695bad9cd95bbdc7, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e5576f61280b7c43920f49303da424d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: 0
-  detectionRange: 0
+  gridSize: 10
+  detectionRange: 25
   player: {fileID: 0}
   encounterManager: {fileID: 0}

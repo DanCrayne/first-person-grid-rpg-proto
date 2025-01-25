@@ -45,7 +45,7 @@ public class PartyManager : MonoBehaviour
 
     public void DisableControls()
     {
-        playerInputHandler.DisableControls();
+        //playerInputHandler.DisableControls();
     }
 
     public void EnableControls()

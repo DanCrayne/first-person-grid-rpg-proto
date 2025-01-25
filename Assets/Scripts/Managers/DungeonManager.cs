@@ -4,7 +4,6 @@ using UnityEngine;
 public class DungeonManager : MonoBehaviour
 {
     public WanderingMonsterGroupManager wanderingMonsterGroupManager;
-    public PartyManager partyManager;
     public bool isPlayerTurn;
 
     void Start()
@@ -25,13 +24,6 @@ public class DungeonManager : MonoBehaviour
     public void ResumeGame()
     {
         Time.timeScale = 1;
-    }
-
-    public void PerformActionsAfterPlayerMovement()
-    {
-        partyManager.DisableControls();
-        wanderingMonsterGroupManager.PerformMonsterActions();
-        partyManager.EnableControls();
     }
 
     public void SpawnDungeonMonsterGroups(GameObject[] spawnPoints)

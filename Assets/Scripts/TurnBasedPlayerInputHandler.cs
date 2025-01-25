@@ -12,8 +12,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     private InputSystem_Actions _inputActions;
     private Rigidbody _playerRigidbody;
-    private bool _isBlockingActionInProgress = false; // Flag to prevent overlapping actions that would cause the player to be in an invalid state (e.g. moving forward while turning)
-    private bool _isBackingUpAfterCollision = false;
+    private bool _isActionInProgress = false; // Flag to prevent overlapping actions that would cause the player to be in an invalid state (e.g. moving forward while turning)
 
     public void DisableControls()
     {
@@ -47,7 +46,6 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
         _inputActions.Player.Reset.performed += ctx => ResetToSpawnPoint();
         _inputActions.Player.StepForward.performed += ctx => OnStepForward();
-        //_inputActions.Player.StepForward.canceled += ctx => OnStepForward(ctx);
         _inputActions.Player.StepBackward.performed += ctx => OnStepBackward();
         _inputActions.Player.StrafeLeft.performed += ctx => OnStrafeLeft();
         _inputActions.Player.StrafeRight.performed += ctx => OnStrafeRight();
@@ -64,7 +62,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     private void OnStepForward()
     {
         Debug.Log("OnStepForward");
-        if (!_isBlockingActionInProgress && !_isBackingUpAfterCollision)
+        if (!_isActionInProgress)
         {
             StartCoroutine(MoveStep(Vector3.forward));
         }
@@ -72,7 +70,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     private void OnStepBackward()
     {
-        if (!_isBlockingActionInProgress && !_isBackingUpAfterCollision)
+        if (!_isActionInProgress)
         {
             StartCoroutine(MoveStep(Vector3.back));
         }
@@ -80,36 +78,37 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     private IEnumerator MoveStep(Vector3 direction)
     {
-        _isBlockingActionInProgress = true;
 
         var startPosition = transform.position;
         var targetPosition = transform.position + transform.TransformDirection(direction) * moveDistance;
 
-        Debug.Log($"start pos: {startPosition}; target pos: {targetPosition}");
-
-        var elapsedTime = 0f;
-
-        int wallLayerMask = LayerMask.NameToLayer("Walls");
-
-        while (elapsedTime < moveDuration)
+        if (IsGridCellAccessible(targetPosition))
         {
-            var t = elapsedTime / moveDuration;
-            var newPosition = Vector3.Lerp(startPosition, targetPosition, t);
+            _isActionInProgress = true;
+            Debug.Log($"start pos: {startPosition}; target pos: {targetPosition}");
 
-            _playerRigidbody.MovePosition(newPosition);
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            var elapsedTime = 0f;
+
+            while (elapsedTime < moveDuration)
+            {
+                var t = elapsedTime / moveDuration;
+                var newPosition = Vector3.Lerp(startPosition, targetPosition, t);
+
+                _playerRigidbody.MovePosition(newPosition);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            // Move to final position
+            _playerRigidbody.MovePosition(targetPosition);
+
+            // ensure the player is on-grid after movement
+            SnapToGrid();
+
+            _isActionInProgress = false;
+
+            TurnManager.PlayerMoved();
         }
-
-        // Move to final position
-        _playerRigidbody.MovePosition(targetPosition);
-
-        // ensure the player is on-grid after movement
-        SnapPlayerToGrid();
-
-        _isBlockingActionInProgress = false;
-
-        TurnManager.PlayerMoved();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -123,7 +122,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     public void OnStrafeLeft()
     {
-        if (!_isBlockingActionInProgress)
+        if (!_isActionInProgress)
         {
             StartCoroutine(MoveStep(Vector3.left)); // Strafe left
         }
@@ -131,7 +130,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     public void OnStrafeRight()
     {
-        if (!_isBlockingActionInProgress)
+        if (!_isActionInProgress)
         {
             StartCoroutine(MoveStep(Vector3.right)); // Strafe right
         }
@@ -139,7 +138,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     public void OnRotateLeft()
     {
-        if (!_isBlockingActionInProgress)
+        if (!_isActionInProgress)
         {
             StartCoroutine(RotatePlayer(-90f));
         }
@@ -147,78 +146,13 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     public void OnRotateRight()
     {
-        if (!_isBlockingActionInProgress)
+        if (!_isActionInProgress)
         {
             StartCoroutine(RotatePlayer(90f));
         }
     }
 
-    /// <summary>
-    /// Check for collisions in the direction of movement and return the layer mask of the object collided with
-    /// </summary>
-    /// <param name="currentPosition"></param>
-    /// <param name="targetPosition"></param>
-    /// <param name="direction"></param>
-    /// <param name="collisionPoint"></param>
-    /// <returns>The layer mask of the object collided with or Default </returns>
-    /// <remarks>Only checks for walls and enemies</remarks>
-    private int CheckCollisionAhead(Vector3 currentPosition, Vector3 targetPosition, Vector3 direction, out Vector3 collisionPoint)
-    {
-        collisionPoint = Vector3.zero;
-
-        // Define a layer mask for walls
-        int wallLayerMask = LayerMask.NameToLayer("Walls");
-        int enemyLayerMask = LayerMask.NameToLayer("Enemy");
-        float collisionBuffer = 0.10f; // Buffer distance to detect collisions early
-
-        // Calculate ray direction and distance
-        Vector3 rayDirection = (targetPosition - currentPosition).normalized;
-        float rayDistance = Vector3.Distance(currentPosition, targetPosition) - collisionBuffer;
-
-        Debug.Log($"Raycast from {currentPosition} to {targetPosition} with direction {rayDirection} and distance {rayDistance}");
-        Debug.DrawRay(currentPosition, rayDirection * rayDistance, Color.red, 1.0f);
-
-        // Perform raycast
-        if (Physics.Raycast(currentPosition, rayDirection, out RaycastHit hit, rayDistance, wallLayerMask))
-        {
-            collisionPoint = hit.point;
-            Debug.Log($"Wall collision detected at {collisionPoint}");
-            return wallLayerMask; // Collision detected
-        }
-        else if (Physics.Raycast(currentPosition, rayDirection, out hit, rayDistance, enemyLayerMask))
-        {
-            collisionPoint = hit.point;
-            return enemyLayerMask; // Collision detected
-        }
-
-        Debug.Log("No collision detected");
-        return LayerMaskConstants.Default; // No collision
-    }
-
-    public IEnumerator BackUpSmoothlyForCollision()
-    {
-        float backupDuration = 0.5f; // Duration to move backward
-        float elapsedTime = 0f;
-
-        var backupStart = transform.position;
-        var backupTarget = backupStart - transform.forward * moveDistance * 0.5f;
-
-        Debug.Log($"Backing up from {backupStart} to {backupTarget}");
-
-        while (elapsedTime < backupDuration)
-        {
-            var t = elapsedTime / backupDuration;
-            _playerRigidbody.MovePosition(Vector3.Lerp(backupStart, backupTarget, t));
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        _playerRigidbody.MovePosition(backupTarget);
-        SnapPlayerToGrid();
-    }
-
-    private void SnapPlayerToGrid()
+    private void SnapToGrid()
     {
         Vector3 position = transform.position;
         position.x = Mathf.Round(position.x / gridSize) * gridSize;  // Snap to grid on the x-axis
@@ -229,7 +163,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     private IEnumerator RotatePlayer(float angle)
     {
-        _isBlockingActionInProgress = true;
+        _isActionInProgress = true;
 
         float currentAngle = 0f; // Track rotation progress
         Quaternion startRotation = transform.rotation;
@@ -247,7 +181,27 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         }
 
         transform.rotation = targetRotation; // Snap to the final rotation
-        _isBlockingActionInProgress = false;
+        _isActionInProgress = false;
+    }
+
+    private bool IsGridCellAccessible(Vector3 gridPosition)
+    {
+        // Cast a ray from the current position to the grid position
+        Vector3 direction = (gridPosition - transform.position).normalized;
+
+        // Perform a raycast to check if the path is blocked
+        if (Physics.Raycast(transform.position, direction, out RaycastHit hit, gridSize))
+        {
+            // Check if the hit object is a wall
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Walls"))
+            {
+                // There's a wall in the way
+                return false;
+            }
+        }
+
+        // No obstacles detected
+        return true;
     }
 
     private void OnDrawGizmos()

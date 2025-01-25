@@ -22,7 +22,7 @@ public class EncounterManager : MonoBehaviour
     {
         var aiManager = collidingObject.GetComponent<GridMovementAi>();
         aiManager.StopMovement();
-        aiManager.MoveBackwards(2);
+        aiManager.TurnAroundAndStep();
         StartBattle(collisionPoint);
     }
 

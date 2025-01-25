@@ -88,7 +88,7 @@ public class PlayerInputHandler : MonoBehaviour
 
             // Check for collision and smoothly backup if detected
             var collisionLayer = CheckCollisionAhead(transform.position, newPosition, direction, out Vector3 collisionPoint);
-            if (collisionLayer == LayerMaskConstants.Wall/* || collisionLayer == LayerMaskConstants.Enemy*/)
+            if (collisionLayer == wallLayerMask)
             {
                 Debug.Log($"Collision detected at {collisionPoint}, backing up.");
                 hitObject = true;
@@ -164,8 +164,8 @@ public class PlayerInputHandler : MonoBehaviour
         collisionPoint = Vector3.zero;
 
         // Define a layer mask for walls
-        int wallLayerMask = LayerMaskConstants.Wall;
-        int enemyLayerMask = LayerMaskConstants.Enemy;
+        int wallLayerMask = LayerMask.GetMask("Walls");
+        int enemyLayerMask = LayerMask.GetMask("Enemy");
         float collisionBuffer = 0.10f; // Buffer distance to detect collisions early
 
         // Calculate ray direction and distance
@@ -173,15 +173,15 @@ public class PlayerInputHandler : MonoBehaviour
         float rayDistance = Vector3.Distance(currentPosition, targetPosition) - collisionBuffer;
 
         // Perform raycast
-        if (Physics.Raycast(currentPosition, rayDirection, out RaycastHit hit, rayDistance, LayerMaskConstants.Wall))
+        if (Physics.Raycast(currentPosition, rayDirection, out RaycastHit hit, rayDistance, wallLayerMask))
         {
             collisionPoint = hit.point;
-            return LayerMaskConstants.Wall; // Collision detected
+            return wallLayerMask; // Collision detected
         }
-        else if (Physics.Raycast(currentPosition, rayDirection, out hit, rayDistance, LayerMaskConstants.Enemy))
+        else if (Physics.Raycast(currentPosition, rayDirection, out hit, rayDistance, enemyLayerMask))
         {
             collisionPoint = hit.point;
-            return LayerMaskConstants.Enemy; // Collision detected
+            return enemyLayerMask; // Collision detected
         }
 
         return LayerMaskConstants.Default; // No collision
