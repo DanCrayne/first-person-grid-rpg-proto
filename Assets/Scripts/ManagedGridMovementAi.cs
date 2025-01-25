@@ -7,7 +7,7 @@ public class ManagedGridMovementAi : MonoBehaviour
     public float detectionRange;    // Range to detect the player
     public Transform player;        // Reference to the player's transform
     public EncounterManager encounterManager;
-    public bool isHavingTurn = false;
+    public bool isCurrentTurn = false;
 
     private Vector3 targetGridPosition; // Current target grid position
     private bool isChasing = false;     // Whether the monster is chasing the player
@@ -15,36 +15,40 @@ public class ManagedGridMovementAi : MonoBehaviour
 
     public void PerformActions()
     {
-        isHavingTurn = true;
+        isCurrentTurn = true;
         StartCoroutine(PerformActionsCoroutine());
-        isHavingTurn = false;
+        isCurrentTurn = false;
     }
 
     private IEnumerator PerformActionsCoroutine()
     {
-        if (!isHavingTurn)
+        if (isCurrentTurn)
         {
-            yield return null;
-        }
-
-        if (isChasing)
-        {
-            // Chasing the player
-            ChasePlayer();
-        }
-        else
-        {
-            // Wandering
-            Wander();
-
-            // Check for the player
-            if (Vector3.Distance(transform.position, player.position) < detectionRange)
+            if (isChasing)
             {
-                isChasing = true; // Switch to chasing state
+                // Chasing the player
+                ChasePlayer();
             }
+            else
+            {
+                // Wandering
+                DetermineNextMove();
+
+                // Check for the player
+                // TODO: how would we implement coneshaped vision?
+                //       Putting the distance out front might look something like this:
+                //if (Vector3.Distance(transform.position + currentFacingDirection * 5, player.position) < detectionRange)
+
+            
+                if (Vector3.Distance(transform.position + currentFacingDirection * 5, player.position) < detectionRange)
+                {
+                    isChasing = true; // Switch to chasing state
+                }
+            }
+
+            yield return StartCoroutine(MoveToTargetCoroutine());
         }
 
-        yield return StartCoroutine(MoveToTargetCoroutine());
     }
 
     private void Start()
@@ -74,7 +78,7 @@ public class ManagedGridMovementAi : MonoBehaviour
         }
     }
 
-    private void Wander()
+    private void DetermineNextMove()
     {
         if (IsAtGridPosition())
         {
@@ -179,12 +183,12 @@ public class ManagedGridMovementAi : MonoBehaviour
         // Perform a raycast to check if the path is blocked
         if (Physics.Raycast(transform.position, direction, out RaycastHit hit, gridSize))
         {
-            // Check if the hit object has the tag "Enemy"
-            if (hit.collider.CompareTag("Enemy"))
-            {
-                // There's an enemy in the way
-                return false;
-            }
+            //// Check if the hit object has the tag "Enemy"
+            //if (hit.collider.CompareTag("Enemy"))
+            //{
+            //    // There's an enemy in the way
+            //    return false;
+            //}
 
             // Check if the hit object is a wall
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Walls"))

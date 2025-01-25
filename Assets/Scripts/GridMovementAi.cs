@@ -6,19 +6,23 @@ public class GridMovementAi : MonoBehaviour
     public float detectionRange;    // Range to detect the player
     public Transform player;        // Reference to the player's transform
     public EncounterManager encounterManager;
+    public bool canAct;            // whether the monster can act
 
     private Vector3 targetGridPosition; // Current target grid position
     private bool isChasing = false;     // Whether the monster is chasing the player
     private bool isStopped = false;    // Whether the monster should be stopped
-    private float wanderTimer = 2f;     // Time between wrandom wander movements
+    private bool shouldMove = true;    // Whether the monster should move
+    private bool isHandlingCollision = false; // Whether a collision has occurred that needs to be handled
+    private float wanderTimer = 2f;     // Time between random wander movements
     private float wanderElapsed = 0f;   // Timer to track wander intervals
-    private Vector3 facingDirection = Vector3.forward;
+    private Vector3 currentFacingDirection = Vector3.forward;
 
     private void Start()
     {
         // Initialize position on the grid
         SnapToGrid();
-        targetGridPosition = transform.position + new Vector3(0, 0, -gridSize);
+        targetGridPosition = transform.position;
+        RandomizeWanderTimer();
     }
 
     public void StopMovement()
@@ -27,9 +31,14 @@ public class GridMovementAi : MonoBehaviour
         isStopped = true;
     }
 
-    public void MoveBackwards(float distance)
+    public void TurnAroundAndStep()
     {
-        transform.position = transform.position - facingDirection * distance;
+        currentFacingDirection = -currentFacingDirection;
+        targetGridPosition = transform.position + currentFacingDirection * gridSize;
+        shouldMove = false; // prevent movement in MoveToTarget()
+        MoveToTarget();
+        shouldMove = true;
+        isHandlingCollision = false;
     }
 
     public void MovePosition(Vector3 newPosition)
@@ -37,13 +46,14 @@ public class GridMovementAi : MonoBehaviour
         transform.position = newPosition;
     }
 
+    private void RandomizeWanderTimer()
+    {
+        wanderTimer = Random.Range(2, 4);
+    }
+
     private void Update()
     {
-        if (isStopped)
-        {
-            return;
-        }
-        else if (isChasing)
+        if (isChasing)
         {
             // Chasing the player
             ChasePlayer();
@@ -68,9 +78,12 @@ public class GridMovementAi : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isStopped = true;
-            isChasing = false;
             Debug.Log("Player collision triggered!");
-            //encounterManager.StartBattle();
+        }
+        if (other.CompareTag("Enemy"))
+        {
+            isHandlingCollision = true;
+            TurnAroundAndStep();
         }
     }
 
@@ -96,7 +109,7 @@ public class GridMovementAi : MonoBehaviour
                 // Pick a random valid direction
                 int randomIndex = Random.Range(0, validDirections.Length);
                 targetGridPosition = transform.position + validDirections[randomIndex];
-                facingDirection = validDirections[randomIndex].normalized;
+                currentFacingDirection = validDirections[randomIndex].normalized;
             }
             else
             {
@@ -177,10 +190,21 @@ public class GridMovementAi : MonoBehaviour
         Vector3 direction = (gridPosition - transform.position).normalized;
 
         // Perform a raycast to check if the path is blocked
-        if (Physics.Raycast(transform.position, direction, gridSize, LayerMaskConstants.Wall))
+        if (Physics.Raycast(transform.position, direction, out RaycastHit hit, gridSize))
         {
-            // There's an obstacle in the way
-            return false;
+            // Check if the hit object has the tag "Enemy"
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                // There's an enemy in the way
+                return false;
+            }
+
+            // Check if the hit object is a wall
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Walls"))
+            {
+                // There's a wall in the way
+                return false;
+            }
         }
 
         // No obstacles detected
@@ -224,7 +248,7 @@ public class GridMovementAi : MonoBehaviour
         Vector3 start = transform.position;
 
         // End position is in the facing direction (e.g., 2 units ahead)
-        Vector3 end = start + facingDirection * 2f;
+        Vector3 end = start + currentFacingDirection * 2f;
 
         // Draw the line
         Gizmos.DrawLine(start, end);

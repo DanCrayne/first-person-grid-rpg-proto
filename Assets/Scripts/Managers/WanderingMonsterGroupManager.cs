@@ -45,6 +45,7 @@ public class WanderingMonsterGroupManager : MonoBehaviour
             aiScript.player = playerTransform.transform;
             aiScript.gridSize = 10;
             aiScript.detectionRange = 20;
+            // TODO: detection shape (e.g. cone, column)
             monsters.Add(monster);
         }
     }
