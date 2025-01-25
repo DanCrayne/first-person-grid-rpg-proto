@@ -8,18 +8,8 @@ public class PartyManager : MonoBehaviour
     public string partyName;
     public List<Creature> members;
     public EncounterManager encounterManager;
-    public PlayerInputHandler playerInputHandler;
+    public TurnBasedPlayerInputHandler playerInputHandler;
     public GameObject partyCamera;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -34,13 +24,13 @@ public class PartyManager : MonoBehaviour
     public void DisableCameraAndControls()
     {
         DisableCamera();
-        playerInputHandler.DisableControls();
+        DisableControls();
     }
 
     public void EnableCameraAndControls()
     {
         EnableCamera();
-        playerInputHandler.EnableControls();
+        EnableControls();
     }
 
     public void DisableCamera()
@@ -51,5 +41,15 @@ public class PartyManager : MonoBehaviour
     public void EnableCamera()
     {
         partyCamera.SetActive(true);
+    }
+
+    public void DisableControls()
+    {
+        playerInputHandler.DisableControls();
+    }
+
+    public void EnableControls()
+    {
+        playerInputHandler.EnableControls();
     }
 }
