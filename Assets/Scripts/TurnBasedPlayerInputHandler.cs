@@ -9,7 +9,6 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     public float rotationSpeed; // Speed of rotation transition
     public float gridSize; // size of grid in Unity space
     public Vector3 playerSpawnPoint;
-    public DungeonManager dungeonManager;
 
     private InputSystem_Actions _inputActions;
     private Rigidbody _playerRigidbody;
@@ -28,23 +27,26 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("TurnBasedPlayerInputHandler OnEnable");
         _inputActions.Player.Enable();
     }
 
     private void OnDisable()
     {
+        Debug.Log("TurnBasedPlayerInputHandler OnDisable");
         _inputActions.Player.Disable();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        Debug.Log("TurnBasedPlayerInputHandler Awake");
         _inputActions = new InputSystem_Actions();
         _playerRigidbody = GetComponent<Rigidbody>(); // Get Rigidbody
         _playerRigidbody.position = playerSpawnPoint;
 
         _inputActions.Player.Reset.performed += ctx => ResetToSpawnPoint();
-        _inputActions.Player.StepForward.started += ctx => OnStepForward(ctx);
+        _inputActions.Player.StepForward.performed += ctx => OnStepForward();
         //_inputActions.Player.StepForward.canceled += ctx => OnStepForward(ctx);
         _inputActions.Player.StepBackward.performed += ctx => OnStepBackward();
         _inputActions.Player.StrafeLeft.performed += ctx => OnStrafeLeft();
@@ -55,73 +57,68 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     private void ResetToSpawnPoint()
     {
+        Debug.Log("ResetToSpawnPoint");
         _playerRigidbody.position = playerSpawnPoint;
     }
 
-    private void OnStepForward(InputAction.CallbackContext context)
+    private void OnStepForward()
     {
+        Debug.Log("OnStepForward");
         if (!_isBlockingActionInProgress && !_isBackingUpAfterCollision)
+        {
             StartCoroutine(MoveStep(Vector3.forward));
-
-        dungeonManager.PerformActionsAfterPlayerMovement();
+        }
     }
 
     private void OnStepBackward()
     {
         if (!_isBlockingActionInProgress && !_isBackingUpAfterCollision)
+        {
             StartCoroutine(MoveStep(Vector3.back));
-
-        dungeonManager.PerformActionsAfterPlayerMovement();
+        }
     }
 
     private IEnumerator MoveStep(Vector3 direction)
     {
+        _isBlockingActionInProgress = true;
+
         var startPosition = transform.position;
         var targetPosition = transform.position + transform.TransformDirection(direction) * moveDistance;
 
         Debug.Log($"start pos: {startPosition}; target pos: {targetPosition}");
 
         var elapsedTime = 0f;
-        var hitObject = false;
 
-        // Use a layer mask for walls to d
-        int wallLayerMask = LayerMask.GetMask("Walls");
+        int wallLayerMask = LayerMask.NameToLayer("Walls");
 
-        while (elapsedTime < moveDuration && !hitObject)
+        while (elapsedTime < moveDuration)
         {
             var t = elapsedTime / moveDuration;
             var newPosition = Vector3.Lerp(startPosition, targetPosition, t);
-
-            // Check for collision and smoothly backup if detected
-            var collisionLayer = CheckCollisionAhead(transform.position, newPosition, direction, out Vector3 collisionPoint);
-            if (collisionLayer == LayerMaskConstants.Wall)
-            {
-                Debug.Log($"Collision detected at {collisionPoint}, backing up.");
-                hitObject = true;
-                _isBackingUpAfterCollision = true;
-
-                // Smoothly back up
-                yield return StartCoroutine(BackUpSmoothlyForCollision(direction));
-
-                _isBackingUpAfterCollision = false;
-
-                break;
-            }
-
 
             _playerRigidbody.MovePosition(newPosition);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        if (!hitObject)
-        {
-            // Move to final position if no collision
-            _playerRigidbody.MovePosition(targetPosition);
-        }
+        // Move to final position
+        _playerRigidbody.MovePosition(targetPosition);
 
         // ensure the player is on-grid after movement
         SnapPlayerToGrid();
+
+        _isBlockingActionInProgress = false;
+
+        TurnManager.PlayerMoved();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
+        {
+            Debug.Log("Wall collision detected, backing up.");
+            //StartCoroutine(BackUpSmoothlyForCollision());
+        }
     }
 
     public void OnStrafeLeft()
@@ -170,36 +167,41 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         collisionPoint = Vector3.zero;
 
         // Define a layer mask for walls
-        int wallLayerMask = LayerMaskConstants.Wall;
-        int enemyLayerMask = LayerMaskConstants.Enemy;
+        int wallLayerMask = LayerMask.NameToLayer("Walls");
+        int enemyLayerMask = LayerMask.NameToLayer("Enemy");
         float collisionBuffer = 0.10f; // Buffer distance to detect collisions early
 
         // Calculate ray direction and distance
         Vector3 rayDirection = (targetPosition - currentPosition).normalized;
         float rayDistance = Vector3.Distance(currentPosition, targetPosition) - collisionBuffer;
 
+        Debug.Log($"Raycast from {currentPosition} to {targetPosition} with direction {rayDirection} and distance {rayDistance}");
+        Debug.DrawRay(currentPosition, rayDirection * rayDistance, Color.red, 1.0f);
+
         // Perform raycast
-        if (Physics.Raycast(currentPosition, rayDirection, out RaycastHit hit, rayDistance, LayerMaskConstants.Wall))
+        if (Physics.Raycast(currentPosition, rayDirection, out RaycastHit hit, rayDistance, wallLayerMask))
         {
             collisionPoint = hit.point;
-            return LayerMaskConstants.Wall; // Collision detected
+            Debug.Log($"Wall collision detected at {collisionPoint}");
+            return wallLayerMask; // Collision detected
         }
-        else if (Physics.Raycast(currentPosition, rayDirection, out hit, rayDistance, LayerMaskConstants.Enemy))
+        else if (Physics.Raycast(currentPosition, rayDirection, out hit, rayDistance, enemyLayerMask))
         {
             collisionPoint = hit.point;
-            return LayerMaskConstants.Enemy; // Collision detected
+            return enemyLayerMask; // Collision detected
         }
 
+        Debug.Log("No collision detected");
         return LayerMaskConstants.Default; // No collision
     }
 
-    public IEnumerator BackUpSmoothlyForCollision(Vector3 forwardDirection)
+    public IEnumerator BackUpSmoothlyForCollision()
     {
         float backupDuration = 0.5f; // Duration to move backward
         float elapsedTime = 0f;
 
         var backupStart = transform.position;
-        var backupTarget = backupStart - transform.TransformDirection(forwardDirection).normalized * moveDistance * 0.5f;
+        var backupTarget = backupStart - transform.forward * moveDistance * 0.5f;
 
         Debug.Log($"Backing up from {backupStart} to {backupTarget}");
 
@@ -225,7 +227,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         transform.position = position;
     }
 
-    private System.Collections.IEnumerator RotatePlayer(float angle)
+    private IEnumerator RotatePlayer(float angle)
     {
         _isBlockingActionInProgress = true;
 
@@ -246,5 +248,12 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
         transform.rotation = targetRotation; // Snap to the final rotation
         _isBlockingActionInProgress = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        // Visualize the target grid path
+        Gizmos.color = Color.green;
+        Gizmos.DrawRay(Vector3.forward, Vector3.forward.normalized * 4);
     }
 }
