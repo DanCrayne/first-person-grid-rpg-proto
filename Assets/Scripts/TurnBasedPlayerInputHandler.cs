@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
+
 
 public class TurnBasedPlayerInputHandler : MonoBehaviour
 {
@@ -13,7 +13,20 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     private InputSystem_Actions _inputActions;
     private Rigidbody _playerRigidbody;
     private bool _isActionInProgress = false; // Flag to prevent overlapping actions that would cause the player to be in an invalid state (e.g. moving forward while turning)
-    private Animator monkStep;
+    private Vector3 _collisionVectorOffset = new Vector3(0, 5, 0); // Offset to move the collision raycast to a more appropriate position (e.g. up from the center of the player)
+    private Vector3 _currentFacingDirection = Vector3.forward;
+    private Animator _movementAnimator;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            Debug.Log($"{other.name} GameObject collided with party!");
+            EncounterEventNotifier.MonsterCollision();
+            //encounterManager.NotifyOfAiCollision(transform.position, other.gameObject);
+            //encounterManager.StartBattle(transform.position);
+        }
+    }
 
     public void DisableControls()
     {
@@ -44,7 +57,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _inputActions = new InputSystem_Actions();
         _playerRigidbody = GetComponent<Rigidbody>(); // Get Rigidbody
         _playerRigidbody.position = playerSpawnPoint;
-        monkStep = GetComponent<Animator>();
+        _movementAnimator = GetComponent<Animator>();
 
         _inputActions.Player.Reset.performed += ctx => ResetToSpawnPoint();
         _inputActions.Player.StepForward.performed += ctx => OnStepForward();
@@ -80,15 +93,15 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     private IEnumerator MoveStep(Vector3 direction)
     {
+        TurnNotifier.PlayerMoved();
 
         var startPosition = transform.position;
         var targetPosition = transform.position + transform.TransformDirection(direction) * moveDistance;
 
-
         if (IsGridCellAccessible(targetPosition))
         {
             _isActionInProgress = true;
-            monkStep.SetBool("isStepping", true);
+            _movementAnimator.SetBool("isStepping", true);
 
             Debug.Log($"start pos: {startPosition}; target pos: {targetPosition}");
 
@@ -109,12 +122,9 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
             // ensure the player is on-grid after movement
             SnapToGrid();
-            monkStep.SetBool("isStepping", false);
+            _movementAnimator.SetBool("isStepping", false);
 
             _isActionInProgress = false;
-            
-            
-            TurnManager.PlayerMoved();
         }
     }
 
@@ -187,6 +197,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
             yield return null;
         }
 
+        _currentFacingDirection = targetRotation * Vector3.forward; // Update the facing direction
         transform.rotation = targetRotation; // Snap to the final rotation
         _isActionInProgress = false;
     }
@@ -197,7 +208,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         Vector3 direction = (gridPosition - transform.position).normalized;
 
         // Perform a raycast to check if the path is blocked
-        if (Physics.Raycast(transform.position, direction, out RaycastHit hit, gridSize))
+        if (Physics.Raycast(transform.position + _collisionVectorOffset, direction, out RaycastHit hit, gridSize))
         {
             // Check if the hit object is a wall
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Walls"))
@@ -214,7 +225,9 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     private void OnDrawGizmos()
     {
         // Visualize the target grid path
+        var startPosition = transform.position + _collisionVectorOffset;
+        var targetPosition = startPosition + _currentFacingDirection * moveDistance;
         Gizmos.color = Color.green;
-        Gizmos.DrawRay(Vector3.forward, Vector3.forward.normalized * 4);
+        Gizmos.DrawLine(startPosition, targetPosition);
     }
 }

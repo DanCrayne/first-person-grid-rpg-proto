@@ -18,18 +18,23 @@ public class EncounterManager : MonoBehaviour
             battleMenuPanel.SetActive(false);
     }
 
-    public void NotifyOfAiCollision(Vector3 collisionPoint, GameObject collidingObject)
+    private void OnEnable()
     {
-        var aiManager = collidingObject.GetComponent<GridMovementAi>();
-        aiManager.StopMovement();
-        aiManager.TurnAroundAndStep();
-        StartBattle(collisionPoint);
+        EncounterEventNotifier.OnMonsterCollision += EncounterStart;
     }
 
-    public void StartBattle(Vector3 startingPosition)
+    private void OnDisable()
     {
-        battleStartingPosition = startingPosition;
-        partyManager.DisableCameraAndControls();
+        EncounterEventNotifier.OnMonsterCollision -= EncounterStart;
+    }
+
+    private void EncounterStart()
+    {
+        Debug.Log("Encounter manager: encounter started!");
+        EncounterEventNotifier.EncounterStart();
+        MoveAndEnableBattleCam(battleStartingPosition);
+
+        battleStartingPosition = partyManager.transform.position;
         var camPosition = battleStartingPosition + new Vector3(0, 15, 0); // Raise the camera above starting point
         MoveAndEnableBattleCam(camPosition);
         battleMenuPanel.SetActive(true);
@@ -66,8 +71,8 @@ public class EncounterManager : MonoBehaviour
     public void EndBattle()
     {
         DisableBattleCam();
-        partyManager.EnableCameraAndControls();
         battleMenuPanel.SetActive(false);
+        EncounterEventNotifier.EncounterEnd();
     }
 
     /// <summary>

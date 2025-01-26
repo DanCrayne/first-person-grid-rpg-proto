@@ -15,12 +15,12 @@ public class WanderingMonsterGroupManager : MonoBehaviour
 
     private void OnEnable()
     {
-        TurnManager.OnPlayerMoved += PerformMonsterActions;
+        TurnNotifier.OnPlayerMoved += PerformMonsterActions;
     }
 
     private void OnDisable()
     {
-        TurnManager.OnPlayerMoved -= PerformMonsterActions;
+        TurnNotifier.OnPlayerMoved -= PerformMonsterActions;
     }
 
     public void PerformMonsterActions()

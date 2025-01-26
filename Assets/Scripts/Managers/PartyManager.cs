@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,14 +9,37 @@ public class PartyManager : MonoBehaviour
     public TurnBasedPlayerInputHandler playerInputHandler;
     public GameObject partyCamera;
 
+    private void OnEnable()
+    {
+        EncounterEventNotifier.OnEncounterStart += OnEncounterStart;
+        EncounterEventNotifier.OnEncounterEnd += OnEncounterEnd;
+    }
+
+    private void OnDisable()
+    {
+        EncounterEventNotifier.OnEncounterStart -= OnEncounterStart;
+        EncounterEventNotifier.OnEncounterEnd -= OnEncounterEnd;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))
         {
             Debug.Log($"{other.name} GameObject collided with party!");
-            encounterManager.NotifyOfAiCollision(transform.position, other.gameObject);
-            encounterManager.StartBattle(transform.position);
+            EncounterEventNotifier.MonsterCollision();
         }
+    }
+
+    private void OnEncounterStart()
+    {
+        Debug.Log("PartyManager OnEncounterStart");
+        DisableCameraAndControls();
+    }
+
+    private void OnEncounterEnd()
+    {
+        Debug.Log("PartyManager OnEncounterEnd");
+        EnableCameraAndControls();
     }
 
     public void DisableCameraAndControls()

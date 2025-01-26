@@ -15,6 +15,36 @@ public class ManagedGridMovementAi : MonoBehaviour
     private bool isChasing = false;     // Whether the monster is chasing the player
     private Vector3 currentFacingDirection = Vector3.forward;
 
+
+    private void Start()
+    {
+        // Initialize position on the grid
+        SnapToGrid();
+        targetGridPosition = transform.position;
+    }
+
+    private void OnEnable()
+    {
+        EncounterEventNotifier.OnEncounterStart += OnEncounterStart;
+        EncounterEventNotifier.OnEncounterEnd += OnEncounterEnd;
+    }
+
+    private void OnDisable()
+    {
+        EncounterEventNotifier.OnEncounterStart -= OnEncounterStart;
+        EncounterEventNotifier.OnEncounterEnd -= OnEncounterEnd;
+    }
+
+    private void OnEncounterStart()
+    {
+        Debug.Log("ManagedGridMovementAi: Encounter started!");
+    }
+
+    private void OnEncounterEnd()
+    {
+        Debug.Log("ManagedGridMovementAi: Encounter ended!");
+    }
+
     public void PerformActions()
     {
         StartCoroutine(PerformActionsCoroutine());
@@ -35,13 +65,6 @@ public class ManagedGridMovementAi : MonoBehaviour
         yield return StartCoroutine(MoveToTargetCoroutine());
     }
 
-    private void Start()
-    {
-        // Initialize position on the grid
-        SnapToGrid();
-        targetGridPosition = transform.position;
-    }
-
     private bool IsPlayerDetected()
     {
         // TODO: how would we implement coneshaped vision?
@@ -53,14 +76,6 @@ public class ManagedGridMovementAi : MonoBehaviour
         }
 
         return false;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Player collision triggered!");
-        }
     }
 
     private void DetermineNextMove()

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class TurnManager : MonoBehaviour
+public class TurnNotifier : MonoBehaviour
 {
     public static event Action OnPlayerMoved;
     public static event Action OnMonstersMoved;
