@@ -8,8 +8,8 @@ public class DungeonManager : MonoBehaviour
 
     void Start()
     {
-        var spawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
-        SpawnDungeonMonsterGroups(spawnPoints);
+        var monsterSpawnPoints = GameObject.FindGameObjectsWithTag("MonsterSpawnPoint");
+        SpawnDungeonMonsterGroups(monsterSpawnPoints);
     }
 
     /// <summary>

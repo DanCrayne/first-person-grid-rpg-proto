@@ -13,6 +13,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     private InputSystem_Actions _inputActions;
     private Rigidbody _playerRigidbody;
     private bool _isActionInProgress = false; // Flag to prevent overlapping actions that would cause the player to be in an invalid state (e.g. moving forward while turning)
+    private Animator monkStep;
 
     public void DisableControls()
     {
@@ -43,6 +44,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _inputActions = new InputSystem_Actions();
         _playerRigidbody = GetComponent<Rigidbody>(); // Get Rigidbody
         _playerRigidbody.position = playerSpawnPoint;
+        monkStep = GetComponent<Animator>();
 
         _inputActions.Player.Reset.performed += ctx => ResetToSpawnPoint();
         _inputActions.Player.StepForward.performed += ctx => OnStepForward();
@@ -82,9 +84,12 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         var startPosition = transform.position;
         var targetPosition = transform.position + transform.TransformDirection(direction) * moveDistance;
 
+
         if (IsGridCellAccessible(targetPosition))
         {
             _isActionInProgress = true;
+            monkStep.SetBool("isStepping", true);
+
             Debug.Log($"start pos: {startPosition}; target pos: {targetPosition}");
 
             var elapsedTime = 0f;
@@ -104,9 +109,11 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
             // ensure the player is on-grid after movement
             SnapToGrid();
+            monkStep.SetBool("isStepping", false);
 
             _isActionInProgress = false;
-
+            
+            
             TurnManager.PlayerMoved();
         }
     }

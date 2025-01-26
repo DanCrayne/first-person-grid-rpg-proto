@@ -10,9 +10,6 @@ public class GridMovementAi : MonoBehaviour
 
     private Vector3 targetGridPosition; // Current target grid position
     private bool isChasing = false;     // Whether the monster is chasing the player
-    private bool isStopped = false;    // Whether the monster should be stopped
-    private bool shouldMove = true;    // Whether the monster should move
-    private bool isHandlingCollision = false; // Whether a collision has occurred that needs to be handled
     private float wanderTimer = 2f;     // Time between random wander movements
     private float wanderElapsed = 0f;   // Timer to track wander intervals
     private Vector3 currentFacingDirection = Vector3.forward;
@@ -28,17 +25,13 @@ public class GridMovementAi : MonoBehaviour
     public void StopMovement()
     {
         isChasing = false;
-        isStopped = true;
     }
 
     public void TurnAroundAndStep()
     {
         currentFacingDirection = -currentFacingDirection;
         targetGridPosition = transform.position + currentFacingDirection * gridSize;
-        shouldMove = false; // prevent movement in MoveToTarget()
         MoveToTarget();
-        shouldMove = true;
-        isHandlingCollision = false;
     }
 
     public void MovePosition(Vector3 newPosition)
@@ -77,12 +70,10 @@ public class GridMovementAi : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            isStopped = true;
             Debug.Log("Player collision triggered!");
         }
         if (other.CompareTag("Enemy"))
         {
-            isHandlingCollision = true;
             TurnAroundAndStep();
         }
     }
