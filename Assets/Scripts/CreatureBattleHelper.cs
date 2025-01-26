@@ -2,7 +2,7 @@ using UnityEngine;
 
 // TODO: For mockup only - this class will go away once the wandering monster group class is finished
 
-public class MonsterManager : MonoBehaviour
+public class CreatureBattleHelper : MonoBehaviour
 {
     public Creature Creature;
 

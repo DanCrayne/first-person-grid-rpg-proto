@@ -27,7 +27,7 @@ public class WanderingMonsterGroupManager : MonoBehaviour
     {
         foreach (var monster in monsters)
         {
-            var aiScript = monster.GetComponent<ManagedGridMovementAi>();
+            var aiScript = monster.GetComponent<WanderingMonsterMovement>();
             if (aiScript != null)
             {
                 aiScript.PerformActions();
@@ -40,7 +40,7 @@ public class WanderingMonsterGroupManager : MonoBehaviour
         foreach (var spawnPoint in spawnPoints)
         {
             var monster = Instantiate(monsterPrefab, spawnPoint, Quaternion.identity);
-            var aiScript = monster.GetOrAddComponent<ManagedGridMovementAi>();
+            var aiScript = monster.GetOrAddComponent<WanderingMonsterMovement>();
             aiScript.encounterManager = encounterManager;
             aiScript.player = playerTransform.transform;
             aiScript.gridSize = 10;

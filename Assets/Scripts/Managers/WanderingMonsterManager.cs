@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WanderingMonster : MonoBehaviour
+public class WanderingMonsterManager : MonoBehaviour
 {
     public int maxNumberOfMonsters;
     public List<GameObject> possibleMonsters;

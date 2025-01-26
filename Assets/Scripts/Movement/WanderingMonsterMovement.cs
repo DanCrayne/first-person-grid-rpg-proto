@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class ManagedGridMovementAi : MonoBehaviour
+public class WanderingMonsterMovement : MonoBehaviour
 {
     public float gridSize;          // Size of each grid cell
     public float detectionRange;    // Range to detect the player
@@ -11,6 +11,7 @@ public class ManagedGridMovementAi : MonoBehaviour
     public float rotationSpeed = 200f;
     public float movementSpeed = 15f;
 
+    private Vector3 currentGridPosition; // Current grid position
     private Vector3 targetGridPosition; // Current target grid position
     private bool isChasing = false;     // Whether the monster is chasing the player
     private Vector3 currentFacingDirection = Vector3.forward;
@@ -21,6 +22,7 @@ public class ManagedGridMovementAi : MonoBehaviour
         // Initialize position on the grid
         SnapToGrid();
         targetGridPosition = transform.position;
+        currentGridPosition = transform.position;
     }
 
     private void OnEnable()
@@ -37,6 +39,7 @@ public class ManagedGridMovementAi : MonoBehaviour
 
     private void OnEncounterStart()
     {
+        MoveBackToLastPosition();
         Debug.Log("ManagedGridMovementAi: Encounter started!");
     }
 
@@ -48,6 +51,12 @@ public class ManagedGridMovementAi : MonoBehaviour
     public void PerformActions()
     {
         StartCoroutine(PerformActionsCoroutine());
+    }
+
+    public void MoveBackToLastPosition()
+    {
+        targetGridPosition = currentGridPosition;
+        StartCoroutine(MoveToTargetCoroutine());
     }
 
     private IEnumerator PerformActionsCoroutine()

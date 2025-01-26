@@ -55,7 +55,7 @@ public class EncounterManager : MonoBehaviour
             }
         }
 
-        var monsterManager = currentlySelectedMonster.GetComponent<MonsterManager>();
+        var monsterManager = currentlySelectedMonster.GetComponent<CreatureBattleHelper>();
         monsterManager.TakeDamage(10);
 
         if (monsterManager.IsMonsterDead())
