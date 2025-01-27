@@ -128,7 +128,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 60890743}
-  - component: {fileID: 60890742}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -136,20 +135,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &60890742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 60890741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5b4b5c38205d5944b004e1f2d6a4895, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentAreaScene: Dungeon01Scene
-  currentBattleScene: BattleScene
 --- !u!4 &60890743
 Transform:
   m_ObjectHideFlags: 0
@@ -194,9 +179,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b648e6cfe5c07241b8d53ee1b5b96b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  callerSceneName: Dungeon01Scene
-  encounterSceneName: BattleScene
+  battleMenuPanel: {fileID: 0}
   partyManager: {fileID: 0}
+  battleCam: {fileID: 0}
 --- !u!4 &1734221548
 Transform:
   m_ObjectHideFlags: 0

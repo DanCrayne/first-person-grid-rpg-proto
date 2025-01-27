@@ -40,12 +40,21 @@ public class WanderingMonsterGroupManager : MonoBehaviour
         foreach (var spawnPoint in spawnPoints)
         {
             var monster = Instantiate(monsterPrefab, spawnPoint, Quaternion.identity);
+
+            // Add monster management script
+            var monsterManagerScript = monster.GetOrAddComponent<WanderingMonsterManager>();
+            monsterManagerScript.maxNumberOfMonsters = 4;
+            monsterManagerScript.possibleMonsters = new[] { "Goblin" };
+            monsterManagerScript.currentPosition = monster.transform.position;
+
+            // Add movement (ai) script
             var aiScript = monster.GetOrAddComponent<WanderingMonsterMovement>();
             aiScript.encounterManager = encounterManager;
             aiScript.player = playerTransform.transform;
             aiScript.gridSize = 10;
             aiScript.detectionRange = 20;
             // TODO: detection shape (e.g. cone, column)
+
             monsters.Add(monster);
         }
     }

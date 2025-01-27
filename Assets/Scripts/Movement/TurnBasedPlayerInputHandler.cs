@@ -17,15 +17,14 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     private Vector3 _currentFacingDirection = Vector3.forward;
     private Animator _movementAnimator;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnEnable()
     {
-        if (other.CompareTag("Enemy"))
-        {
-            Debug.Log($"{other.name} GameObject collided with party!");
-            EncounterEventNotifier.MonsterCollision();
-            //encounterManager.NotifyOfAiCollision(transform.position, other.gameObject);
-            //encounterManager.StartBattle(transform.position);
-        }
+        EnableControls();
+    }
+
+    private void OnDisable()
+    {
+        DisableControls();
     }
 
     public void DisableControls()
@@ -36,18 +35,6 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     public void EnableControls()
     {
         _inputActions.Player.Enable();
-    }
-
-    private void OnEnable()
-    {
-        Debug.Log("TurnBasedPlayerInputHandler OnEnable");
-        _inputActions.Player.Enable();
-    }
-
-    private void OnDisable()
-    {
-        Debug.Log("TurnBasedPlayerInputHandler OnDisable");
-        _inputActions.Player.Disable();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -125,15 +112,6 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
             _movementAnimator.SetBool("isStepping", false);
 
             _isActionInProgress = false;
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
-        {
-            Debug.Log("Wall collision detected, backing up.");
-            //StartCoroutine(BackUpSmoothlyForCollision());
         }
     }
 

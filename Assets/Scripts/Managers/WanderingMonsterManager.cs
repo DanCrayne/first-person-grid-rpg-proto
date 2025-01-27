@@ -4,8 +4,9 @@ using UnityEngine;
 public class WanderingMonsterManager : MonoBehaviour
 {
     public int maxNumberOfMonsters;
-    public List<GameObject> possibleMonsters;
+    public string [] possibleMonsters = { "Goblin" };
     public Vector3 currentPosition;
+    public Vector3 spawnOffset = new Vector3(0, 3, 0);
 
     private void OnEnable()
     {
@@ -37,21 +38,22 @@ public class WanderingMonsterManager : MonoBehaviour
         SpawnMonstersForEncounter();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Monster collided with player!");
-            // Notify the EncounterManager of the collision
-        }
-    }
-
     /// <summary>
     /// Spawns the individual monsters that will be used in an encounter
     /// based on the possible monsters that can be generated
     /// </summary>
-    public void SpawnMonstersForEncounter()
+    public List<GameObject> SpawnMonstersForEncounter()
     {
         Debug.Log("Spawning monsters for encounter!");
+        var monsters = new List<GameObject>();
+
+        for (int i = 0; i < maxNumberOfMonsters; i++)
+        {
+            var chosenMonsterName = possibleMonsters[Random.Range(0, possibleMonsters.Length)];
+            var monsterPrefab = Resources.Load<GameObject>($"Monsters/{chosenMonsterName}");
+            monsters.Add(monsterPrefab);
+        }
+
+        return monsters;
     }
 }

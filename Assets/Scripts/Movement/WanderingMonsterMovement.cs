@@ -39,7 +39,6 @@ public class WanderingMonsterMovement : MonoBehaviour
 
     private void OnEncounterStart()
     {
-        MoveBackToLastPosition();
         Debug.Log("ManagedGridMovementAi: Encounter started!");
     }
 
@@ -184,6 +183,7 @@ public class WanderingMonsterMovement : MonoBehaviour
 
         SnapToGrid(); // ensure alignment
         currentFacingDirection = newFacingDirection;
+        currentGridPosition = transform.position;
     }
 
     private IEnumerator RotateMonster(float angle)

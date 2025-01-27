@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PartyManager : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class PartyManager : MonoBehaviour
         {
             Debug.Log($"{other.name} GameObject collided with party!");
             EncounterEventNotifier.MonsterCollision();
+            encounterManager.SetupEncounter(other.gameObject);
         }
     }
 
@@ -66,7 +68,7 @@ public class PartyManager : MonoBehaviour
 
     public void DisableControls()
     {
-        //playerInputHandler.DisableControls();
+        playerInputHandler.DisableControls();
     }
 
     public void EnableControls()
