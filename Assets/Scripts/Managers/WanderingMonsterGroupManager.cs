@@ -40,10 +40,13 @@ public class WanderingMonsterGroupManager : MonoBehaviour
         foreach (var spawnPoint in spawnPoints)
         {
             var monster = Instantiate(monsterPrefab, spawnPoint, Quaternion.identity);
+            
+            // Add monster to the parent GameObject
+            monster.transform.SetParent(transform);
 
             // Add monster management script
             var monsterManagerScript = monster.GetOrAddComponent<WanderingMonsterManager>();
-            monsterManagerScript.maxNumberOfMonsters = 4;
+            monsterManagerScript.maxNumberOfMonsters = 3;
             monsterManagerScript.possibleMonsters = new[] { "Goblin" };
             monsterManagerScript.currentPosition = monster.transform.position;
 

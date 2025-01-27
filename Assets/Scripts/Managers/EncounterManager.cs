@@ -6,7 +6,6 @@ public class EncounterManager : MonoBehaviour
 {
     public GameObject battleMenuPanel;
     public PartyManager partyManager;
-    public GameObject battleCam;
     public GameObject encounterObject;
     public GameObject dungeonObject;
 
@@ -18,8 +17,8 @@ public class EncounterManager : MonoBehaviour
 
     void Start()
     {
-        if (battleMenuPanel != null)
-            battleMenuPanel.SetActive(false);
+        //if (battleMenuPanel != null)
+        //    battleMenuPanel.SetActive(false);
     }
 
     private void OnEnable()
@@ -40,23 +39,34 @@ public class EncounterManager : MonoBehaviour
         LayoutBattle();
     }
 
+    /// <summary>
+    /// Lays out battle by placing monsters and other characters
+    /// </summary>
+    /// <remarks>maximum of 3 members</remarks>
     private void LayoutBattle()
     {
-        // Layout monsters in a grid
-        int numRows = 2; // Number of rows in the grid
-        int numCols = Mathf.CeilToInt((float)_monsters.Count / numRows); // Number of columns in the grid
-        float spacing = 2.0f; // Spacing between monsters
+        var offCenterAdjustment = new Vector3(0, 0, 10);
+        var monsterStartingPosition = _battleStartingPosition + offCenterAdjustment;
+        var monsterSideOffsetAdjustment = new Vector3(5, 0, 0);
+        Vector3[] monsterPositions = { monsterStartingPosition, monsterStartingPosition - monsterSideOffsetAdjustment, monsterStartingPosition + monsterSideOffsetAdjustment };
 
         for (int i = 0; i < _monsters.Count; i++)
         {
             var monsterPrefab = _monsters[i];
-            int row = i / numCols;
-            int col = i % numCols;
-
-            Vector3 positionOffset = new Vector3(col * spacing, 0, row * spacing);
-            var monsterInstance = Instantiate(monsterPrefab, _battleStartingPosition + positionOffset, Quaternion.identity);
+            var monsterInstance = Instantiate(monsterPrefab, monsterPositions[i % 3], Quaternion.identity);
             monsterInstance.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            _monsters[i] = monsterInstance; // Update the list with the instantiated monster
+
+            // Calculate the direction to the battle starting position
+            Vector3 directionToBattleStart = (_battleStartingPosition - monsterInstance.transform.position).normalized;
+
+            // Calculate the rotation to face the battle starting position
+            Quaternion lookRotation = Quaternion.LookRotation(directionToBattleStart);
+
+            // Set the monster's rotation
+            monsterInstance.transform.rotation = lookRotation;
+
+            // Update the list with the instantiated monster
+            _monsters[i] = monsterInstance;
         }
     }
 
@@ -64,52 +74,13 @@ public class EncounterManager : MonoBehaviour
     {
         Debug.Log("Encounter manager: encounter started!");
         EncounterEventNotifier.EncounterStart();
-
-
-
-        MoveAndEnableBattleCam(_battleStartingPosition);
-
-        _battleStartingPosition = partyManager.transform.position;
-        var camPosition = _battleStartingPosition + new Vector3(0, 15, 0); // Raise the camera above starting point
-        MoveAndEnableBattleCam(camPosition);
-        battleMenuPanel.SetActive(true);
-
-        // Disable the parent WanderingMonster object
-        if (_wanderingMonsterParent != null)
-        {
-            _wanderingMonsterParent.SetActive(false);
-        }
+        encounterObject.SetActive(true);
+        dungeonObject.SetActive(false);
     }
 
     public void HandleAttack()
     {
         EndBattle();
-
-        // if the selected monster is dead, then select the next or end battle if all are dead
-        //if (_selectedMonster == null)
-        //{
-        //    if (_monsters.Count > 0 && _monsters is not null)
-        //    {
-        //        _selectedMonster = _monsters.FirstOrDefault();
-        //    }
-        //    else
-        //    {
-        //        EndBattle();
-        //    }
-        //}
-
-        //var monsterManager = _selectedMonster.GetComponent<CreatureBattleHelper>();
-        //monsterManager.TakeDamage(10);
-
-        //if (monsterManager.IsMonsterDead())
-        //{
-        //    _monsters.Remove(_selectedMonster);
-        //    Destroy(_selectedMonster);
-        //    if (_monsters.Count <= 0)
-        //    {
-        //        EndBattle();
-        //    }
-        //}
     }
 
     public void EndBattle()
@@ -117,41 +88,32 @@ public class EncounterManager : MonoBehaviour
         // Destroy each monster GameObject
         foreach (var monster in _monsters)
         {
-            Destroy(monster);
+            if (monster != null && monster.scene.IsValid()) // Ensure it's an instance in the scene
+            {
+                Destroy(monster);
+            }
         }
 
         // Clear the list of monsters
         _monsters.Clear();
 
-        // Disable the battle camera and hide the battle menu
-        DisableBattleCam();
-        battleMenuPanel.SetActive(false);
-
-        // Re-enable the parent WanderingMonster object
-        if (_wanderingMonsterParent != null)
+        // Destroy the parent WanderingMonster object
+        if (_wanderingMonsterParent != null && _wanderingMonsterParent.scene.IsValid()) // Ensure it's an instance in the scene
         {
-            _wanderingMonsterParent.SetActive(true);
+            Destroy(_wanderingMonsterParent);
+            _wanderingMonsterParent = null; // Clear the reference
         }
+
+        // Disable the battle camera and hide the battle menu
+        battleMenuPanel.SetActive(false);
 
         // Notify that the encounter has ended
         EncounterEventNotifier.EncounterEnd();
+
+        encounterObject.SetActive(false);
+        dungeonObject.SetActive(true);
     }
 
-    /// <summary>
-    /// Moves battle cam and enables it - the camera is always pointing straight down.
-    /// </summary>
-    /// <param name="position">The coordinates to move the camera to.</param>
-    public void MoveAndEnableBattleCam(Vector3 position)
-    {
-        battleCam.SetActive(true);
-        var transform = battleCam.GetComponent<Transform>();
-        transform.position = position;
-    }
-
-    private void DisableBattleCam()
-    {
-        battleCam.SetActive(false);
-    }
 
     private void PositionMonsters(List<GameObject> monsters)
     {

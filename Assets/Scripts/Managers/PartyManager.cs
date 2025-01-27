@@ -35,13 +35,13 @@ public class PartyManager : MonoBehaviour
     private void OnEncounterStart()
     {
         Debug.Log("PartyManager OnEncounterStart");
-        DisableCameraAndControls();
+        //DisableCameraAndControls();
     }
 
     private void OnEncounterEnd()
     {
         Debug.Log("PartyManager OnEncounterEnd");
-        EnableCameraAndControls();
+        //EnableCameraAndControls();
     }
 
     public void DisableCameraAndControls()
