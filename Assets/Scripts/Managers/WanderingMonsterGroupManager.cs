@@ -11,21 +11,40 @@ public class WanderingMonsterGroupManager : MonoBehaviour
     public EncounterManager encounterManager;
     public Transform playerTransform;
 
-    private List<GameObject> monsters = new List<GameObject>();
+    private List<GameObject> _wanderingMonsters = new List<GameObject>();
 
     private void OnEnable()
     {
         TurnNotifier.OnPlayerMoved += PerformMonsterActions;
+        EncounterEventNotifier.OnMonsterDefeated += HandleMonsterDefeated;
     }
 
     private void OnDisable()
     {
         TurnNotifier.OnPlayerMoved -= PerformMonsterActions;
+        EncounterEventNotifier.OnMonsterDefeated += HandleMonsterDefeated;
+    }
+
+    public void HideAndDisableWanderingMonsters()
+    {
+
+    }
+
+    private void DeleteWanderingMonster(GameObject monster)
+    {
+        _wanderingMonsters.Remove(monster);
+        Destroy(monster);
+    }
+
+    private void HandleMonsterDefeated(GameObject monster)
+    {
+        Debug.Log($"Wandering monster defeated: {monster.name}");
+        DeleteWanderingMonster(monster);
     }
 
     public void PerformMonsterActions()
     {
-        foreach (var monster in monsters)
+        foreach (var monster in _wanderingMonsters)
         {
             var aiScript = monster.GetComponent<WanderingMonsterMovement>();
             if (aiScript != null)
@@ -58,7 +77,7 @@ public class WanderingMonsterGroupManager : MonoBehaviour
             aiScript.detectionRange = 20;
             // TODO: detection shape (e.g. cone, column)
 
-            monsters.Add(monster);
+            _wanderingMonsters.Add(monster);
         }
     }
 }

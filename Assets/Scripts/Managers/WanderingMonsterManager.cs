@@ -1,12 +1,15 @@
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class WanderingMonsterManager : MonoBehaviour
 {
-    public int maxNumberOfMonsters;
+    public int maxNumberOfMonsters = 3;
     public string [] possibleMonsters = { "Goblin" };
     public Vector3 currentPosition;
     public Vector3 spawnOffset = new Vector3(0, 3, 0);
+
+    private List<GameObject> _monsters;
 
     private void OnEnable()
     {
@@ -18,6 +21,12 @@ public class WanderingMonsterManager : MonoBehaviour
     {
         EncounterEventNotifier.OnEncounterStart -= OnEncounterStart;
         EncounterEventNotifier.OnEncounterEnd -= OnEncounterEnd;
+    }
+
+    public void DestroySingleMonster(GameObject monster)
+    {
+        _monsters.Remove(monster);
+        Destroy(monster);
     }
 
     private void OnEncounterStart()
@@ -35,25 +44,48 @@ public class WanderingMonsterManager : MonoBehaviour
     private void PrepareForBattle()
     {
         Debug.Log("Monster is preparing for battle!");
-        SpawnMonstersForEncounter();
     }
 
-    /// <summary>
-    /// Spawns the individual monsters that will be used in an encounter
-    /// based on the possible monsters that can be generated
-    /// </summary>
-    public List<GameObject> SpawnMonstersForEncounter()
+    public void SpawnMonstersForEncounter(Vector3[] monsterPositions, Vector3 encounterStartingPosition)
     {
         Debug.Log("Spawning monsters for encounter!");
-        var monsters = new List<GameObject>();
+        _monsters = new List<GameObject>();
+        var index = 0;
 
-        for (int i = 0; i < maxNumberOfMonsters; i++)
+        foreach (var position in monsterPositions)
         {
-            var chosenMonsterName = possibleMonsters[Random.Range(0, possibleMonsters.Length)];
-            var monsterPrefab = Resources.Load<GameObject>($"Monsters/{chosenMonsterName}");
-            monsters.Add(monsterPrefab);
-        }
+            var monsterPrefabName = possibleMonsters[Random.Range(0, possibleMonsters.Length)];
+            var monsterPrefab = Resources.Load<GameObject>($"Monsters/{monsterPrefabName}");
+            var monsterInstance = Instantiate(monsterPrefab, monsterPositions[index % maxNumberOfMonsters], Quaternion.identity);
 
-        return monsters;
+            // Set this *encounter monster*'s parent object as the *wandering monster* for better organization and so that when the parent is destroyed, the child will be too
+            monsterInstance.transform.SetParent(transform);
+
+            // Calculate the direction to the battle starting position
+            Vector3 directionToBattleStart = (encounterStartingPosition - monsterInstance.transform.position).normalized;
+            // Calculate the rotation to face the battle starting position
+            Quaternion lookRotation = Quaternion.LookRotation(directionToBattleStart);
+            // Set the monster's rotation
+            monsterInstance.transform.rotation = lookRotation;
+
+            _monsters.Add(monsterInstance);
+            index++;
+        }
+    }
+
+    public void ShowMonsters()
+    {
+        foreach (var monster in _monsters)
+        {
+            monster.SetActive(true);
+        }
+    }
+
+    public void HideMonsters()
+    {
+        foreach (var monster in _monsters)
+        {
+            monster.SetActive(false);
+        }
     }
 }
