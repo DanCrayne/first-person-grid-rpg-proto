@@ -6,10 +6,26 @@ public class DungeonManager : MonoBehaviour
     public WanderingMonsterGroupManager wanderingMonsterGroupManager;
     public bool isPlayerTurn;
 
+    private GameObject[] _monsterSpawnPoints; 
+
     void Start()
     {
-        var monsterSpawnPoints = GameObject.FindGameObjectsWithTag("MonsterSpawnPoint");
-        SpawnDungeonMonsterGroups(monsterSpawnPoints);
+        _monsterSpawnPoints = GameObject.FindGameObjectsWithTag("MonsterSpawnPoint");
+        SpawnDungeonMonsterGroups(_monsterSpawnPoints);
+    }
+
+    private void OnEnable()
+    {
+        GeneralNotifier.OnResetGame += HandleGameReset;
+        GeneralNotifier.OnPauseGame += PauseGame;
+        GeneralNotifier.OnResumeGame += ResumeGame;
+    }
+
+    private void OnDisable()
+    {
+        GeneralNotifier.OnResetGame -= HandleGameReset;
+        GeneralNotifier.OnPauseGame -= PauseGame;
+        GeneralNotifier.OnResumeGame -= ResumeGame;
     }
 
     /// <summary>
@@ -24,6 +40,12 @@ public class DungeonManager : MonoBehaviour
     public void ResumeGame()
     {
         Time.timeScale = 1;
+    }
+
+    public void HandleGameReset()
+    {
+        SpawnDungeonMonsterGroups(_monsterSpawnPoints);
+
     }
 
     public void SpawnDungeonMonsterGroups(GameObject[] spawnPoints)

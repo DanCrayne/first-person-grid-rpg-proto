@@ -6,6 +6,7 @@ public class EncounterEventNotifier : MonoBehaviour
     public static event Action OnMonsterCollision;
     public static event Action OnEncounterStart;
     public static event Action OnEncounterEnd;
+    public static event Action<GameObject> OnMonsterDefeated;
 
     public static void MonsterCollision()
     {
@@ -20,5 +21,10 @@ public class EncounterEventNotifier : MonoBehaviour
     public static void EncounterEnd()
     {
         OnEncounterEnd?.Invoke();
+    }
+
+    public static void MonsterDefeated(GameObject monster)
+    {
+        OnMonsterDefeated?.Invoke(monster);
     }
 }

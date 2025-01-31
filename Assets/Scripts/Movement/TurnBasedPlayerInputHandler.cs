@@ -46,7 +46,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _playerRigidbody.position = playerSpawnPoint;
         _movementAnimator = GetComponent<Animator>();
 
-        _inputActions.Player.Reset.performed += ctx => ResetToSpawnPoint();
+        _inputActions.Player.Reset.performed += ctx => HandleResetGame();
         _inputActions.Player.StepForward.performed += ctx => OnStepForward();
         _inputActions.Player.StepBackward.performed += ctx => OnStepBackward();
         _inputActions.Player.StrafeLeft.performed += ctx => OnStrafeLeft();
@@ -55,10 +55,11 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _inputActions.Player.RotateRight.performed += ctx => OnRotateRight();
     }
 
-    private void ResetToSpawnPoint()
+    private void HandleResetGame()
     {
         Debug.Log("ResetToSpawnPoint");
         _playerRigidbody.position = playerSpawnPoint;
+        GeneralNotifier.ResetGame();
     }
 
     private void OnStepForward()
