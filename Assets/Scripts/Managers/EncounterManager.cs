@@ -54,7 +54,7 @@ public class EncounterManager : MonoBehaviour
         {
             var monsterPrefab = _monsters[i];
             var monsterInstance = Instantiate(monsterPrefab, monsterPositions[i % 3], Quaternion.identity);
-            monsterInstance.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            // monsterInstance.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
             // Calculate the direction to the battle starting position
             Vector3 directionToBattleStart = (_battleStartingPosition - monsterInstance.transform.position).normalized;

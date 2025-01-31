@@ -15,6 +15,7 @@ public class WanderingMonsterMovement : MonoBehaviour
     private Vector3 targetGridPosition; // Current target grid position
     private bool isChasing = false;     // Whether the monster is chasing the player
     private Vector3 currentFacingDirection = Vector3.forward;
+    private Animator _movementAnimatorMonster;
 
 
     private void Start()
@@ -23,6 +24,7 @@ public class WanderingMonsterMovement : MonoBehaviour
         SnapToGrid();
         targetGridPosition = transform.position;
         currentGridPosition = transform.position;
+        _movementAnimatorMonster = GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -168,9 +170,13 @@ public class WanderingMonsterMovement : MonoBehaviour
         // Rotate monster
         yield return StartCoroutine(RotateMonster(rotationAngle));
 
+
+        
+
         // Move toward the target grid position
         while (Vector3.Distance(transform.position, targetGridPosition) >= 1f)
         {
+            _movementAnimatorMonster.SetBool("ogreIsStepping", true);
             transform.position = Vector3.MoveTowards(transform.position, targetGridPosition, movementSpeed * Time.deltaTime);
             yield return null;
         }
@@ -184,6 +190,7 @@ public class WanderingMonsterMovement : MonoBehaviour
         SnapToGrid(); // ensure alignment
         currentFacingDirection = newFacingDirection;
         currentGridPosition = transform.position;
+        _movementAnimatorMonster.SetBool("ogreIsStepping", false);
     }
 
     private IEnumerator RotateMonster(float angle)
