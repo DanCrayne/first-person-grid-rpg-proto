@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - MonsterSpawnPoint
+  - PlayerSpawnPoint
+  - EncounterMonsterSpawnPoint
+  - EncounterPartyMemberSpawnPoint
   layers:
   - Default
   - TransparentFX

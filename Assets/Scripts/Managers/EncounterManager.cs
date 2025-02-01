@@ -5,7 +5,6 @@ public class EncounterManager : MonoBehaviour
     public GameObject battleMenuPanel;
     public PartyManager partyManager;
     public GameObject encounterObject;
-    public GameObject dungeonObject;
 
     private GameObject _wanderingMonsterContainer; // Reference to the parent WanderingMonster object
     private WanderingMonsterManager _wanderingMonsterManager;
@@ -25,7 +24,7 @@ public class EncounterManager : MonoBehaviour
         EncounterEventNotifier.OnMonsterCollision -= EncounterStart;
     }
 
-    public void SetupEncounter(GameObject wanderingMonster)
+    public void SetupEncounter(GameObject player, GameObject wanderingMonster)
     {
         _wanderingMonsterManager = wanderingMonster.GetComponent<WanderingMonsterManager>();
         _wanderingMonsterContainer = wanderingMonster;
@@ -45,12 +44,10 @@ public class EncounterManager : MonoBehaviour
         _wanderingMonsterManager.SpawnMonstersForEncounter(monsterPositions, _battleStartingPosition);
     }
 
-    private void EncounterStart()
+    private void EncounterStart(GameObject player, GameObject monster)
     {
         Debug.Log("Encounter manager: encounter started!");
         EncounterEventNotifier.EncounterStart();
-        encounterObject.SetActive(true);
-        dungeonObject.SetActive(false);
     }
 
     public void HandleAttack()
@@ -67,8 +64,6 @@ public class EncounterManager : MonoBehaviour
         //battleMenuPanel.SetActive(false);
 
         Debug.Log("Encounter manager: encounter ended!");
-        encounterObject.SetActive(false);
-        dungeonObject.SetActive(true);
 
         // Notify that the encounter has ended - note this needs to be done after activating the dungeon object or else it won't get the message
         EncounterEventNotifier.EncounterEnd();

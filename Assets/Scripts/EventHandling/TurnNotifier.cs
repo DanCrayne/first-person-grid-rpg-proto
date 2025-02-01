@@ -4,15 +4,15 @@ using UnityEngine;
 public class TurnNotifier : MonoBehaviour
 {
     public static event Action OnPlayerMoved;
-    public static event Action OnMonstersMoved;
+    public static event Action<GameObject> OnMonsterMoved;
 
     public static void PlayerMoved()
     {
         OnPlayerMoved?.Invoke();
     }
 
-    public static void MonstersMoved()
+    public static void MonsterMoved(GameObject monster)
     {
-        OnMonstersMoved?.Invoke();
+        OnMonsterMoved?.Invoke(monster);
     }
 }

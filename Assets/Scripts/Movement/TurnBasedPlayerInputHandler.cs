@@ -16,6 +16,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     private Vector3 _collisionVectorOffset = new Vector3(0, 5, 0); // Offset to move the collision raycast to a more appropriate position (e.g. up from the center of the player)
     private Vector3 _currentFacingDirection = Vector3.forward;
     private Animator _movementAnimator;
+    private bool isPlayerTurn = true;
 
     private void OnEnable()
     {
@@ -53,6 +54,8 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _inputActions.Player.StrafeRight.performed += ctx => OnStrafeRight();
         _inputActions.Player.RotateLeft.performed += ctx => OnRotateLeft();
         _inputActions.Player.RotateRight.performed += ctx => OnRotateRight();
+
+        TurnNotifier.OnPlayerMoved += OnMonsterMoved;
     }
 
     private void HandleResetGame()
@@ -79,8 +82,16 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         }
     }
 
+    private void OnMonsterMoved()
+    {
+        isPlayerTurn = true;
+    }
+
     private IEnumerator MoveStep(Vector3 direction)
     {
+        if (!isPlayerTurn)
+            yield return null;
+
         TurnNotifier.PlayerMoved();
 
         var startPosition = transform.position;
@@ -113,6 +124,8 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
             _movementAnimator.SetBool("isStepping", false);
 
             _isActionInProgress = false;
+            isPlayerTurn = false;
+            TurnNotifier.PlayerMoved();
         }
     }
 
@@ -208,5 +221,11 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         var targetPosition = startPosition + _currentFacingDirection * moveDistance;
         Gizmos.color = Color.green;
         Gizmos.DrawLine(startPosition, targetPosition);
+
+        // Visualize the current facing direction
+        Gizmos.color = Color.blue;
+        float directionLength = 5.0f; // Length of the direction line
+        var directionEndPosition = transform.position + _currentFacingDirection * directionLength;
+        Gizmos.DrawLine(transform.position, directionEndPosition);
     }
 }

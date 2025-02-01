@@ -6,12 +6,10 @@ public class WanderingMonsterMovement : MonoBehaviour
     public float gridSize;          // Size of each grid cell
     public float detectionRange;    // Range to detect the player
     public Transform player;        // Reference to the player's transform
-    public EncounterManager encounterManager;
-    public bool isCurrentTurn = false;
     public float rotationSpeed = 200f;
     public float movementSpeed = 15f;
 
-    private Vector3 currentGridPosition; // Current grid position
+    private bool isMonsterTurn = false;
     private Vector3 targetGridPosition; // Current target grid position
     private bool isChasing = false;     // Whether the monster is chasing the player
     private Vector3 currentFacingDirection = Vector3.forward;
@@ -23,7 +21,6 @@ public class WanderingMonsterMovement : MonoBehaviour
         // Initialize position on the grid
         SnapToGrid();
         targetGridPosition = transform.position;
-        currentGridPosition = transform.position;
         _movementAnimatorMonster = GetComponent<Animator>();
     }
 
@@ -31,6 +28,7 @@ public class WanderingMonsterMovement : MonoBehaviour
     {
         EncounterEventNotifier.OnEncounterStart += OnEncounterStart;
         EncounterEventNotifier.OnEncounterEnd += OnEncounterEnd;
+        TurnNotifier.OnPlayerMoved += OnPlayerMoved;
     }
 
     private void OnDisable()
@@ -49,15 +47,25 @@ public class WanderingMonsterMovement : MonoBehaviour
         Debug.Log("ManagedGridMovementAi: Encounter ended!");
     }
 
+    private void Update()
+    {
+        if (isMonsterTurn)
+        {
+            PerformActions();
+            isMonsterTurn = false;
+        }
+    }
+
+    private void OnPlayerMoved()
+    {
+        isMonsterTurn = true;
+    }
+
     public void PerformActions()
     {
         StartCoroutine(PerformActionsCoroutine());
-    }
-
-    public void MoveBackToLastPosition()
-    {
-        targetGridPosition = currentGridPosition;
-        StartCoroutine(MoveToTargetCoroutine());
+        isMonsterTurn = false;
+        TurnNotifier.MonsterMoved();
     }
 
     private IEnumerator PerformActionsCoroutine()
@@ -170,13 +178,10 @@ public class WanderingMonsterMovement : MonoBehaviour
         // Rotate monster
         yield return StartCoroutine(RotateMonster(rotationAngle));
 
-
-        
-
         // Move toward the target grid position
         while (Vector3.Distance(transform.position, targetGridPosition) >= 1f)
         {
-            _movementAnimatorMonster.SetBool("ogreIsStepping", true);
+            //_movementAnimatorMonster.SetBool("ogreIsStepping", true);
             transform.position = Vector3.MoveTowards(transform.position, targetGridPosition, movementSpeed * Time.deltaTime);
             yield return null;
         }
@@ -189,8 +194,7 @@ public class WanderingMonsterMovement : MonoBehaviour
 
         SnapToGrid(); // ensure alignment
         currentFacingDirection = newFacingDirection;
-        currentGridPosition = transform.position;
-        _movementAnimatorMonster.SetBool("ogreIsStepping", false);
+        //_movementAnimatorMonster.SetBool("ogreIsStepping", false);
     }
 
     private IEnumerator RotateMonster(float angle)

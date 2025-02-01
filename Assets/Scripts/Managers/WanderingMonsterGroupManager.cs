@@ -8,7 +8,6 @@ using UnityEngine;
 public class WanderingMonsterGroupManager : MonoBehaviour
 {
     public GameObject monsterPrefab;
-    public EncounterManager encounterManager;
     public Transform playerTransform;
 
     private List<GameObject> _wanderingMonsters = new List<GameObject>();
@@ -71,7 +70,6 @@ public class WanderingMonsterGroupManager : MonoBehaviour
 
             // Add movement (ai) script
             var aiScript = monster.GetOrAddComponent<WanderingMonsterMovement>();
-            aiScript.encounterManager = encounterManager;
             aiScript.player = playerTransform.transform;
             aiScript.gridSize = 10;
             aiScript.detectionRange = 20;
