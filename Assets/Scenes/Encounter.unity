@@ -1650,7 +1650,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1133608704
 Transform:
   m_ObjectHideFlags: 0
@@ -1669,7 +1669,6 @@ Transform:
   - {fileID: 83981748}
   - {fileID: 1558164066}
   - {fileID: 2118999554}
-  - {fileID: 1734221548}
   - {fileID: 1467318202}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2074,6 +2073,7 @@ MonoBehaviour:
   battleMenuPanel: {fileID: 1558164065}
   partyManager: {fileID: 0}
   encounterObject: {fileID: 0}
+  baseEncounterRate: 10
 --- !u!4 &1734221548
 Transform:
   m_ObjectHideFlags: 0
@@ -2087,7 +2087,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1133608704}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1734221549
 MonoBehaviour:
@@ -2527,3 +2527,4 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1133608704}
+  - {fileID: 1734221548}

@@ -8,15 +8,12 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     public float moveDuration; // Time it takes to complete the movement
     public float rotationSpeed; // Speed of rotation transition
     public float gridSize; // size of grid in Unity space
-    public Vector3 playerSpawnPoint;
 
     private InputSystem_Actions _inputActions;
     private Rigidbody _playerRigidbody;
     private bool _isActionInProgress = false; // Flag to prevent overlapping actions that would cause the player to be in an invalid state (e.g. moving forward while turning)
     private Vector3 _collisionVectorOffset = new Vector3(0, 5, 0); // Offset to move the collision raycast to a more appropriate position (e.g. up from the center of the player)
     private Vector3 _currentFacingDirection = Vector3.forward;
-    private Animator _movementAnimator;
-    private bool isPlayerTurn = true;
 
     private void OnEnable()
     {
@@ -38,14 +35,10 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _inputActions.Player.Enable();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        Debug.Log("TurnBasedPlayerInputHandler Awake");
         _inputActions = new InputSystem_Actions();
-        _playerRigidbody = GetComponent<Rigidbody>(); // Get Rigidbody
-        _playerRigidbody.position = playerSpawnPoint;
-        _movementAnimator = GetComponent<Animator>();
+        _playerRigidbody = GetComponent<Rigidbody>();
 
         _inputActions.Player.Reset.performed += ctx => HandleResetGame();
         _inputActions.Player.StepForward.performed += ctx => OnStepForward();
@@ -54,14 +47,10 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _inputActions.Player.StrafeRight.performed += ctx => OnStrafeRight();
         _inputActions.Player.RotateLeft.performed += ctx => OnRotateLeft();
         _inputActions.Player.RotateRight.performed += ctx => OnRotateRight();
-
-        TurnNotifier.OnPlayerMoved += OnMonsterMoved;
     }
 
     private void HandleResetGame()
     {
-        Debug.Log("ResetToSpawnPoint");
-        _playerRigidbody.position = playerSpawnPoint;
         GeneralNotifier.ResetGame();
     }
 
@@ -76,31 +65,21 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
     private void OnStepBackward()
     {
+        Debug.Log("OnStepBackward");
         if (!_isActionInProgress)
         {
             StartCoroutine(MoveStep(Vector3.back));
         }
     }
 
-    private void OnMonsterMoved()
-    {
-        isPlayerTurn = true;
-    }
-
     private IEnumerator MoveStep(Vector3 direction)
     {
-        if (!isPlayerTurn)
-            yield return null;
-
-        TurnNotifier.PlayerMoved();
-
         var startPosition = transform.position;
         var targetPosition = transform.position + transform.TransformDirection(direction) * moveDistance;
 
         if (IsGridCellAccessible(targetPosition))
         {
             _isActionInProgress = true;
-            _movementAnimator.SetBool("isStepping", true);
 
             Debug.Log($"start pos: {startPosition}; target pos: {targetPosition}");
 
@@ -121,11 +100,11 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
 
             // ensure the player is on-grid after movement
             SnapToGrid();
-            _movementAnimator.SetBool("isStepping", false);
 
             _isActionInProgress = false;
-            isPlayerTurn = false;
-            TurnNotifier.PlayerMoved();
+            // TODO: add logic for sending information about how loud the player is
+            PlayerActionNotifier.PlayerMoved();
+            PlayerActionNotifier.PlayerMadeNoise(10); // for example noise level 10
         }
     }
 

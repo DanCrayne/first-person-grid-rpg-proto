@@ -1,23 +1,39 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public string CurrentArea = "Dungeon01";
+    public string DungeonSceneName = "Dungeon01";
+    public string DungeonGameObjectName = "Dungeon";
     public string EncounterSceneName = "Encounter";
+    public string EncounterGameObjectName = "Encounter";
     public GameObject CurrentlyAttackingWanderingMonster;
     public GameObject PlayerGameObject;
-    
+
     /// <summary>
     /// Event when a scene is fully loaded - contains the scene name as a string
     /// </summary>
     public static event Action<string> OnSceneLoaded;
 
+    private Scene EncounterScene;
+    private Scene DungeonScene;
+    private GameObject EncounterGameObject;
+    private GameObject DungeonGameObject;
+
     private void Awake()
+    {
+        SetupSingletonInstance();
+        SubscribeToEvents();
+
+        InitializeDungeonSceneAndGameObject();
+        InitializeEncounterSceneAndGameObject();
+        ActivateDungeonGameObject();
+    }
+
+    private void SetupSingletonInstance()
     {
         // Singleton pattern with persistence
         if (Instance == null)
@@ -29,25 +45,49 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject); // Prevent duplicates
         }
+    }
 
-        //EncounterEventNotifier.OnMonsterCollision += HandleMonsterCollision;
-        //EncounterEventNotifier.OnEncounterEnd += HandleEncounterEnded;
+    private void ActivateEncounterGameObject()
+    {
+        EncounterGameObject.SetActive(true);
+        DungeonGameObject.SetActive(false);
+    }
 
+    private void ActivateDungeonGameObject()
+    {
+        EncounterGameObject.SetActive(false);
+        DungeonGameObject.SetActive(true);
+    }
+
+    private void InitializeEncounterSceneAndGameObject()
+    {
         LoadScene(EncounterSceneName);
-        LoadAndActivateScene(CurrentArea);
+        EncounterScene = SceneManager.GetSceneByName(EncounterSceneName);
+        EncounterGameObject = FindRootGameObjectByName(EncounterScene, EncounterGameObjectName);
+    }
+
+    private void InitializeDungeonSceneAndGameObject()
+    {
+        LoadScene(DungeonSceneName);
+        DungeonScene = SceneManager.GetSceneByName(DungeonSceneName);
+        SceneManager.SetActiveScene(DungeonScene);
+        DungeonGameObject = FindRootGameObjectByName(DungeonScene, DungeonGameObjectName);
+    }
+
+    private void SubscribeToEvents()
+    {
+        EncounterEventNotifier.OnEncounterStart += HandleEncounterStarted;
+        EncounterEventNotifier.OnEncounterEnd += HandleEncounterEnded;
+    }
+
+    private void HandleEncounterStarted()
+    {
+        ActivateEncounterGameObject();
     }
 
     private void HandleEncounterEnded()
     {
-        LoadAndActivateScene(CurrentArea);
-    }
-
-    private void HandleMonsterCollision(GameObject player, GameObject monster)
-    {
-        PlayerGameObject = CloneGameObject(player);
-        CurrentlyAttackingWanderingMonster = CloneGameObject(monster);
-        EncounterEventNotifier.EncounterStart();
-        SetSceneAsActive(EncounterSceneName);
+        ActivateDungeonGameObject();
     }
 
     private GameObject CloneGameObject(GameObject gameObject)
@@ -70,24 +110,12 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    private void LoadAndActivateScene(string sceneName)
-    {
-        // If the scene is already loaded, then just activate it
-        if (IsSceneLoaded(sceneName))
-        {
-            SetSceneAsActive(sceneName);
-            return;
-        }
-
-        StartCoroutine(LoadSceneCoroutine(sceneName, true));
-    }
-
     private void LoadScene(string sceneName)
     {
-        StartCoroutine(LoadSceneCoroutine(sceneName, false));
+        StartCoroutine(LoadSceneCoroutine(sceneName));
     }
 
-    private IEnumerator LoadSceneCoroutine(string sceneName, bool activate = false)
+    private IEnumerator LoadSceneCoroutine(string sceneName)
     {
         if (!IsSceneLoaded(sceneName))
         {
@@ -100,120 +128,35 @@ public class GameManager : MonoBehaviour
                 yield return null;
             }
 
-            // Optionally, activate the loaded scene
-            if (activate)
-            {
-                Scene scene = SceneManager.GetSceneByName(sceneName);
-                if (scene.IsValid())
-                {
-                    SceneManager.SetActiveScene(scene);
-                }
-            }
-
             // Optionally, perform additional setup after the scene is loaded
-            Debug.Log($"{sceneName} loaded and activated.");
+            Debug.Log($"{sceneName} loaded.");
 
             // Invoke the event to notify listeners that the scene has been loaded
             OnSceneLoaded?.Invoke(sceneName);
         }
     }
 
-    private void SetSceneAsActive(string sceneName)
+    private GameObject FindRootGameObjectByName(Scene scene, string rootGameObjectName)
     {
-        Scene scene = SceneManager.GetSceneByName(sceneName);
-        if (scene.IsValid())
+        if (!scene.IsValid())
         {
-            SceneManager.SetActiveScene(scene);
+            Debug.LogError("Invalid scene.");
+            return null;
         }
-    }
 
-    //private IEnumerator LoadAndActivateEncounterScene(GameObject player, GameObject monster)
-    //{
-    //    // Load the additively
-    //    AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(EncounterSceneName, LoadSceneMode.Additive);
+        // Find all root GameObjects in the scene
+        GameObject[] rootGameObjects = scene.GetRootGameObjects();
 
-    //    // Wait until the scene is fully loaded
-    //    while (!asyncLoad.isDone)
-    //    {
-    //        yield return null;
-    //    }
+        // Iterate through the root GameObjects to find the one with the specified name
+        foreach (GameObject rootGameObject in rootGameObjects)
+        {
+            if (rootGameObject.name == rootGameObjectName)
+            {
+                return rootGameObject;
+            }
+        }
 
-    //    // Optionally, activate the loaded scene
-    //    Scene scene = SceneManager.GetSceneByName(EncounterSceneName);
-    //    if (scene.IsValid())
-    //    {
-    //        SceneManager.SetActiveScene(scene);
-    //    }
-
-    //    // Optionally, perform additional setup after the scene is loaded
-    //    Debug.Log($"{EncounterSceneName} loaded and activated.");
-
-    //    // Invoke the event to notify listeners that the scene has been loaded
-    //    OnSceneLoaded?.Invoke(EncounterSceneName);
-
-    //    // Get the EncounterManager script component
-    //    EncounterManager encounterManager = FindEncounterManagerInScene(scene);
-    //    if (encounterManager != null)
-    //    {
-    //        Debug.Log("EncounterManager found in Encounter scene.");
-    //        // Pass the player and monster references to the EncounterManager
-    //        encounterManager.SetupEncounter(player, monster);
-    //    }
-    //}
-
-    //private EncounterManager FindEncounterManagerInScene(Scene scene)
-    //{
-    //    if (!scene.IsValid())
-    //    {
-    //        Debug.LogError("Invalid scene.");
-    //        return null;
-    //    }
-
-    //    // Find all root GameObjects in the scene
-    //    GameObject[] rootGameObjects = scene.GetRootGameObjects();
-
-    //    // Iterate through the root GameObjects to find the EncounterManager
-    //    foreach (GameObject rootGameObject in rootGameObjects)
-    //    {
-    //        EncounterManager encounterManager = rootGameObject.GetComponent<EncounterManager>();
-    //        if (encounterManager != null)
-    //        {
-    //            return encounterManager;
-    //        }
-    //    }
-
-    //    Debug.LogError("EncounterManager not found in the scene.");
-    //    return null;
-    //}
-}
-
-
-
-/* example retrieve data */
-/*
-public class EncounterController : MonoBehaviour
-{
-    private void Start()
-    {
-        // Access data from the GameManager
-        string monsterName = GameManager.Instance.monsterName;
-        int playerHealth = GameManager.Instance.playerHealth;
-
-        Debug.Log($"Monster Name: {monsterName}");
-        Debug.Log($"Player Health: {playerHealth}");
+        Debug.LogError($"Root GameObject with name '{rootGameObjectName}' not found in the scene.");
+        return null;
     }
 }
-*/
-
-/* example update data */
-/*
-public class DungeonController : MonoBehaviour
-{
-    private void Start()
-    {
-        // Set data in the GameManager
-        GameManager.Instance.monsterName = "Goblin";
-        GameManager.Instance.playerHealth = 100;
-    }
-}
-*/

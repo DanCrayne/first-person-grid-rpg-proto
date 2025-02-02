@@ -3,15 +3,10 @@ using UnityEngine;
 
 public class EncounterEventNotifier : MonoBehaviour
 {
-    public static event Action<GameObject, GameObject> OnMonsterCollision;
     public static event Action OnEncounterStart;
     public static event Action OnEncounterEnd;
     public static event Action<GameObject> OnMonsterDefeated;
 
-    public static void MonsterCollision(GameObject player, GameObject monster)
-    {
-        OnMonsterCollision?.Invoke(player, monster);
-    }
 
     public static void EncounterStart()
     {

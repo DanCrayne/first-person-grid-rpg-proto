@@ -5,49 +5,59 @@ public class EncounterManager : MonoBehaviour
     public GameObject battleMenuPanel;
     public PartyManager partyManager;
     public GameObject encounterObject;
+    public int baseEncounterRate = 10;
 
-    private GameObject _wanderingMonsterContainer; // Reference to the parent WanderingMonster object
-    private WanderingMonsterManager _wanderingMonsterManager;
-    private Vector3 _battleStartingPosition;
+    private uint _playerTotalSteps = 0;
+    private int _currentEncounterRate;
+
 
     void Start()
     {
+        PlayerActionNotifier.OnPlayerMadeNoise += OnPlayerMadeNoise;
+        PlayerActionNotifier.OnPlayerMoved += OnPlayerMoved;
+        _currentEncounterRate = baseEncounterRate;
     }
 
     private void OnEnable()
     {
-        EncounterEventNotifier.OnMonsterCollision += EncounterStart;
     }
 
     private void OnDisable()
     {
-        EncounterEventNotifier.OnMonsterCollision -= EncounterStart;
     }
 
-    public void SetupEncounter(GameObject player, GameObject wanderingMonster)
+    private void OnPlayerMoved()
     {
-        _wanderingMonsterManager = wanderingMonster.GetComponent<WanderingMonsterManager>();
-        _wanderingMonsterContainer = wanderingMonster;
-        LayoutBattle();
+        _playerTotalSteps += 1;
+        Debug.Log($"Player stepped, total steps: {_playerTotalSteps}");
+        if (DetermineIfEncountered())
+        {
+            Debug.Log($"Encounter manager: Encounter triggered! Total steps {_playerTotalSteps}, encounter rate: {_currentEncounterRate}");
+            EncounterEventNotifier.EncounterStart();
+            SetupEncounter();
+        }
     }
 
-    /// <summary>
-    /// Lays out battle by placing monsters and other characters
-    /// </summary>
-    /// <remarks>maximum of 3 members</remarks>
-    private void LayoutBattle()
+    private void OnPlayerMadeNoise(int noiseLevel)
     {
-        var offCenterAdjustment = new Vector3(0, 0, 10);
-        var monsterStartingPosition = _battleStartingPosition + offCenterAdjustment;
-        var monsterSideOffsetAdjustment = new Vector3(5, 0, 0);
-        Vector3[] monsterPositions = { monsterStartingPosition, monsterStartingPosition - monsterSideOffsetAdjustment, monsterStartingPosition + monsterSideOffsetAdjustment };
-        _wanderingMonsterManager.SpawnMonstersForEncounter(monsterPositions, _battleStartingPosition);
+        Debug.Log($"Player made noise at level {noiseLevel}");
+        _currentEncounterRate = baseEncounterRate + noiseLevel / 2;
     }
 
-    private void EncounterStart(GameObject player, GameObject monster)
+    private bool DetermineIfEncountered()
     {
-        Debug.Log("Encounter manager: encounter started!");
-        EncounterEventNotifier.EncounterStart();
+        Debug.Log($"Determining if encounter should happen. Total steps {_playerTotalSteps} % current encounter rate {_currentEncounterRate}");
+        if (_playerTotalSteps % _currentEncounterRate == 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void SetupEncounter()
+    {
+        battleMenuPanel.SetActive(true);
     }
 
     public void HandleAttack()
@@ -57,11 +67,8 @@ public class EncounterManager : MonoBehaviour
 
     public void EndBattle()
     {
-        // Let subscribers know to deal with the defeated wandering monster
-        EncounterEventNotifier.MonsterDefeated(_wanderingMonsterContainer);
-
         // Disable the battle camera and hide the battle menu
-        //battleMenuPanel.SetActive(false);
+        battleMenuPanel.SetActive(false);
 
         Debug.Log("Encounter manager: encounter ended!");
 
