@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11a861cab819abe44a40627c49c2ab48, type: 3}
+  m_Name: MonsterData_Monster1
+  m_EditorClassIdentifier: 
+  Name: Monster1
+  ArmorClass: 0
+  HitDice: 0
+  MaxMovementInFeet: 0
+  Morale: 0
+  Xp: 0
+  Alignment: 78
+  TreasureType: 85
+  MinNumberAppearing: 1
+  MaxNumberAppearing: 4
+  Attacks:
+  - {fileID: 11400000, guid: 0e1e304f7e91d214190359dd5ac38aad, type: 2}
+  - {fileID: 11400000, guid: 3c2369939e94de64ca7b67895e81a510, type: 2}
+  MonsterPrefab: {fileID: 3536735218046874060, guid: eb921db828656064cb2e35182e09cadf, type: 3}

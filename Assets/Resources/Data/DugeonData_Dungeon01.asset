@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73b9509018a178a4294c37c935d430bf, type: 3}
+  m_Name: DugeonData_Dungeon01
+  m_EditorClassIdentifier: 
+  possibleMonsters:
+  - {fileID: 3536735218046874060, guid: eb921db828656064cb2e35182e09cadf, type: 3}
+  - {fileID: 3536735218046874060, guid: aab6c6bc0e31a1d4cade81edf0570223, type: 3}
+  - {fileID: 3536735218046874060, guid: 3eda6505c1bb5954ab3b590a6a122ef9, type: 3}
