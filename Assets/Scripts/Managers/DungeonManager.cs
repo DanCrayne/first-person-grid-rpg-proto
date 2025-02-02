@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class DungeonManager : MonoBehaviour
 {
+    public DungeonData dungeonData;
+
     void Start()
     {
     }

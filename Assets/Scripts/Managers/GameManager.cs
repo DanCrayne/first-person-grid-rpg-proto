@@ -10,8 +10,9 @@ public class GameManager : MonoBehaviour
     public string DungeonGameObjectName = "Dungeon";
     public string EncounterSceneName = "Encounter";
     public string EncounterGameObjectName = "Encounter";
-    public GameObject CurrentlyAttackingWanderingMonster;
-    public GameObject PlayerGameObject;
+
+    public DungeonData DungeonData;
+    public PartyManager Party;
 
     /// <summary>
     /// Event when a scene is fully loaded - contains the scene name as a string
@@ -28,9 +29,8 @@ public class GameManager : MonoBehaviour
         SetupSingletonInstance();
         SubscribeToEvents();
 
-        InitializeDungeonSceneAndGameObject();
-        InitializeEncounterSceneAndGameObject();
-        ActivateDungeonGameObject();
+        LoadScene(EncounterSceneName, InitializeEncounterSceneAndGameObject);
+        LoadScene(DungeonSceneName, InitializeDungeonSceneAndGameObject);
     }
 
     private void SetupSingletonInstance()
@@ -61,17 +61,17 @@ public class GameManager : MonoBehaviour
 
     private void InitializeEncounterSceneAndGameObject()
     {
-        LoadScene(EncounterSceneName);
         EncounterScene = SceneManager.GetSceneByName(EncounterSceneName);
         EncounterGameObject = FindRootGameObjectByName(EncounterScene, EncounterGameObjectName);
+        EncounterGameObject.SetActive(false);
     }
 
     private void InitializeDungeonSceneAndGameObject()
     {
-        LoadScene(DungeonSceneName);
         DungeonScene = SceneManager.GetSceneByName(DungeonSceneName);
         SceneManager.SetActiveScene(DungeonScene);
         DungeonGameObject = FindRootGameObjectByName(DungeonScene, DungeonGameObjectName);
+        DungeonGameObject.SetActive(true); // The dungeon game object should be shown at first
     }
 
     private void SubscribeToEvents()
@@ -99,27 +99,29 @@ public class GameManager : MonoBehaviour
 
     private bool IsSceneLoaded(string sceneName)
     {
-        for (int i = 0; i < SceneManager.sceneCount; i++)
-        {
-            Scene scene = SceneManager.GetSceneAt(i);
-            if (scene.name == sceneName)
-            {
-                return true;
-            }
-        }
-        return false;
+        Scene scene = SceneManager.GetSceneByName(sceneName);
+        return scene.isLoaded;
     }
 
-    private void LoadScene(string sceneName)
+    private void LoadScene(string sceneName, Action onSceneLoadedCallback)
     {
-        StartCoroutine(LoadSceneCoroutine(sceneName));
+        if (IsSceneLoaded(sceneName))
+        {
+            // If the scene is already loaded, directly invoke the callback
+            onSceneLoadedCallback?.Invoke();
+        }
+        else
+        {
+            // If the scene is not loaded, load it asynchronously
+            StartCoroutine(LoadSceneCoroutine(sceneName, onSceneLoadedCallback));
+        }
     }
 
-    private IEnumerator LoadSceneCoroutine(string sceneName)
+    private IEnumerator LoadSceneCoroutine(string sceneName, Action onSceneLoadedCallback)
     {
         if (!IsSceneLoaded(sceneName))
         {
-            // Load the additively
+            // Load the scene additively
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
             // Wait until the scene is fully loaded
@@ -133,6 +135,9 @@ public class GameManager : MonoBehaviour
 
             // Invoke the event to notify listeners that the scene has been loaded
             OnSceneLoaded?.Invoke(sceneName);
+
+            // Execute the callback
+            onSceneLoadedCallback?.Invoke();
         }
     }
 
