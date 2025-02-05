@@ -4,6 +4,11 @@ public class MonsterSpawner : MonoBehaviour
 {
     public MonsterData monsterData;
 
+    public MonsterSpawner(MonsterData monster)
+    {
+        this.monsterData = monster;
+    }
+
     public GameObject SpawnMonster(Transform parent, Vector3 position)
     {
         if (monsterData == null || monsterData.monsterPrefab == null)

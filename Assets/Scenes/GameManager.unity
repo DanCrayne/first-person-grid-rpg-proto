@@ -163,11 +163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab3cb4e05b99d44398de38a522ee1b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DungeonSceneName: Dungeon01
-  DungeonGameObjectName: Dungeon
-  EncounterSceneName: Encounter
-  EncounterGameObjectName: Encounter
   DungeonData: {fileID: 11400000, guid: 9d6ee5b774016af4cb9976d6da7ad376, type: 2}
+  EncounterData: {fileID: 11400000, guid: 4d6bff5387d1de944bd7b51d7f5749f8, type: 2}
   Party: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

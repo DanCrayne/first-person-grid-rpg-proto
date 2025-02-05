@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dungeonName: First Dungeon
   dungeonDescription: The first dungeon
+  dungeonObjectName: Dungeon
+  dungeonSceneName: Dungeon01
   dungeonLevel: 1
   dungeonSize: 0
   dungeonDifficulty: 1
-  entrance: {x: 0, y: 0, z: 0}
-  exit: {x: 0, y: 0, z: 0}
+  entrance: {fileID: 0}
+  exit: {fileID: 0}
   possibleMonsters:
   - {fileID: 11400000, guid: 6312402db33dd874b82dff1637159cd1, type: 2}
   - {fileID: 11400000, guid: 004a00838de24f449a871064e2a6a3de, type: 2}

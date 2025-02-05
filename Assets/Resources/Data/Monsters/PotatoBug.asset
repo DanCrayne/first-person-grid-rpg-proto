@@ -24,4 +24,4 @@ MonoBehaviour:
   maxNumberAppearing: 4
   attacks: []
   items: []
-  monsterPrefab: {fileID: 0}
+  monsterPrefab: {fileID: 3536735218046874060, guid: 3eda6505c1bb5954ab3b590a6a122ef9, type: 3}
