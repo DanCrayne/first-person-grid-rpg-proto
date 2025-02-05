@@ -6,8 +6,7 @@ using UnityEngine;
 public class EncounterManager : MonoBehaviour
 {
     public GameObject battleMenuPanel;
-    public PartyManager partyManager;
-    public GameObject encounterObject;
+
     public int baseEncounterRate = 10;
     public static string PartyPositionSlotTagName = "EncounterPartyPositionSlot";
     public static string MonsterPositionSlotTagName = "EncounterMonsterPositionSlot";
@@ -15,12 +14,22 @@ public class EncounterManager : MonoBehaviour
     private uint _playerTotalSteps = 0;
     private int _currentEncounterRate;
     private List<GameObject> _monstersInEncounter = new List<GameObject>();
+    private List<MonsterSpawner> _monsterSpawners = new List<MonsterSpawner>();
 
     void Start()
     {
         PlayerActionNotifier.OnPlayerMadeNoise += OnPlayerMadeNoise;
         PlayerActionNotifier.OnPlayerMoved += OnPlayerMoved;
         _currentEncounterRate = baseEncounterRate;
+
+        // Create monster spawners for each possible monster
+        foreach (var monster in GameManager.Instance.DungeonData.possibleMonsters)
+        {
+            var monsterSpawnerObject = new GameObject("MonsterSpawner");
+            var monsterSpawner = monsterSpawnerObject.AddComponent<MonsterSpawner>();
+            monsterSpawner.monsterData = monster;
+            _monsterSpawners.Add(monsterSpawner);
+        }
     }
 
     private void OnEnable()
@@ -68,32 +77,34 @@ public class EncounterManager : MonoBehaviour
     public void SetupEncounter()
     {
         battleMenuPanel.SetActive(true);
-        var monsterSpawner = GetComponent<MonsterSpawner>();
 
-        if (monsterSpawner == null)
-        {
-            Debug.LogError("Monster spawner doesn't exist");
-            return;
-        }
+        // Instantiate the encounter prefab
+        Instantiate(GameManager.Instance.EncounterData.encounterPrefab, transform.parent);
 
+        // Spawn random monsters (for this dungeon) across the encounter's monster position slots
         var monsterPositions = GetMonsterPositions();
-        for ( int i = 0; i < 6; i++)
+        foreach (var position in monsterPositions)
         {
-            var spawnedMonster = monsterSpawner.SpawnMonster(encounterObject.transform, monsterPositions.ElementAt(i));
+            // pick a random monster spawner to use
+            var monsterSpawner = _monsterSpawners[Random.Range(0, _monsterSpawners.Count)];
+            var spawnedMonster = monsterSpawner.SpawnMonster(GameManager.Instance.EncounterData.encounterPrefab.transform, position);
             _monstersInEncounter.Add(spawnedMonster);
         }
     }
 
     public void HandleAttack()
     {
+        if (_monstersInEncounter.Count >= 1)
+        {
+            var targetedMonster = _monstersInEncounter.FirstOrDefault();
+            targetedMonster.GetComponent<Monster>().TakeDamage(100);
+            _monstersInEncounter.Remove(targetedMonster);
+        }
+
         if (_monstersInEncounter.Count < 1)
         {
             EndBattle();
         }
-
-        var currentlyAttackeMonster = _monstersInEncounter.FirstOrDefault();
-        currentlyAttackeMonster.GetComponent<Monster>().TakeDamage(100);
-        _monstersInEncounter.Remove(currentlyAttackeMonster);
     }
 
     public void EndBattle()
@@ -109,7 +120,7 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerable<Vector3> GetMonsterPositions()
     {
-        var positionSlots = encounterObject.GetComponentsInChildren<Transform>()
+        var positionSlots = GameManager.Instance.EncounterData.encounterPrefab.GetComponentsInChildren<Transform>()
             .Where(t => t.CompareTag(MonsterPositionSlotTagName))
             .Select(t => t.position);
         return positionSlots;

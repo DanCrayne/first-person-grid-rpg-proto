@@ -6,12 +6,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public string DungeonSceneName = "Dungeon01";
-    public string DungeonGameObjectName = "Dungeon";
-    public string EncounterSceneName = "Encounter";
-    public string EncounterGameObjectName = "Encounter";
-
     public DungeonData DungeonData;
+    public EncounterData EncounterData;
     public PartyManager Party;
 
     /// <summary>
@@ -19,6 +15,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static event Action<string> OnSceneLoaded;
 
+    private const string RootEncounterObjectName = "Encounter";
     private Scene EncounterScene;
     private Scene DungeonScene;
     private GameObject EncounterGameObject;
@@ -29,8 +26,18 @@ public class GameManager : MonoBehaviour
         SetupSingletonInstance();
         SubscribeToEvents();
 
-        LoadScene(EncounterSceneName, InitializeEncounterSceneAndGameObject);
-        LoadScene(DungeonSceneName, InitializeDungeonSceneAndGameObject);
+        LoadScene(EncounterData.encounterSceneName, InitializeEncounterSceneAndGameObject);
+        LoadScene(DungeonData.dungeonSceneName, InitializeDungeonSceneAndGameObject);
+    }
+
+    private void OnEnable()
+    {
+        SubscribeToEvents();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromEvents();
     }
 
     private void SetupSingletonInstance()
@@ -61,23 +68,45 @@ public class GameManager : MonoBehaviour
 
     private void InitializeEncounterSceneAndGameObject()
     {
-        EncounterScene = SceneManager.GetSceneByName(EncounterSceneName);
-        EncounterGameObject = FindRootGameObjectByName(EncounterScene, EncounterGameObjectName);
+        EncounterScene = SceneManager.GetSceneByName(EncounterData.encounterSceneName);
+        if (EncounterScene.IsValid() == false)
+        {
+            Debug.LogError("Enounter scene is invalid");
+            return;
+        }
+        EncounterGameObject = FindRootGameObjectByName(EncounterScene, EncounterData.encounterObjectName);
         EncounterGameObject.SetActive(false);
     }
 
     private void InitializeDungeonSceneAndGameObject()
     {
-        DungeonScene = SceneManager.GetSceneByName(DungeonSceneName);
+        DungeonScene = SceneManager.GetSceneByName(DungeonData.dungeonSceneName);
+        if (DungeonScene.IsValid() == false)
+        {
+            Debug.LogError("Dungeon scene is invalid");
+            return;
+        }
         SceneManager.SetActiveScene(DungeonScene);
-        DungeonGameObject = FindRootGameObjectByName(DungeonScene, DungeonGameObjectName);
+        DungeonGameObject = FindRootGameObjectByName(DungeonScene, DungeonData.dungeonObjectName);
         DungeonGameObject.SetActive(true); // The dungeon game object should be shown at first
     }
 
     private void SubscribeToEvents()
     {
+        GeneralNotifier.OnResetGame += HandleGameReset;
+        GeneralNotifier.OnPauseGame += PauseGame;
+        GeneralNotifier.OnResumeGame += ResumeGame;
         EncounterEventNotifier.OnEncounterStart += HandleEncounterStarted;
         EncounterEventNotifier.OnEncounterEnd += HandleEncounterEnded;
+    }
+
+    private void UnsubscribeFromEvents()
+    {
+        GeneralNotifier.OnResetGame -= HandleGameReset;
+        GeneralNotifier.OnPauseGame -= PauseGame;
+        GeneralNotifier.OnResumeGame -= ResumeGame;
+        EncounterEventNotifier.OnEncounterStart -= HandleEncounterStarted;
+        EncounterEventNotifier.OnEncounterEnd -= HandleEncounterEnded;
     }
 
     private void HandleEncounterStarted()
@@ -163,5 +192,23 @@ public class GameManager : MonoBehaviour
 
         Debug.LogError($"Root GameObject with name '{rootGameObjectName}' not found in the scene.");
         return null;
+    }
+
+    /// <summary>
+    /// Pauses the game, including animations and anything that relies on Time.deltaTime
+    /// such as physics and movement.
+    /// </summary>
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1;
+    }
+
+    public void HandleGameReset()
+    {
     }
 }
