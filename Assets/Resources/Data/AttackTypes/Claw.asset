@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583934f88e930ad4882297f047a6b3d9, type: 3}
-  m_Name: Class_Fighter
+  m_Script: {fileID: 11500000, guid: d2ab1dbacbde4b84d944836696a73f73, type: 3}
+  m_Name: Claw
   m_EditorClassIdentifier: 
-  Name: Fighter
-  HitDice: 1d8
-  XpPerLevel: 00000000d0070000a00f0000401f0000803e0000007d0000
-  SpellSlotsPerLevel: 
+  Name: Claw
+  MinDamage: 1
+  MaxDamage: 3
+  NumberOfAttacks: 2
+  DamageDice: 2d3

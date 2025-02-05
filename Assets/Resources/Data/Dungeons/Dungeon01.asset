@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73b9509018a178a4294c37c935d430bf, type: 3}
+  m_Name: Dungeon01
+  m_EditorClassIdentifier: 
+  dungeonName: First Dungeon
+  dungeonDescription: The first dungeon
+  dungeonLevel: 1
+  dungeonSize: 0
+  dungeonDifficulty: 1
+  entrance: {x: 0, y: 0, z: 0}
+  exit: {x: 0, y: 0, z: 0}
+  possibleMonsters:
+  - {fileID: 11400000, guid: 6312402db33dd874b82dff1637159cd1, type: 2}
+  - {fileID: 11400000, guid: 004a00838de24f449a871064e2a6a3de, type: 2}
+  - {fileID: 11400000, guid: 7b245424d2e223c488db585adf3525ca, type: 2}

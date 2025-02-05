@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c7d39b04a13488418ba84f7ca033eea, type: 3}
-  m_Name: Race_Dwarf
+  m_Name: Human
   m_EditorClassIdentifier: 
-  Name: Dwarf
-  BaseMovementInFeet: 40
-  MaxAge: 300
-  HasDarkvision: 1
-  BaseHeightInInches: 42
-  BaseWeightInPounds: 160
+  Name: Human
+  BaseMovementInFeet: 60
+  MaxAge: 80
+  HasDarkvision: 0
+  BaseHeightInInches: 66
+  BaseWeightInPounds: 120
   BreathSavingThrowBonus: 10
   PoisonDeathSavingThrowBonus: 10
   ParalyzationSavingThrowBonus: 10
