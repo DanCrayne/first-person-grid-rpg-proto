@@ -11,7 +11,7 @@ public class Monster : MonoBehaviour
         if (monsterData != null)
         {
             currentHealth = RollHp();
-            gameObject.name = monsterData.Name;
+            gameObject.name = monsterData.monsterName;
         }
     }
 
@@ -31,6 +31,6 @@ public class Monster : MonoBehaviour
 
     private int RollHp()
     {
-        return Random.Range(1, (monsterData.HitDice * 6) + 1);
+        return Random.Range(1, (monsterData.hitDice * 6) + 1);
     }
 }
