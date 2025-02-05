@@ -9,6 +9,7 @@ TagManager:
   - PlayerSpawnPoint
   - EncounterMonsterPositionSlot
   - EncounterPartyMemberPositionSlot
+  - EncounterMonsterSelect
   layers:
   - Default
   - TransparentFX
