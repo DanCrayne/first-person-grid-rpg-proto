@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
@@ -77,9 +76,6 @@ public class EncounterManager : MonoBehaviour
     public void SetupEncounter()
     {
         battleMenuPanel.SetActive(true);
-
-        // Instantiate the encounter prefab
-        Instantiate(GameManager.Instance.EncounterData.encounterPrefab, transform.parent);
 
         // Spawn random monsters (for this dungeon) across the encounter's monster position slots
         var monsterPositions = GetMonsterPositions();

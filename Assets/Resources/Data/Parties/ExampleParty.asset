@@ -15,3 +15,4 @@ MonoBehaviour:
   partyName: 
   characters:
   - {fileID: 11400000, guid: 511a96c7465b2704886bfdabea2ecc14, type: 2}
+  - {fileID: 11400000, guid: 6b0cdcae62e346d4d88be22c1a43aadf, type: 2}

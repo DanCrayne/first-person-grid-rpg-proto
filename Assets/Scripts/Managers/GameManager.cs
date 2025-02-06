@@ -15,8 +15,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static event Action<string> OnSceneLoaded;
 
-    private const string RootEncounterObjectName = "Encounter";
-    private Scene EncounterScene;
     private Scene DungeonScene;
     private GameObject EncounterGameObject;
     private GameObject DungeonGameObject;
@@ -26,8 +24,7 @@ public class GameManager : MonoBehaviour
         SetupSingletonInstance();
         SubscribeToEvents();
 
-        LoadScene(EncounterData.encounterSceneName, InitializeEncounterSceneAndGameObject);
-        LoadScene(DungeonData.dungeonSceneName, InitializeDungeonSceneAndGameObject);
+        LoadScene(DungeonData.dungeonSceneName, InitializeDungeonSceneAndGameObjects);
     }
 
     private void OnEnable()
@@ -66,19 +63,7 @@ public class GameManager : MonoBehaviour
         DungeonGameObject.SetActive(true);
     }
 
-    private void InitializeEncounterSceneAndGameObject()
-    {
-        EncounterScene = SceneManager.GetSceneByName(EncounterData.encounterSceneName);
-        if (EncounterScene.IsValid() == false)
-        {
-            Debug.LogError("Enounter scene is invalid");
-            return;
-        }
-        EncounterGameObject = FindRootGameObjectByName(EncounterScene, EncounterData.encounterObjectName);
-        EncounterGameObject.SetActive(false);
-    }
-
-    private void InitializeDungeonSceneAndGameObject()
+    private void InitializeDungeonSceneAndGameObjects()
     {
         DungeonScene = SceneManager.GetSceneByName(DungeonData.dungeonSceneName);
         if (DungeonScene.IsValid() == false)
@@ -86,9 +71,14 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Dungeon scene is invalid");
             return;
         }
+        // activate dungeon object
         SceneManager.SetActiveScene(DungeonScene);
         DungeonGameObject = FindRootGameObjectByName(DungeonScene, DungeonData.dungeonObjectName);
         DungeonGameObject.SetActive(true); // The dungeon game object should be shown at first
+
+        // active encounter object
+        EncounterGameObject = FindRootGameObjectByName(DungeonScene, EncounterData.encounterObjectName);
+        EncounterGameObject.SetActive(false);
     }
 
     private void SubscribeToEvents()

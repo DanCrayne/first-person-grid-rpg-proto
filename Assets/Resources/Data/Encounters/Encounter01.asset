@@ -15,5 +15,5 @@ MonoBehaviour:
   encounterName: Encounter01
   encounterDescription: Encounter scene for Dungeon01
   encounterPrefab: {fileID: 7222520565694354230, guid: 430430aad7385a643bd7ad756c788304, type: 3}
-  encounterSceneName: Encounter
-  encounterObjectName: Encounter
+  encounterSceneName: Dungeon01
+  encounterObjectName: Encounter01
