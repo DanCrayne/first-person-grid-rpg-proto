@@ -39,6 +39,11 @@ public class EncounterManager : MonoBehaviour
     {
     }
 
+    private void Update()
+    {
+        
+    }
+
     private void OnPlayerMoved()
     {
         _playerTotalSteps += 1;
@@ -83,7 +88,7 @@ public class EncounterManager : MonoBehaviour
         {
             // pick a random monster spawner to use
             var monsterSpawner = _monsterSpawners[Random.Range(0, _monsterSpawners.Count)];
-            var spawnedMonster = monsterSpawner.SpawnMonster(GameManager.Instance.EncounterData.encounterPrefab.transform, position);
+            var spawnedMonster = monsterSpawner.SpawnMonster(GameManager.Instance.GetEncounterGameObject().transform, position);
             _monstersInEncounter.Add(spawnedMonster);
         }
     }
@@ -116,7 +121,7 @@ public class EncounterManager : MonoBehaviour
 
     private IEnumerable<Vector3> GetMonsterPositions()
     {
-        var positionSlots = GameManager.Instance.EncounterData.encounterPrefab.GetComponentsInChildren<Transform>()
+        var positionSlots = GameManager.Instance.GetEncounterGameObject().GetComponentsInChildren<Transform>()
             .Where(t => t.CompareTag(MonsterPositionSlotTagName))
             .Select(t => t.position);
         return positionSlots;

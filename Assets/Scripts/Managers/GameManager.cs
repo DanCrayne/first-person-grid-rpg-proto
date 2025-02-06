@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour
     private GameObject EncounterGameObject;
     private GameObject DungeonGameObject;
 
+    public GameObject GetEncounterGameObject()
+    {
+        return EncounterGameObject;
+    }
+
     private void Awake()
     {
         SetupSingletonInstance();
