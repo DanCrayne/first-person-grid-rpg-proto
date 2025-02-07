@@ -10,6 +10,9 @@ TagManager:
   - EncounterMonsterPositionSlot
   - EncounterPartyMemberPositionSlot
   - EncounterMonsterSelect
+  - CharacterInfoPanel_Encounter
+  - CharacterInfoPanelName_Encounter
+  - CharacterInfoPanelHp_Encounter
   layers:
   - Default
   - TransparentFX

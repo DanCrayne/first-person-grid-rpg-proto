@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -32,5 +33,6 @@ public class CharacterData : ScriptableObject
     public int spellsSavingThrow;
 
     public ItemData[] inventory;
+
     public GameObject prefab;
 }

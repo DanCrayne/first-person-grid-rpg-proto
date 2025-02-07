@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public DungeonData DungeonData;
     public EncounterData EncounterData;
-    public PartyManager Party;
 
     /// <summary>
     /// Event when a scene is fully loaded - contains the scene name as a string
