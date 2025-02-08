@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Represents a monster in the game
+/// </summary>
 public class Monster : MonoBehaviour
 {
     public MonsterData monsterData;

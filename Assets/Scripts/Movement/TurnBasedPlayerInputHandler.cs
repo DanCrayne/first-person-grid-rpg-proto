@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Handles player input for turn-based movement and sending notifications for player actions
+/// </summary>
 public class TurnBasedPlayerInputHandler : MonoBehaviour
 {
     public float moveDistance; // Distance to move forward or backward
