@@ -237,7 +237,7 @@ To do this, we need to:
 
 1. Only allow movement along an axis
 2. Each movement needs to be a set distance
-3. The movement should be smooth, so we enforce a duration
+3. The movement should be smooth and a set duration
 4. Correct for inaccuracies by snapping to the nearest grid position on each move
 
 ## User Interface
