@@ -6,10 +6,25 @@ using UnityEngine;
 /// </summary>
 public class TurnBasedPlayerInputHandler : MonoBehaviour
 {
-    public float moveDistance; // Distance to move forward or backward
-    public float moveDuration; // Time it takes to complete the movement
-    public float rotationSpeed; // Speed of rotation transition
-    public float gridSize; // size of grid in Unity space
+    /// <summary>
+    /// The distance to move forward or backward
+    /// </summary>
+    public float moveDistance;
+
+    /// <summary>
+    /// The time it takes to complete the movement
+    /// </summary>
+    public float moveDuration;
+
+    /// <summary>
+    /// The speed of rotation transition
+    /// </summary>
+    public float rotationSpeed;
+
+    /// <summary>
+    /// The size of the grid in Unity space
+    /// </summary>
+    public float gridSize;
 
     private InputSystem_Actions _inputActions;
     private Rigidbody _playerRigidbody;
@@ -143,7 +158,8 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// Snap the player to the nearest grid cell
+    /// Snap the player to the nearest grid cell to ensure they are always on the grid
+    /// as inaccuracies in floating point arithmetic can cause the player to drift off the grid.
     /// </summary>
     private void SnapToGrid()
     {

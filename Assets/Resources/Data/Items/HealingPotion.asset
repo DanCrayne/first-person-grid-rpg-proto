@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d20db6d9bf4df7a41a6cbae6917acb20, type: 3}
   m_Name: HealingPotion
   m_EditorClassIdentifier: 
-  itemName: 
-  description: 
-  weightInPounds: 0
-  valueInGold: 0
-  isConsumable: 0
+  itemName: Healing Potion
+  description: a consumable liquid that restores health when drank
+  weightInPounds: 1
+  valueInGold: 40
+  isConsumable: 1
