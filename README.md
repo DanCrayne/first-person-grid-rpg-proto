@@ -250,15 +250,15 @@ on the battle screen. The basic process is to create a canvas which will contain
 and then add Unity UI components (such as the Vertical Layout Group component) which automatically align the child
 objects. The process is reminescent of developing web pages with CSS.
 
-![Customizing the Party Panel UI Component](image-6.png)
+![Customizing the Party Panel UI Component](images/image-6.png)
 
 After customizing the Party Panel, middle encounter view, and Actions Panel, the result looked like this:
 
-![Layout for Encounter UI](image-3.png)
+![Layout for Encounter UI](images/image-3.png)
 
 and at runtime, when the character info panels are added as children to the Party Panel and the middle area is set
 to invisible, it looks like this:
-![Encounter Prototype](image-5.png)
+![Encounter Prototype](images/image-5.png)
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
