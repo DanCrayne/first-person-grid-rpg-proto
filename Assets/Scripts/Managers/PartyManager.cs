@@ -44,6 +44,12 @@ public class PartyManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instantiates the <see cref="EncounterCharacterInfo"/> prefab and adds it to the party panel UI
+    /// </summary>
+    /// <param name="parent">The <see cref="Transform"> to set as the parent of the instance</param>
+    /// <param name="infoPanelPrefab">The prefab <see cref="GameObject"/> to instantiate</param>
+    /// <returns>The instantiated <see cref="GameObject"/></returns>
     private GameObject InstantiateEncounterCharacterInfoPrefab(Transform parent, GameObject infoPanelPrefab)
     {
         return Instantiate(infoPanelPrefab, parent);

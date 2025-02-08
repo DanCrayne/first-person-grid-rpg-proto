@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-
 public class TurnBasedPlayerInputHandler : MonoBehaviour
 {
     public float moveDistance; // Distance to move forward or backward
@@ -140,6 +139,9 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Snap the player to the nearest grid cell
+    /// </summary>
     private void SnapToGrid()
     {
         Vector3 position = transform.position;
@@ -149,6 +151,12 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         transform.position = position;
     }
 
+    /// <summary>
+    /// Rotates the player by a specified angle over time.
+    /// This method is a coroutine and will yield control back to the Unity engine each frame until the rotation is complete.
+    /// </summary>
+    /// <param name="angle">The angle to rotate the player, in degrees.</param>
+    /// <returns>An IEnumerator that performs the rotation over time.</returns>
     private IEnumerator RotatePlayer(float angle)
     {
         _isActionInProgress = true;
@@ -173,6 +181,11 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _isActionInProgress = false;
     }
 
+    /// <summary>
+    /// Checks if the grid cell at the specified position is accessible.
+    /// </summary>
+    /// <param name="gridPosition">The grid position/cell to check</param>
+    /// <returns>True if the cell can be accessed and false otherwise</returns>
     private bool IsGridCellAccessible(Vector3 gridPosition)
     {
         // Cast a ray from the current position to the grid position
@@ -193,6 +206,9 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Visualize various elements in the scene view for debugging purposes.
+    /// </summary>
     private void OnDrawGizmos()
     {
         // Visualize the target grid path

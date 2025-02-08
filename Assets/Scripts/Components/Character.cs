@@ -1,6 +1,10 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Represents a character in the game
+/// </summary>
+/// <remarks>We're using a class instead of a scriptable object here since the character data will change frequently at run-time.</remarks>
 [Serializable]
 public class Character
 {

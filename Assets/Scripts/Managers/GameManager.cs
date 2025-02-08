@@ -3,8 +3,14 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manages the game state and scene loading
+/// </summary>
 public class GameManager : MonoBehaviour
 {
+    /// <summary>
+    /// Singleton instance of the GameManager
+    /// </summary>
     public static GameManager Instance;
     public DungeonData DungeonData;
     public EncounterData EncounterData;
@@ -27,7 +33,6 @@ public class GameManager : MonoBehaviour
     {
         SetupSingletonInstance();
         SubscribeToEvents();
-
         LoadScene(DungeonData.dungeonSceneName, InitializeDungeonSceneAndGameObjects);
     }
 
@@ -55,12 +60,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Activates the encounter game object and deactivates the dungeon game object
+    /// </summary>
     private void ActivateEncounterGameObject()
     {
         EncounterGameObject.SetActive(true);
         DungeonGameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Activates the dungeon game object and deactivates the encounter game object
+    /// </summary>
     private void ActivateDungeonGameObject()
     {
         EncounterGameObject.SetActive(false);
@@ -87,7 +98,7 @@ public class GameManager : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        GeneralNotifier.OnResetGame += HandleGameReset;
+        GeneralNotifier.OnResetGame += ResetGame;
         GeneralNotifier.OnPauseGame += PauseGame;
         GeneralNotifier.OnResumeGame += ResumeGame;
         EncounterEventNotifier.OnEncounterStart += HandleEncounterStarted;
@@ -96,7 +107,7 @@ public class GameManager : MonoBehaviour
 
     private void UnsubscribeFromEvents()
     {
-        GeneralNotifier.OnResetGame -= HandleGameReset;
+        GeneralNotifier.OnResetGame -= ResetGame;
         GeneralNotifier.OnPauseGame -= PauseGame;
         GeneralNotifier.OnResumeGame -= ResumeGame;
         EncounterEventNotifier.OnEncounterStart -= HandleEncounterStarted;
@@ -113,13 +124,6 @@ public class GameManager : MonoBehaviour
         ActivateDungeonGameObject();
     }
 
-    private GameObject CloneGameObject(GameObject gameObject)
-    {
-        GameObject clonedGameObject = Instantiate(gameObject);
-        DontDestroyOnLoad(clonedGameObject);
-        return clonedGameObject;
-    }
-
     private bool IsSceneLoaded(string sceneName)
     {
         Scene scene = SceneManager.GetSceneByName(sceneName);
@@ -130,7 +134,7 @@ public class GameManager : MonoBehaviour
     {
         if (IsSceneLoaded(sceneName))
         {
-            // If the scene is already loaded, directly invoke the callback
+            // If the scene is already loaded, directly invoke the callback (no need to load it again)
             onSceneLoadedCallback?.Invoke();
         }
         else
@@ -140,6 +144,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Coroutine to load a scene additively and notify listeners when it is fully loaded
+    /// </summary>
+    /// <param name="sceneName">The name of the <see cref="Scene"/> to load</param>
+    /// <param name="onSceneLoadedCallback">A callback method which will be invoked after the Scene is loaded</param>
+    /// <returns></returns>
     private IEnumerator LoadSceneCoroutine(string sceneName, Action onSceneLoadedCallback)
     {
         if (!IsSceneLoaded(sceneName))
@@ -202,7 +212,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    public void HandleGameReset()
+    public void ResetGame()
     {
     }
 }

@@ -4,31 +4,20 @@ using UnityEngine;
 public class PlayerActionNotifier : MonoBehaviour
 {
     public static event Action OnPlayerMoved;
-    public static event Action OnPlayerMadeQuietNoise;
-    public static event Action OnPlayerMadeMediumNoise;
-    public static event Action OnPlayerMadeLoudNoise;
     public static event Action<int> OnPlayerMadeNoise; // noise made at specific noise-level
 
+    /// <summary>
+    /// Notify listeners that the player has moved
+    /// </summary>
     public static void PlayerMoved()
     {
         OnPlayerMoved?.Invoke();
     }
 
-    public static void PlayerMadeQuietNoise()
-    {
-        OnPlayerMadeQuietNoise?.Invoke();
-    }
-
-    public static void PlayerMadeMediumNoise()
-    {
-        OnPlayerMadeMediumNoise?.Invoke();
-    }
-
-    public static void PlayerMadeLoudNoise()
-    {
-        OnPlayerMadeLoudNoise?.Invoke();
-    }
-
+    /// <summary>
+    /// Notify listeners that the player made noise and at what level
+    /// </summary>
+    /// <param name="noiseLevel">An arbitrary noise level to indicate how loud the noise was</param>
     public static void PlayerMadeNoise(int noiseLevel)
     {
         OnPlayerMadeNoise?.Invoke(noiseLevel);
