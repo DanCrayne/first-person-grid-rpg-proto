@@ -32,6 +32,24 @@ The project includes a simple grid movement control system, character movement, 
  - Encounters load a separate Encounter area with randomly spawned monsters.
  - Attacking the enemies just selects the first one and deals 100 damage (instant kill).
 
+## Basic game flow
+
+```mermaid
+graph TD
+    A[Start Game] --> B[Main Menu]
+    B --> |New Game | C[Initialize Game]
+    B --> |Load Game | D[Load Saved Data]
+    C --> E[Enter Dungeon Map]
+    D --> E[Enter Dungeon Map]
+    E --> F[Player Movement]
+    F --> |Random Encounter| G[Load Encounter Scene]
+    G --> H[Battle Phase]
+    H --> |Victory| I[Return to Dungeon Map]
+    H --> |Defeat| J[Game Over]
+    I --> F
+    J --> B
+```
+
 ## Project Structure
 
 This is the basic structure of the project to give you an idea of how the project is organized.
