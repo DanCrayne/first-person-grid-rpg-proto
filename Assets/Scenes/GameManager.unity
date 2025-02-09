@@ -353,9 +353,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 60890743}
+  - component: {fileID: 60890748}
   - component: {fileID: 60890744}
   - component: {fileID: 60890745}
   - component: {fileID: 60890746}
+  - component: {fileID: 60890747}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -392,7 +394,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DungeonData: {fileID: 11400000, guid: 9d6ee5b774016af4cb9976d6da7ad376, type: 2}
   EncounterData: {fileID: 11400000, guid: 4d6bff5387d1de944bd7b51d7f5749f8, type: 2}
-  MainMenu: {fileID: 866037165}
 --- !u!114 &60890745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,6 +422,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   encounterCharacterInfoPanelPrefab: {fileID: 6962742986289673839, guid: 5a80a23c118dc914aa933bcdcda24dd6, type: 3}
   partyPanel: {fileID: 106350748}
+--- !u!114 &60890747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60890741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b1e0603054e1f54c9c0f50f8fa4570d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainMenu: {fileID: 866037165}
+--- !u!114 &60890748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60890741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3adb78bcf4420e540be252dc65eb50ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &104339438
 GameObject:
   m_ObjectHideFlags: 0

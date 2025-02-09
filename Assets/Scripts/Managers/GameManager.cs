@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -15,7 +14,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public DungeonData DungeonData;
     public EncounterData EncounterData;
-    public GameObject MainMenu;
 
     /// <summary>
     /// Event when a scene is fully loaded - contains the scene name as a string
@@ -31,9 +29,27 @@ public class GameManager : MonoBehaviour
         return EncounterGameObject;
     }
 
+    /// <summary>
+    /// Pauses the game, including animations and anything that relies on Time.deltaTime
+    /// such as physics and movement.
+    /// </summary>
+    public void PauseGame()
+    {
+        GeneralNotifier.PauseGame();
+        Time.timeScale = 0;
+    }
+
+    /// <summary>
+    /// Resumes the game, including animations and anything that relies on Time.deltaTime
+    /// </summary>
+    public void ResumeGame()
+    {
+        GeneralNotifier.ResumeGame();
+        Time.timeScale = 1;
+    }
+
     private void Awake()
     {
-        MainMenu.SetActive(false);
         SetupSingletonInstance();
         SubscribeToEvents();
         LoadScene(DungeonData.dungeonSceneName, InitializeDungeonSceneAndGameObjects);
@@ -91,30 +107,26 @@ public class GameManager : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        GeneralNotifier.OnToggleMainMenu += MainMenuToggle;
-        GeneralNotifier.OnPauseGame += PauseGame;
-        GeneralNotifier.OnResumeGame += ResumeGame;
         EncounterEventNotifier.OnEncounterStart += HandleEncounterStarted;
         EncounterEventNotifier.OnEncounterEnd += HandleEncounterEnded;
     }
 
     private void UnsubscribeFromEvents()
     {
-        GeneralNotifier.OnToggleMainMenu -= MainMenuToggle;
-        GeneralNotifier.OnPauseGame -= PauseGame;
-        GeneralNotifier.OnResumeGame -= ResumeGame;
         EncounterEventNotifier.OnEncounterStart -= HandleEncounterStarted;
         EncounterEventNotifier.OnEncounterEnd -= HandleEncounterEnded;
     }
 
     private void HandleEncounterStarted()
     {
+        GeneralNotifier.DisableMovement();
         ActivateEncounterGameObject();
     }
 
     private void HandleEncounterEnded()
     {
         ActivateDungeonGameObject();
+        GeneralNotifier.EnableMovement();
     }
 
     private bool IsSceneLoaded(string sceneName)
@@ -189,33 +201,5 @@ public class GameManager : MonoBehaviour
 
         Debug.LogError($"Root GameObject with name '{rootGameObjectName}' not found in the scene.");
         return null;
-    }
-
-    /// <summary>
-    /// Pauses the game, including animations and anything that relies on Time.deltaTime
-    /// such as physics and movement.
-    /// </summary>
-    public void PauseGame()
-    {
-        Time.timeScale = 0;
-    }
-
-    public void ResumeGame()
-    {
-        Time.timeScale = 1;
-    }
-
-    public void MainMenuToggle()
-    {
-        if (MainMenu.activeSelf == false)
-        {
-            MainMenu.SetActive(true);
-            PauseGame();
-        }
-        else
-        {
-            MainMenu.SetActive(false);
-            ResumeGame();
-        }
     }
 }

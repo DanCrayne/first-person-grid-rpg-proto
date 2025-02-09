@@ -6,17 +6,10 @@ using UnityEngine;
 /// </summary>
 public class GeneralNotifier : MonoBehaviour
 {
-    public static event Action OnToggleMainMenu;
     public static event Action OnPauseGame;
     public static event Action OnResumeGame;
-
-    /// <summary>
-    /// Notify listeners that the game should be reset
-    /// </summary>
-    public static void ToggleMainMenu()
-    {
-        OnToggleMainMenu?.Invoke();
-    }
+    public static event Action OnDisableMovement;
+    public static event Action OnEnableMovement;
 
     /// <summary>
     /// Notify listeners that the game should be paused
@@ -32,5 +25,21 @@ public class GeneralNotifier : MonoBehaviour
     public static void ResumeGame()
     {
         OnResumeGame?.Invoke();
+    }
+
+    /// <summary>
+    /// Notify listeners that movement should be disabled
+    /// </summary>
+    public static void DisableMovement()
+    {
+        OnDisableMovement?.Invoke();
+    }
+
+    /// <summary>
+    /// Notify listeners that movement should be enabled
+    /// </summary>
+    public static void EnableMovement()
+    {
+        OnEnableMovement?.Invoke();
     }
 }

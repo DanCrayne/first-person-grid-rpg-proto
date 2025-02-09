@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Handles player input for turn-based movement and sending notifications for player actions
 /// </summary>
-public class TurnBasedPlayerInputHandler : MonoBehaviour
+public class MovementManager : MonoBehaviour
 {
     /// <summary>
     /// The distance to move forward or backward
@@ -26,49 +26,59 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
     /// </summary>
     public float gridSize;
 
-    private InputSystem_Actions _inputActions;
     private Rigidbody _playerRigidbody;
     private bool _isActionInProgress = false; // Flag to prevent overlapping actions that would cause the player to be in an invalid state (e.g. moving forward while turning)
     private Vector3 _collisionVectorOffset = new Vector3(0, 5, 0); // Offset to move the collision raycast to a more appropriate position (e.g. up from the center of the player)
     private Vector3 _currentFacingDirection = Vector3.forward;
 
+    public void EnableMovement()
+    {
+        SubscribeToEvents();
+    }
+
+    public void DisableMovement()
+    {
+        UnsubscribeFromEvents();
+    }
+
     private void OnEnable()
     {
-        EnableControls();
+        EnableMovement();
     }
 
     private void OnDisable()
     {
-        DisableControls();
-    }
-
-    public void DisableControls()
-    {
-        _inputActions.Player.Disable();
-    }
-
-    public void EnableControls()
-    {
-        _inputActions.Player.Enable();
+        DisableMovement();
     }
 
     void Awake()
     {
-        _inputActions = new InputSystem_Actions();
         _playerRigidbody = GetComponent<Rigidbody>();
-
-        _inputActions.Player.OpenMainMenu.performed += ctx => OnMainMenuButtonPressed();
-        _inputActions.Player.StepForward.performed += ctx => OnStepForward();
-        _inputActions.Player.StepBackward.performed += ctx => OnStepBackward();
-        _inputActions.Player.StrafeLeft.performed += ctx => OnStrafeLeft();
-        _inputActions.Player.StrafeRight.performed += ctx => OnStrafeRight();
-        _inputActions.Player.RotateLeft.performed += ctx => OnRotateLeft();
-        _inputActions.Player.RotateRight.performed += ctx => OnRotateRight();
+        SubscribeToEvents();
     }
 
-    private void OnMainMenuButtonPressed()
+    private void SubscribeToEvents()
     {
-        GeneralNotifier.ToggleMainMenu();
+        GeneralNotifier.OnPauseGame += DisableMovement;
+        GeneralNotifier.OnResumeGame += EnableMovement;
+        GeneralNotifier.OnDisableMovement += DisableMovement;
+
+        InputManager.Instance.OnStepForward += OnStepForward;
+        InputManager.Instance.OnStepBackward += OnStepBackward;
+        InputManager.Instance.OnStrafeLeft += OnStrafeLeft;
+        InputManager.Instance.OnStrafeRight += OnStrafeRight;
+        InputManager.Instance.OnRotateLeft += OnRotateLeft;
+        InputManager.Instance.OnRotateRight += OnRotateRight;
+    }
+
+    private void UnsubscribeFromEvents()
+    {
+        InputManager.Instance.OnStepForward -= OnStepForward;
+        InputManager.Instance.OnStepBackward -= OnStepBackward;
+        InputManager.Instance.OnStrafeLeft -= OnStrafeLeft;
+        InputManager.Instance.OnStrafeRight -= OnStrafeRight;
+        InputManager.Instance.OnRotateLeft -= OnRotateLeft;
+        InputManager.Instance.OnRotateRight -= OnRotateRight;
     }
 
     private void OnStepForward()
