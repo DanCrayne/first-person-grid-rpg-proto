@@ -163,7 +163,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Reset"",
+                    ""name"": ""OpenMainMenu"",
                     ""type"": ""Button"",
                     ""id"": ""10326913-9169-4bbf-b21e-7fa7f5ef2943"",
                     ""expectedControlType"": """",
@@ -697,7 +697,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Reset"",
+                    ""action"": ""OpenMainMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1300,7 +1300,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_RotateRight = m_Player.FindAction("RotateRight", throwIfNotFound: true);
         m_Player_StepForward = m_Player.FindAction("StepForward", throwIfNotFound: true);
         m_Player_StepBackward = m_Player.FindAction("StepBackward", throwIfNotFound: true);
-        m_Player_Reset = m_Player.FindAction("Reset", throwIfNotFound: true);
+        m_Player_OpenMainMenu = m_Player.FindAction("OpenMainMenu", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1395,7 +1395,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RotateRight;
     private readonly InputAction m_Player_StepForward;
     private readonly InputAction m_Player_StepBackward;
-    private readonly InputAction m_Player_Reset;
+    private readonly InputAction m_Player_OpenMainMenu;
     public struct PlayerActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1415,7 +1415,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @RotateRight => m_Wrapper.m_Player_RotateRight;
         public InputAction @StepForward => m_Wrapper.m_Player_StepForward;
         public InputAction @StepBackward => m_Wrapper.m_Player_StepBackward;
-        public InputAction @Reset => m_Wrapper.m_Player_Reset;
+        public InputAction @OpenMainMenu => m_Wrapper.m_Player_OpenMainMenu;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1470,9 +1470,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @StepBackward.started += instance.OnStepBackward;
             @StepBackward.performed += instance.OnStepBackward;
             @StepBackward.canceled += instance.OnStepBackward;
-            @Reset.started += instance.OnReset;
-            @Reset.performed += instance.OnReset;
-            @Reset.canceled += instance.OnReset;
+            @OpenMainMenu.started += instance.OnOpenMainMenu;
+            @OpenMainMenu.performed += instance.OnOpenMainMenu;
+            @OpenMainMenu.canceled += instance.OnOpenMainMenu;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1522,9 +1522,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @StepBackward.started -= instance.OnStepBackward;
             @StepBackward.performed -= instance.OnStepBackward;
             @StepBackward.canceled -= instance.OnStepBackward;
-            @Reset.started -= instance.OnReset;
-            @Reset.performed -= instance.OnReset;
-            @Reset.canceled -= instance.OnReset;
+            @OpenMainMenu.started -= instance.OnOpenMainMenu;
+            @OpenMainMenu.performed -= instance.OnOpenMainMenu;
+            @OpenMainMenu.canceled -= instance.OnOpenMainMenu;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1722,7 +1722,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnRotateRight(InputAction.CallbackContext context);
         void OnStepForward(InputAction.CallbackContext context);
         void OnStepBackward(InputAction.CallbackContext context);
-        void OnReset(InputAction.CallbackContext context);
+        void OnOpenMainMenu(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

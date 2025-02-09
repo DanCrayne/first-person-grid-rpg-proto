@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
 {
-    public GameObject battleMenuPanel;
+    public GameObject battleMenuCanvas;
 
     public int baseEncounterRate = 10;
     public static string PartyPositionSlotTagName = "EncounterPartyPositionSlot";
@@ -24,6 +24,7 @@ public class EncounterManager : MonoBehaviour
         // Create monster spawners for each possible monster
         foreach (var monster in GameManager.Instance.DungeonData.possibleMonsters)
         {
+            battleMenuCanvas.SetActive(false);
             var monsterSpawnerObject = new GameObject("MonsterSpawner");
             var monsterSpawner = monsterSpawnerObject.AddComponent<MonsterSpawner>();
             monsterSpawner.monsterData = monster;
@@ -33,7 +34,7 @@ public class EncounterManager : MonoBehaviour
 
     public void SetupEncounter()
     {
-        battleMenuPanel.SetActive(true);
+        battleMenuCanvas.SetActive(true);
 
         // Spawn random monsters (for this dungeon) across the encounter's monster position slots
         var monsterPositions = GetMonsterPositions();
@@ -64,25 +65,12 @@ public class EncounterManager : MonoBehaviour
     public void EndBattle()
     {
         // Disable the battle camera and hide the battle menu
-        battleMenuPanel.SetActive(false);
+        battleMenuCanvas.SetActive(false);
 
         Debug.Log("Encounter manager: encounter ended!");
 
         // Notify that the encounter has ended - note this needs to be done after activating the dungeon object or else it won't get the message
         EncounterEventNotifier.EncounterEnd();
-    }
-
-    private void OnEnable()
-    {
-    }
-
-    private void OnDisable()
-    {
-    }
-
-    private void Update()
-    {
-        
     }
 
     private void OnPlayerMoved()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public DungeonData DungeonData;
     public EncounterData EncounterData;
+    public GameObject MainMenu;
 
     /// <summary>
     /// Event when a scene is fully loaded - contains the scene name as a string
@@ -31,19 +33,10 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        MainMenu.SetActive(false);
         SetupSingletonInstance();
         SubscribeToEvents();
         LoadScene(DungeonData.dungeonSceneName, InitializeDungeonSceneAndGameObjects);
-    }
-
-    private void OnEnable()
-    {
-        SubscribeToEvents();
-    }
-
-    private void OnDisable()
-    {
-        UnsubscribeFromEvents();
     }
 
     private void SetupSingletonInstance()
@@ -98,7 +91,7 @@ public class GameManager : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        GeneralNotifier.OnResetGame += ResetGame;
+        GeneralNotifier.OnToggleMainMenu += MainMenuToggle;
         GeneralNotifier.OnPauseGame += PauseGame;
         GeneralNotifier.OnResumeGame += ResumeGame;
         EncounterEventNotifier.OnEncounterStart += HandleEncounterStarted;
@@ -107,7 +100,7 @@ public class GameManager : MonoBehaviour
 
     private void UnsubscribeFromEvents()
     {
-        GeneralNotifier.OnResetGame -= ResetGame;
+        GeneralNotifier.OnToggleMainMenu -= MainMenuToggle;
         GeneralNotifier.OnPauseGame -= PauseGame;
         GeneralNotifier.OnResumeGame -= ResumeGame;
         EncounterEventNotifier.OnEncounterStart -= HandleEncounterStarted;
@@ -212,7 +205,17 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    public void ResetGame()
+    public void MainMenuToggle()
     {
+        if (MainMenu.activeSelf == false)
+        {
+            MainMenu.SetActive(true);
+            PauseGame();
+        }
+        else
+        {
+            MainMenu.SetActive(false);
+            ResumeGame();
+        }
     }
 }

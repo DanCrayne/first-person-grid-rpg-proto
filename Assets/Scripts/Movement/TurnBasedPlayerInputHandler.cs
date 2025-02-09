@@ -57,7 +57,7 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _inputActions = new InputSystem_Actions();
         _playerRigidbody = GetComponent<Rigidbody>();
 
-        _inputActions.Player.Reset.performed += ctx => HandleResetGame();
+        _inputActions.Player.OpenMainMenu.performed += ctx => OnMainMenuButtonPressed();
         _inputActions.Player.StepForward.performed += ctx => OnStepForward();
         _inputActions.Player.StepBackward.performed += ctx => OnStepBackward();
         _inputActions.Player.StrafeLeft.performed += ctx => OnStrafeLeft();
@@ -66,9 +66,9 @@ public class TurnBasedPlayerInputHandler : MonoBehaviour
         _inputActions.Player.RotateRight.performed += ctx => OnRotateRight();
     }
 
-    private void HandleResetGame()
+    private void OnMainMenuButtonPressed()
     {
-        GeneralNotifier.ResetGame();
+        GeneralNotifier.ToggleMainMenu();
     }
 
     private void OnStepForward()

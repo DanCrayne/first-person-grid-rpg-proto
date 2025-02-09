@@ -141,7 +141,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Reset",
+                    "name": "OpenMainMenu",
                     "type": "Button",
                     "id": "10326913-9169-4bbf-b21e-7fa7f5ef2943",
                     "expectedControlType": "",
@@ -675,7 +675,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Reset",
+                    "action": "OpenMainMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

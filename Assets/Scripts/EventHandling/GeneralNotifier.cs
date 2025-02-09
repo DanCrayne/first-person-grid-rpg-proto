@@ -6,16 +6,16 @@ using UnityEngine;
 /// </summary>
 public class GeneralNotifier : MonoBehaviour
 {
-    public static event Action OnResetGame;
+    public static event Action OnToggleMainMenu;
     public static event Action OnPauseGame;
     public static event Action OnResumeGame;
 
     /// <summary>
     /// Notify listeners that the game should be reset
     /// </summary>
-    public static void ResetGame()
+    public static void ToggleMainMenu()
     {
-        OnResetGame?.Invoke();
+        OnToggleMainMenu?.Invoke();
     }
 
     /// <summary>
