@@ -62,6 +62,7 @@ public class MovementManager : MonoBehaviour
         GeneralNotifier.OnPauseGame += DisableMovement;
         GeneralNotifier.OnResumeGame += EnableMovement;
         GeneralNotifier.OnDisableMovement += DisableMovement;
+        GeneralNotifier.OnEnableMovement += EnableMovement;
 
         InputManager.Instance.OnStepForward += OnStepForward;
         InputManager.Instance.OnStepBackward += OnStepBackward;
