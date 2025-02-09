@@ -1,12 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Handles the party of characters in the game
+/// </summary>
 public class PartyManager : MonoBehaviour
 {
+    /// <summary>
+    /// The prefab for the <see cref="EncounterCharacterInfo"/> used for each character
+    /// </summary>
     public GameObject encounterCharacterInfoPanelPrefab;
+
+    /// <summary>
+    /// The <see cref="Transform"/> for the party member display panel
+    /// </summary>
     public Transform partyPanel;
 
-    private string partyName;
     private List<GameObject> encounterCharacterInfoPanels = new List<GameObject>();
     private List<Character> partyMembers = new List<Character>();
 
@@ -28,11 +37,6 @@ public class PartyManager : MonoBehaviour
     public void RemoveCharacterFromParty(Character character)
     {
         partyMembers.Remove(character);
-    }
-
-    public void SetPartyName(string name)
-    {
-        partyName = name;
     }
 
     private void CreateExampleParty()

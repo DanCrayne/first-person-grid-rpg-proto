@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Notifies listeners of player actions
+/// </summary>
 public class PlayerActionNotifier : MonoBehaviour
 {
     public static event Action OnPlayerMoved;
