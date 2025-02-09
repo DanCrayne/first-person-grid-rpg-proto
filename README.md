@@ -13,7 +13,6 @@ The project includes a simple grid movement control system, character movement, 
 - **Dynamic UI**: Use layout groups to dynamically arrange character panels in the UI.
 - **ScriptableObjects**: Utilize ScriptableObjects to improve performance and clarity for data that is more static in nature (e.g. classes, races, items, etc).
 - **Event System**: Use Unity's event system to communicate between different components in the project.
-- 
 
 ## Getting Started
 
