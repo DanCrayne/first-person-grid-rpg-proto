@@ -26,7 +26,6 @@ public class MonsterSpawner : MonoBehaviour
             return null;
         }
 
-        // Note that
         GameObject monster = Instantiate(monsterData.monsterPrefab, position, Quaternion.identity);
 
         Monster monsterComponent = monster.GetComponent<Monster>();

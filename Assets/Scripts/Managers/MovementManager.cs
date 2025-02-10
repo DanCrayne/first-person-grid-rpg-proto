@@ -31,39 +31,26 @@ public class MovementManager : MonoBehaviour
     private Vector3 _collisionVectorOffset = new Vector3(0, 5, 0); // Offset to move the collision raycast to a more appropriate position (e.g. up from the center of the player)
     private Vector3 _currentFacingDirection = Vector3.forward;
 
-    public void EnableMovement()
+    private void OnEnable()
     {
         SubscribeToEvents();
     }
 
-    public void DisableMovement()
-    {
-        UnsubscribeFromEvents();
-    }
-
-    private void OnEnable()
-    {
-        EnableMovement();
-    }
-
     private void OnDisable()
     {
-        DisableMovement();
+        // Note that unsubscribing from events is important to prevent memory leaks.
+        // Since this happens inside `OnDisable`, it will be called when the GameObject is disabled or destroyed
+        // so there is no need to track whether movement is enabled for the player.
+        UnsubscribeFromEvents();
     }
 
     void Awake()
     {
         _playerRigidbody = GetComponent<Rigidbody>();
-        SubscribeToEvents();
     }
 
     private void SubscribeToEvents()
     {
-        GeneralNotifier.OnPauseGame += DisableMovement;
-        GeneralNotifier.OnResumeGame += EnableMovement;
-        GeneralNotifier.OnDisableMovement += DisableMovement;
-        GeneralNotifier.OnEnableMovement += EnableMovement;
-
         InputManager.Instance.OnStepForward += OnStepForward;
         InputManager.Instance.OnStepBackward += OnStepBackward;
         InputManager.Instance.OnStrafeLeft += OnStrafeLeft;
