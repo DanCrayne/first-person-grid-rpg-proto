@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 583934f88e930ad4882297f047a6b3d9, type: 3}
-  m_Name: Fighter
+  m_Name: Mage
   m_EditorClassIdentifier: 
-  className: 
-  hitDie: 8
-  XpPerLevel: 00000000d0070000a00f0000401f0000803e0000007d0000
+  className: Mage
+  hitDie: 4
+  XpPerLevel: e8030000d0070000b80b0000
   defaultActions:
   - Attack
   - Defend
   - Item
   - Flee
-  classActions: []
+  classActions:
+  - Cast
   spellList: []
   actionControlPrefab: {fileID: 6480287075496403366, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}

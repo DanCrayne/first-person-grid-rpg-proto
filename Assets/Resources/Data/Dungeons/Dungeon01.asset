@@ -21,7 +21,7 @@ MonoBehaviour:
   dungeonDifficulty: 1
   entrance: {fileID: 0}
   exit: {fileID: 0}
-  possibleMonsters:
-  - {fileID: 11400000, guid: 6312402db33dd874b82dff1637159cd1, type: 2}
-  - {fileID: 11400000, guid: 004a00838de24f449a871064e2a6a3de, type: 2}
-  - {fileID: 11400000, guid: 7b245424d2e223c488db585adf3525ca, type: 2}
+  monsterSpawners:
+  - {fileID: 7628202929046384209, guid: fa5402e80a5527b4f8529bd4756f8d27, type: 3}
+  - {fileID: 7628202929046384209, guid: 035d2730ffc10eb4985f6c82d1bbeef3, type: 3}
+  - {fileID: 7628202929046384209, guid: 89720e993f9572a4dae38bbcaac27e95, type: 3}

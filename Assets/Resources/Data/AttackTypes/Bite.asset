@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ab1dbacbde4b84d944836696a73f73, type: 3}
   m_Name: Bite
   m_EditorClassIdentifier: 
-  Name: Bite
-  MinDamage: 1
-  MaxDamage: 6
-  NumberOfAttacks: 1
-  DamageDice: 1d6
+  attackName: Bite
+  minDamage: 1
+  maxDamage: 4
+  numberOfAttacks: 1
+  damageDice: 1d6

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ab1dbacbde4b84d944836696a73f73, type: 3}
   m_Name: Claw
   m_EditorClassIdentifier: 
-  Name: Claw
-  MinDamage: 1
-  MaxDamage: 3
-  NumberOfAttacks: 2
-  DamageDice: 2d3
+  attackName: Claw
+  minDamage: 1
+  maxDamage: 4
+  numberOfAttacks: 2
+  damageDice: 1d6
