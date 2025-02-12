@@ -12,13 +12,15 @@ public class EncounterManager : MonoBehaviour
     public int baseEncounterRate = 10;
 
     /// <summary>
-    /// The tag name for the monster position placeholders in the encounter
+    /// The tag name for the monster position placeholders in the encounter.
+    /// A prefab with this tag will be instantiated in the encounter scene to indicate where monsters will spawn.
     /// </summary>
-    public static string MonsterPositionSlotTagName = "EncounterMonsterPositionSlot";
+    public const string MonsterPositionSlotTagName = "EncounterMonsterPositionSlot";
 
     private uint _playerTotalSteps = 0;
     private int _currentEncounterRate;
     private List<Monster> _monstersInEncounter = new List<Monster>();
+    private const int MOST_FREQUENT_ENCOUNTER_RATE = 5;
 
     private void OnEnable()
     {
@@ -35,6 +37,9 @@ public class EncounterManager : MonoBehaviour
         EncounterEventNotifier.OnEncounterEnd -= EndBattle;
     }
 
+    /// <summary>
+    /// Sets up the encounter by spawning monsters and starting the battle
+    /// </summary>
     public void SetupEncounter()
     {
         battleMenuManager.OpenBattleMenu();
@@ -48,6 +53,10 @@ public class EncounterManager : MonoBehaviour
         battleManager.StartBattle(party, _monstersInEncounter);
     }
 
+    /// <summary>
+    /// Spawns monsters at the given positions using the monster spawners defined in the dungeon data
+    /// </summary>
+    /// <param name="positions">The <see cref="Vector3"/> positions to spawn monsters</param>
     private void SpawnMonstersAtPositions(IEnumerable<Vector3> positions)
     {
         var ps = positions.ToList();
@@ -67,6 +76,9 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Destroy all monsters in the encounter and clear the list of monsters in encounter
+    /// </summary>
     private void DestroyMonstersInEncounter()
     {
         foreach (var monster in _monstersInEncounter)
@@ -82,6 +94,9 @@ public class EncounterManager : MonoBehaviour
         battleMenuManager.ExitBattleMenu();
     }
 
+    /// <summary>
+    /// Called when the player moves - increments the player's total steps and checks if an encounter should be triggered
+    /// </summary>
     private void OnPlayerMoved()
     {
         _playerTotalSteps += 1;
@@ -94,6 +109,10 @@ public class EncounterManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when the player makes noise - adjusts the current encounter rate based on the noise level
+    /// </summary>
+    /// <param name="noiseLevel">A numerical representation of the amount of noise made by the player</param>
     private void OnPlayerMadeNoise(int noiseLevel)
     {
         Debug.Log($"Player made noise at level {noiseLevel}");
@@ -103,9 +122,9 @@ public class EncounterManager : MonoBehaviour
     private bool DetermineIfEncountered()
     {
         Debug.Log($"Determining if encounter should happen. Total steps {_playerTotalSteps} % current encounter rate {_currentEncounterRate}");
-        if (_currentEncounterRate <= 5)
+        if (_currentEncounterRate <= MOST_FREQUENT_ENCOUNTER_RATE)
         {
-            _currentEncounterRate = 5; // most frequent possible encounter rate
+            _currentEncounterRate = MOST_FREQUENT_ENCOUNTER_RATE;
         }
 
         if (_playerTotalSteps % _currentEncounterRate == 0)
@@ -116,6 +135,11 @@ public class EncounterManager : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Returns the positions of the monster position slots in the encounter (where monsters will be spawned)
+    /// </summary>
+    /// <returns>A list of <see cref="Vector3"/> for each position</returns>
+    /// <remarks>These positions are defined through the Unity editor by instantiating a prefab with a tag matching MonsterPositionSlotTagName</remarks>
     private IEnumerable<Vector3> GetMonsterPositions()
     {
         var positionSlots = GameManager.Instance.GetEncounterGameObject().GetComponentsInChildren<Transform>()
