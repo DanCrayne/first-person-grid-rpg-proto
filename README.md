@@ -34,6 +34,9 @@ The project includes a simple grid movement control system, character movement, 
 
 ## Basic game flow
 
+### Gameplay Demo
+![Gameplay demo](images/grid-rpg-demo.gif)
+
 ### Main Game Loop Diagram
 
 ```mermaid
@@ -51,9 +54,6 @@ graph TD
     I --> F
     J --> B
 ```
-
-### Gameplay Demo
-![Gameplay demo](images/grid-rpg-demo.gif)
 
 ### Encounter Diagram
 
