@@ -35,11 +35,6 @@ public class GameManager : MonoBehaviour
         return _partyManager;
     }
 
-    public BattleManager GetBattleManager()
-    {
-        return _encounterGameObject.GetComponent<BattleManager>();
-    }
-
     /// <summary>
     /// Pauses the game, including animations and anything that relies on Time.deltaTime
     /// such as physics and movement.
@@ -99,6 +94,9 @@ public class GameManager : MonoBehaviour
         _dungeonGameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Initializes the dungeon scene and game objects by finding and activating them as appropriate
+    /// </summary>
     private void InitializeDungeonSceneAndGameObjects()
     {
         _dungeonScene = SceneManager.GetSceneByName(DungeonData.dungeonSceneName);
@@ -107,12 +105,13 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Dungeon scene is invalid");
             return;
         }
+
         // activate dungeon object
         SceneManager.SetActiveScene(_dungeonScene);
         _dungeonGameObject = FindRootGameObjectByName(_dungeonScene, DungeonData.dungeonObjectName);
         _dungeonGameObject.SetActive(true); // The dungeon game object should be shown at first
 
-        // active encounter object
+        // deactivate encounter object (it will be activated when an encounter starts)
         _encounterGameObject = FindRootGameObjectByName(_dungeonScene, EncounterData.encounterObjectName);
         _encounterGameObject.SetActive(false);
     }
@@ -147,6 +146,11 @@ public class GameManager : MonoBehaviour
         return scene.isLoaded;
     }
 
+    /// <summary>
+    /// Loads a scene additively and invokes a callback when the scene is fully loaded
+    /// </summary>
+    /// <param name="sceneName">The scene name to load</param>
+    /// <param name="onSceneLoadedCallback">The callback to be invoked once the scene is loaded</param>
     private void LoadScene(string sceneName, Action onSceneLoadedCallback)
     {
         if (IsSceneLoaded(sceneName))
@@ -166,7 +170,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="sceneName">The name of the <see cref="Scene"/> to load</param>
     /// <param name="onSceneLoadedCallback">A callback method which will be invoked after the Scene is loaded</param>
-    /// <returns></returns>
+    /// <returns>An <see cref="IEnumerator"/> representing the load progress</returns>
     private IEnumerator LoadSceneCoroutine(string sceneName, Action onSceneLoadedCallback)
     {
         if (!IsSceneLoaded(sceneName))
@@ -191,6 +195,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Finds a root GameObject in a scene by name
+    /// </summary>
+    /// <param name="scene">The scene containing the object</param>
+    /// <param name="rootGameObjectName">The name of the object to find</param>
+    /// <returns>The root <see cref="GameObject"/> if found and null otherwise</returns>
     private GameObject FindRootGameObjectByName(Scene scene, string rootGameObjectName)
     {
         if (!scene.IsValid())
