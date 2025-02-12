@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -35,6 +36,8 @@ public class PartyManager : MonoBehaviour
 
     public void CreateExampleParty()
     {
+        // Create a couple of example characters - normally this would be done through a character creation screen
+        // This is just for testing purposes
         var character = Instantiate(defaultCharacterPrefab, partyGameObject);
         var characterComponent = character.GetComponent<Character>();
         characterComponent.SetHitPoints(defaultCharacterData.characterClass.hitDie);
@@ -50,12 +53,23 @@ public class PartyManager : MonoBehaviour
 
     public Character GetRandomCharacter()
     {
+        if (partyMembers.Count == 0)
+        {
+            Debug.LogError("No party members found");
+            return null;
+        }
         return partyMembers[Random.Range(0, partyMembers.Count)];
     }
 
     public Character GetWeakestCharacter()
     {
-        Character weakestCharacter = partyMembers[0];
+        if (partyMembers.Count == 0)
+        {
+            Debug.LogError("No party members found");
+            return null;
+        }
+
+        Character weakestCharacter = partyMembers.FirstOrDefault();
         foreach (var character in partyMembers)
         {
             if (character.GetHitPoints() < weakestCharacter.GetHitPoints())
