@@ -30,6 +30,10 @@ public class BattleManager : MonoBehaviour
         StartPlayerTurn();
     }
 
+    /// <summary>
+    /// Handles the attack for the current character by reducing the targeted monster's hit points
+    /// and signalling the encounter end if the monster is dead
+    /// </summary>
     public void HandleAttackForCharacter()
     {
         if (targetedMonster == null)
@@ -63,22 +67,29 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the attack for the current monster by reducing the targeted character's hit points
+    /// </summary>
     public void HandleAttackForMonster()
     {
         int monsterMinDamage = currentMonster.monsterData.attacks.FirstOrDefault().minDamage;
         int monsterMaxDamage = currentMonster.monsterData.attacks.FirstOrDefault().maxDamage;
         int damage = Random.Range(monsterMinDamage, monsterMaxDamage);
         targetedCharacter.TakeDamage(damage);
-
         Debug.Log($"Monster dealt {damage} damage to targeted character");
+        // TODO check if character is dead and end encounter if so
     }
 
     private Monster SelectMonsterToAttack()
     {
+        // just attack the first monster for now
         Debug.Log("Selecting monster to attack");
         return monstersInEncounter.FirstOrDefault();
     }
 
+    /// <summary>
+    /// Starts the turn for the next character in the party
+    /// </summary>
     private void StartPlayerTurn()
     {
         if (IsEncounterOver())
@@ -91,6 +102,9 @@ public class BattleManager : MonoBehaviour
         character.ShowCharacterAsSelectedInEncounter();
     }
 
+    /// <summary>
+    /// Starts the turn for the next monster in the encounter
+    /// </summary>
     private void StartMonstersTurn()
     {
         if (IsEncounterOver())
@@ -101,6 +115,10 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(MonstersTurnCoroutine());
     }
 
+    /// <summary>
+    /// Coroutine to handle the turn for each monster in the encounter
+    /// </summary>
+    /// <returns>An enumerator representing the progress of the monsters turns</returns>
     private IEnumerator MonstersTurnCoroutine()
     {
         foreach (var monster in monstersInEncounter)
@@ -119,11 +137,19 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks if the encounter is over by checking if there are no monsters or party members left
+    /// </summary>
+    /// <returns>True if the encounter should end and false otherwise</returns>
     private bool IsEncounterOver()
     {
         return monstersInEncounter.Count <= 0 || partyMembersInEncounter.Count <= 0 || AreAllPartyMembersDead();
     }
 
+    /// <summary>
+    /// Checks if all party members are dead
+    /// </summary>
+    /// <returns>Returns true is all party members are dead and false otherwise</returns>
     private bool AreAllPartyMembersDead()
     {
         return partyMembersInEncounter.Exists(partyMember => partyMember.GetHitPoints() > 0);
