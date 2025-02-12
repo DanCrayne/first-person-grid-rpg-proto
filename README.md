@@ -27,6 +27,7 @@ The project includes a simple grid movement control system, character movement, 
 ### Usage
 
 **Running the Project**:
+ - Open the `GameManager` *Scene* `File > Open Scene > Scenes > GameManager`
  - Press Play in the Unity Editor to see the game in action.
  - You will be able to walk around a small map and experience thrilling random encounters every 5 steps.
  - Encounters load a separate Encounter area with randomly spawned monsters.
