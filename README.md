@@ -132,11 +132,11 @@ public class ItemData : ScriptableObject
 }
 ```
 
-![Creating an item in the Unity editor](image.png)
+![Creating an item in the Unity editor](images/image.png)
 
 Selecting this menu item opens a form for creating an item
 
-![Item Data creation form](image-1.png)
+![Item Data creation form](images/image-1.png)
 
 ## Scripts
 
