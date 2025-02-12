@@ -34,18 +34,19 @@ The project includes a simple grid movement control system, character movement, 
 
 ## Basic game flow
 
-### Diagram
+### Main Game Loop Diagram
+
 ```mermaid
 graph TD
     A[Start Game] --> B[Main Menu]
     B --> |New Game | C[Initialize Game]
     B --> |Load Game | D[Load Saved Data]
-    C --> E[Enter Dungeon Map]
-    D --> E[Enter Dungeon Map]
+    C --> E[Enter Dungeon]
+    D --> E[Enter Dungeon]
     E --> F[Player Movement]
     F --> |Random Encounter| G[Load Encounter Scene]
     G --> H[Battle Phase]
-    H --> |Victory| I[Return to Dungeon Map]
+    H --> |Victory| I[Return to Dungeon]
     H --> |Defeat| J[Game Over]
     I --> F
     J --> B
@@ -53,6 +54,24 @@ graph TD
 
 ### Gameplay Demo
 ![Gameplay demo](images/grid-rpg-demo.gif)
+
+### Encounter Diagram
+
+```mermaid
+graph TD
+    A[Player Moves] --> B{Determine If Encountered}
+    B --> |Yes| C[Trigger Encounter]
+    B --> |No| D[Continue Moving]
+    C --> E[Setup Encounter]
+    E --> F[Open Battle Menu]
+    E --> G[Spawn Monsters]
+    G --> H[Start Battle]
+    H --> I{Battle Outcome}
+    I --> |Victory| J[Return to Dungeon]
+    I --> |Defeat| K[Game Over]
+    J --> D
+    K --> L[Main Menu]
+```
 
 ## Project Structure
 
@@ -62,91 +81,28 @@ This is the basic structure of the project to give you an idea of how the projec
 +---Resources
 |   |
 |   +---Data
-|   |   |
-|   |   +---AttackTypes
-|   |   |       Bite.asset
-|   |   |       Claw.asset
-|   |   |       ...
-|   |   |
-|   |   +---Characters
-|   |   |       Biff.asset
-|   |   |       Fred.asset
-|   |   |       ...
-|   |   |
-|   |   +---Classes
-|   |   |       Fighter.asset
-|   |   |       ...
-|   |   |
-|   |   +---Dungeons
-|   |   |       Dungeon01.asset
-|   |   |       ...
-|   |   |
-|   |   +---Encounters
-|   |   |       Encounter01.asset
-|   |   |       ...
-|   |   |
-|   |   +---Monsters
-|   |   |       Centipede.asset
-|   |   |       Millipede.asset
-|   |   |       ...
-|   |   |
-|   |   +---Parties
-|   |   |       ExampleParty.asset
-|   |   |       ...
-|   |   |
-|   |   \---Races
-|   |           Dwarf.asset
-|   |           Human.asset
-|   |           ...
 |   |
 |   +---Materials
-|   |       CharacterSkin.mat
-|   |       GoblinSkin.mat
-|   |       ...
 |   |
 |   \---Prefabs
-|           Block.prefab
-|           Block_Corner.prefab
-|           ...
 |
 +---Scenes
-|       Dungeon01.unity
-|       Encounter.unity
-|       ...
 |
 +---Scripts
     |
     +---Components
-    |       Character.cs
-    |       Monster.cs
-    |       ...
     |
     +---Constants
-    |       LayerMaskConstants.cs
-    |       ...
     |
     +---DataTemplates
-    |       ActionTypes.cs
-    |       ArmorData.cs
-    |       ...
     |
     +---EventHandling
-    |       EncounterEventNotifier.cs
-    |       GeneralNotifier.cs
-    |       ...
     |
     +---Managers
-    |       EncounterManager.cs
-    |       GameManager.cs
-    |       ...
     |
     +---Movement
-    |       TurnBasedPlayerInputHandler.cs
-    |       ...
     |
     \---UI
-            EncounterCharacterInfo.cs
-            ...
 ```
 
 ### Project Organization
@@ -280,6 +236,11 @@ After customizing the Party Panel, middle encounter view, and Actions Panel, the
 and at runtime, when the character info panels are added as children to the Party Panel and the middle area is set
 to invisible, it looks like this:
 ![Encounter Prototype](images/image-5.png)
+
+## TODO
+
+1. Unit tests
+
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
