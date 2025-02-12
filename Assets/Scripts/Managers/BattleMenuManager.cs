@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.TextCore.Text;
 
 public class BattleMenuManager : MonoBehaviour
 {
@@ -10,10 +9,19 @@ public class BattleMenuManager : MonoBehaviour
     public GameObject partyPanel;
     public GameObject actionsPanel;
 
+    /// <summary>
+    /// The first selected button in the Actions Panel
+    /// </summary>
     public GameObject firstSelectedActionsButton;
 
+    /// <summary>
+    /// A list of character panels in the Party Panel
+    /// </summary>
     public List<GameObject> characterPanels;
 
+    /// <summary>
+    /// A map of <see cref="Character"/> to their corresponding <see cref="GameObject"/> in the Party Panel
+    /// </summary>
     private Dictionary<Character, GameObject> _characterInfoMap = new Dictionary<Character, GameObject>();
 
     void Start()
@@ -43,16 +51,30 @@ public class BattleMenuManager : MonoBehaviour
         CloseAllBattleMenus();
     }
 
+    /// <summary>
+    /// Returns the Party Panel game object
+    /// </summary>
+    /// <returns>The Party Panel <see cref="GameObject"/></returns>
+    /// <remarks>The Party Panel is a Unity UI container where character info will be displayed</remarks>
     public GameObject GetPartyPanel()
     {
         return partyPanel;
     }
 
+    /// <summary>
+    /// Returns the Actions Panel game object
+    /// </summary>
+    /// <returns>The Actions Panel <see cref="GameObject"/></returns>
+    /// <remarks>The Actions Panel is a Unity UI container where the list of character actions will be displayed</remarks>
     public GameObject GetActionsPanel()
     {
         return actionsPanel;
     }
 
+    /// <summary>
+    /// Populates the Party Panel with the given list of characters
+    /// </summary>
+    /// <param name="party">A list of <see cref="Character"/> representing the party in the battle</param>
     public void PopulatePartyPanel(List<Character> party)
     {
         // clear the PartyPanel
@@ -71,6 +93,10 @@ public class BattleMenuManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the Party Panel with the current hit points of the characters in the party
+    /// </summary>
+    /// <param name="party">A list of <see cref="Character"/> representing the party in the battle</param>
     public void UpdatePartyPanel(List<Character> party)
     {
         foreach (var character in party)
@@ -88,6 +114,10 @@ public class BattleMenuManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Deletes all children of the given game object
+    /// </summary>
+    /// <param name="parent">The parent <see cref="GameObject"/> from which to delete children</param>
     private void DeleteChildrenOfGameObject(GameObject parent)
     {
         foreach (Transform child in partyPanel.transform)
