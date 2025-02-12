@@ -6,69 +6,80 @@ public class EncounterManager : MonoBehaviour
 {
     public BattleMenuManager battleMenuManager;
 
+    /// <summary>
+    /// The base encounter rate for the dungeon (higher is less frequent)
+    /// </summary>
     public int baseEncounterRate = 10;
-    public static string PartyPositionSlotTagName = "EncounterPartyPositionSlot";
+
+    /// <summary>
+    /// The tag name for the monster position placeholders in the encounter
+    /// </summary>
     public static string MonsterPositionSlotTagName = "EncounterMonsterPositionSlot";
 
     private uint _playerTotalSteps = 0;
     private int _currentEncounterRate;
-    private List<GameObject> _monstersInEncounter = new List<GameObject>();
-    private List<MonsterSpawner> _monsterSpawners = new List<MonsterSpawner>();
+    private List<Monster> _monstersInEncounter = new List<Monster>();
 
-    void Start()
+    private void OnEnable()
     {
         PlayerActionNotifier.OnPlayerMadeNoise += OnPlayerMadeNoise;
         PlayerActionNotifier.OnPlayerMoved += OnPlayerMoved;
+        EncounterEventNotifier.OnEncounterEnd += EndBattle;
         _currentEncounterRate = baseEncounterRate;
+    }
 
-        // Create monster spawners for each possible monster
-        foreach (var monster in GameManager.Instance.DungeonData.possibleMonsters)
-        {
-            var monsterSpawnerObject = new GameObject("MonsterSpawner");
-            var monsterSpawner = monsterSpawnerObject.AddComponent<MonsterSpawner>();
-            monsterSpawner.monsterData = monster;
-            _monsterSpawners.Add(monsterSpawner);
-        }
+    private void OnDisable()
+    {
+        PlayerActionNotifier.OnPlayerMadeNoise -= OnPlayerMadeNoise;
+        PlayerActionNotifier.OnPlayerMoved -= OnPlayerMoved;
+        EncounterEventNotifier.OnEncounterEnd -= EndBattle;
     }
 
     public void SetupEncounter()
     {
-        battleMenuManager.OpenMainMenu();
+        battleMenuManager.OpenBattleMenu();
 
         // Spawn random monsters (for this dungeon) across the encounter's monster position slots
         var monsterPositions = GetMonsterPositions();
-        foreach (var position in monsterPositions)
+        SpawnMonstersAtPositions(monsterPositions);
+
+        var battleManager = GameManager.Instance.GetComponent<BattleManager>();
+        var party = GameManager.Instance.GetComponent<PartyManager>().GetPartyMembers();
+        battleManager.StartBattle(party, _monstersInEncounter);
+    }
+
+    private void SpawnMonstersAtPositions(IEnumerable<Vector3> positions)
+    {
+        var ps = positions.ToList();
+
+        foreach (var position in positions)
         {
-            // pick a random monster spawner to use
-            var monsterSpawner = _monsterSpawners[Random.Range(0, _monsterSpawners.Count)];
+            // pick a random monster spawner and spawn a monster at the given position
+            var numberOfMonsterSpawnersForDungeon = GameManager.Instance.DungeonData.monsterSpawners.Length;
+            if (numberOfMonsterSpawnersForDungeon <= 0)
+            {
+                Debug.Log("No monster spawners found in dungeon data");
+                return;
+            }
+            var monsterSpawner = GameManager.Instance.DungeonData.monsterSpawners[Random.Range(0, numberOfMonsterSpawnersForDungeon)];
             var spawnedMonster = monsterSpawner.SpawnMonster(GameManager.Instance.GetEncounterGameObject().transform, position);
-            _monstersInEncounter.Add(spawnedMonster);
+            _monstersInEncounter.Add(spawnedMonster.GetComponent<Monster>());
         }
     }
 
-    public void HandleAttack()
+    private void DestroyMonstersInEncounter()
     {
-        if (_monstersInEncounter.Count >= 1)
+        foreach (var monster in _monstersInEncounter)
         {
-            var targetedMonster = _monstersInEncounter.FirstOrDefault();
-            targetedMonster.GetComponent<Monster>().TakeDamage(100);
-            _monstersInEncounter.Remove(targetedMonster);
+            Destroy(monster);
         }
-
-        if (_monstersInEncounter.Count < 1)
-        {
-            EndBattle();
-        }
+        _monstersInEncounter.Clear();
     }
 
     public void EndBattle()
     {
-        battleMenuManager.ExitMainMenu();
-
-        Debug.Log("Encounter manager: encounter ended!");
-
-        // Notify that the encounter has ended - note this needs to be done after activating the dungeon object or else it won't get the message
-        EncounterEventNotifier.EncounterEnd();
+        Debug.Log("Encounter ended");
+        battleMenuManager.ExitBattleMenu();
     }
 
     private void OnPlayerMoved()

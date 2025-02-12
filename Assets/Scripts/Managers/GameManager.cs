@@ -20,13 +20,24 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static event Action<string> OnSceneLoaded;
 
-    private Scene DungeonScene;
-    private GameObject EncounterGameObject;
-    private GameObject DungeonGameObject;
+    private Scene _dungeonScene;
+    private GameObject _encounterGameObject;
+    private GameObject _dungeonGameObject;
+    private PartyManager _partyManager;
 
     public GameObject GetEncounterGameObject()
     {
-        return EncounterGameObject;
+        return _encounterGameObject;
+    }
+
+    public PartyManager GetPartyManager()
+    {
+        return _partyManager;
+    }
+
+    public BattleManager GetBattleManager()
+    {
+        return _encounterGameObject.GetComponent<BattleManager>();
     }
 
     /// <summary>
@@ -53,6 +64,7 @@ public class GameManager : MonoBehaviour
         SetupSingletonInstance();
         SubscribeToEvents();
         LoadScene(DungeonData.dungeonSceneName, InitializeDungeonSceneAndGameObjects);
+        _partyManager = GetComponent<PartyManager>();
     }
 
     private void SetupSingletonInstance()
@@ -74,8 +86,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void ActivateEncounterGameObject()
     {
-        EncounterGameObject.SetActive(true);
-        DungeonGameObject.SetActive(false);
+        _encounterGameObject.SetActive(true);
+        _dungeonGameObject.SetActive(false);
     }
 
     /// <summary>
@@ -83,26 +95,26 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void ActivateDungeonGameObject()
     {
-        EncounterGameObject.SetActive(false);
-        DungeonGameObject.SetActive(true);
+        _encounterGameObject.SetActive(false);
+        _dungeonGameObject.SetActive(true);
     }
 
     private void InitializeDungeonSceneAndGameObjects()
     {
-        DungeonScene = SceneManager.GetSceneByName(DungeonData.dungeonSceneName);
-        if (DungeonScene.IsValid() == false)
+        _dungeonScene = SceneManager.GetSceneByName(DungeonData.dungeonSceneName);
+        if (_dungeonScene.IsValid() == false)
         {
             Debug.LogError("Dungeon scene is invalid");
             return;
         }
         // activate dungeon object
-        SceneManager.SetActiveScene(DungeonScene);
-        DungeonGameObject = FindRootGameObjectByName(DungeonScene, DungeonData.dungeonObjectName);
-        DungeonGameObject.SetActive(true); // The dungeon game object should be shown at first
+        SceneManager.SetActiveScene(_dungeonScene);
+        _dungeonGameObject = FindRootGameObjectByName(_dungeonScene, DungeonData.dungeonObjectName);
+        _dungeonGameObject.SetActive(true); // The dungeon game object should be shown at first
 
         // active encounter object
-        EncounterGameObject = FindRootGameObjectByName(DungeonScene, EncounterData.encounterObjectName);
-        EncounterGameObject.SetActive(false);
+        _encounterGameObject = FindRootGameObjectByName(_dungeonScene, EncounterData.encounterObjectName);
+        _encounterGameObject.SetActive(false);
     }
 
     private void SubscribeToEvents()
