@@ -16,9 +16,9 @@ public class Character : MonoBehaviour
     public CharacterData characterData;
 
     /// <summary>
-    /// The <see cref="EncounterCharacterInfo"/> for this character representing their current status as a UI panel during battle
+    /// The <see cref="CharacterPanel"/> for this character representing their current status as a UI panel during battle
     /// </summary>
-    private EncounterCharacterInfo _encounterCharacterInfo;
+    //private EncounterCharacterInfo _encounterCharacterInfo;
 
     private string _characterName;
     private int _currentHitPoints;
@@ -35,6 +35,16 @@ public class Character : MonoBehaviour
     {
         // TODO: make this based on equipped weapon
         return UnityEngine.Random.Range(1, 20);
+    }
+
+    public bool IsCharacterDead()
+    {
+        if (_currentHitPoints <= 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public int GetHitPoints()
@@ -62,27 +72,14 @@ public class Character : MonoBehaviour
         return _characterName;
     }
 
-    public void SetEncounterCharacterInfo(EncounterCharacterInfo encounterCharacterInfo)
-    {
-        this._encounterCharacterInfo = encounterCharacterInfo;
-    }
-
-    public void SetCharacterInfo()
-    {
-        _encounterCharacterInfo.SetCharacterInfo(_characterName, _currentHitPoints);
-    }
-
-
     public void TakeDamage(int damage)
     {
         _currentHitPoints -= damage;
-        _encounterCharacterInfo.SetCharacterInfo(_characterName, _currentHitPoints);
     }
 
     public void Heal(int healing)
     {
         _currentHitPoints += healing;
-        _encounterCharacterInfo.SetCharacterInfo(_characterName, _currentHitPoints);
     }
 
     public void LevelUp()
@@ -109,25 +106,5 @@ public class Character : MonoBehaviour
     public int GetLevel()
     {
         return _level;
-    }
-
-    public void ShowCharacterAsSelectedInEncounter()
-    {
-        _encounterCharacterInfo.ShowCharacterPanelAsSelected();
-    }
-
-    public void ShowCharacterAsDeselectedInEncounter()
-    {
-        _encounterCharacterInfo.ShowCharacterPanelAsDeselected();
-    }
-
-    public void ShowCharacterAsDeadInEncounter()
-    {
-        _encounterCharacterInfo.ShowCharacterPanelAsDead();
-    }
-
-    public void ShowCharacterAsTargetedInEncounter()
-    {
-        _encounterCharacterInfo.ShowCharacterPanelAsTargeted();
     }
 }

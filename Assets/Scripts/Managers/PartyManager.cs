@@ -8,7 +8,7 @@ using UnityEngine;
 public class PartyManager : MonoBehaviour
 {
     /// <summary>
-    /// The prefab for the <see cref="EncounterCharacterInfo"/> used for each character
+    /// The prefab for the <see cref="CharacterPanel"/> used for each character
     /// </summary>
     public GameObject encounterCharacterInfoPanelPrefab;
 
@@ -61,6 +61,11 @@ public class PartyManager : MonoBehaviour
         return partyMembers[Random.Range(0, partyMembers.Count)];
     }
 
+    public bool IsPartyWiped()
+    {
+        return !partyMembers.Any(c => c.GetHitPoints() > 0);
+    }
+
     public Character GetWeakestCharacter()
     {
         if (partyMembers.Count == 0)
@@ -91,7 +96,7 @@ public class PartyManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Instantiates the <see cref="EncounterCharacterInfo"/> prefab and adds it to the party panel UI
+    /// Instantiates the <see cref="CharacterPanel"/> prefab and adds it to the party panel UI
     /// </summary>
     /// <param name="parent">The <see cref="Transform"> to set as the parent of the instance</param>
     /// <param name="infoPanelPrefab">The prefab <see cref="GameObject"/> to instantiate</param>

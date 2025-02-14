@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,6 +9,7 @@ public class BattleMenuManager : MonoBehaviour
     public GameObject battleMenuCanvas;
     public GameObject partyPanel;
     public GameObject actionsPanel;
+    public TMP_Text battleLogText;
 
     /// <summary>
     /// The first selected button in the Actions Panel
@@ -51,6 +53,17 @@ public class BattleMenuManager : MonoBehaviour
         CloseAllBattleMenus();
     }
 
+    public void LogBattleMessage(string message, bool append = false)
+    {
+        if (append)
+        {
+            battleLogText.text += message;
+            return;
+        }
+
+        battleLogText.text = message;
+    }
+
     /// <summary>
     /// Returns the Party Panel game object
     /// </summary>
@@ -85,12 +98,56 @@ public class BattleMenuManager : MonoBehaviour
         foreach (var character in party)
         {
             var characterPanel = Instantiate(character.characterData.encounterCharacterInfoPrefab, partyPanel.transform);
-            var characterInfo = characterPanel.GetComponent<EncounterCharacterInfo>();
+            var characterInfo = characterPanel.GetComponent<CharacterPanel>();
             characterInfo.SetCharacterInfo(character.GetCharacterName(), character.GetHitPoints());
             characterPanels.Add(characterPanel);
 
             _characterInfoMap.Add(character, characterPanel);
         }
+    }
+
+    public void ShowCharacterAsSelectedInPartyPanel(Character character)
+    {
+        var characterPanel = _characterInfoMap[character];
+        if (characterPanel == null)
+        {
+            Debug.Log("Character panel doesn't exist!");
+        }
+
+        characterPanel.GetComponent<CharacterPanel>().ShowCharacterPanelAsSelected();
+    }
+
+    public void ShowCharacterAsDeselectedInPartyPanel(Character character)
+    {
+        var characterPanel = _characterInfoMap[character];
+        if (characterPanel == null)
+        {
+            Debug.Log("Character panel doesn't exist!");
+        }
+
+        characterPanel.GetComponent<CharacterPanel>().ShowCharacterPanelAsDeselected();
+    }
+
+    public void ShowCharacterAsDeadInPartyPanel(Character character)
+    {
+        var characterPanel = _characterInfoMap[character];
+        if (characterPanel == null)
+        {
+            Debug.Log("Character panel doesn't exist!");
+        }
+
+        characterPanel.GetComponent<CharacterPanel>().ShowCharacterPanelAsDead();
+    }
+
+    public void ShowCharacterAsTargetedInPartyPanel(Character character)
+    {
+        var characterPanel = _characterInfoMap[character];
+        if (characterPanel == null)
+        {
+            Debug.Log("Character panel doesn't exist!");
+        }
+
+        characterPanel.GetComponent<CharacterPanel>().ShowCharacterPanelAsTargeted();
     }
 
     /// <summary>
@@ -104,7 +161,7 @@ public class BattleMenuManager : MonoBehaviour
             if (_characterInfoMap.ContainsKey(character))
             {
                 GameObject characterPanel = _characterInfoMap[character];
-                var characterInfo = characterPanel.GetComponent<EncounterCharacterInfo>();
+                var characterInfo = characterPanel.GetComponent<CharacterPanel>();
                 characterInfo.SetCharacterInfo(character.GetCharacterName(), character.GetHitPoints());
             }
             else

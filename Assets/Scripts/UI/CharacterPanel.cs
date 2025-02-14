@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Represents the UI for a character in an encounter
 /// </summary>
-public class EncounterCharacterInfo : MonoBehaviour
+public class CharacterPanel : MonoBehaviour
 {
     public TMP_Text characterNameSlot;
     public TMP_Text characterHpSlot;
@@ -16,15 +16,15 @@ public class EncounterCharacterInfo : MonoBehaviour
     public GameObject _characterPanel;
 
     /// <summary>
-    /// Creates an <see cref="EncounterCharacterInfo"/> panel for the character representing their current status during battle
+    /// Creates an <see cref="CharacterPanel"/> panel for the character representing their current status during battle
     /// </summary>
     /// <param name="parent">The <see cref="Transform"/> to add the created panel to</param>
     /// <param name="prefab">The prefab to use for the panel</param>
     /// <returns></returns>
-    public static EncounterCharacterInfo Create(Transform parent, GameObject prefab)
+    public static CharacterPanel Create(Transform parent, GameObject prefab)
     {
         var encounterCharacterInfoGameObject = Instantiate(prefab, parent);
-        return encounterCharacterInfoGameObject.GetComponent<EncounterCharacterInfo>();
+        return encounterCharacterInfoGameObject.GetComponent<CharacterPanel>();
     }
 
     public void SetCharacterInfo(string name, int hp)

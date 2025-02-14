@@ -32,11 +32,25 @@ public class Monster : MonoBehaviour
         return currentHitPoints;
     }
 
-    public void Attack(Character character)
+    public bool IsMonsterDead()
+    {
+        return currentHitPoints <= 0;
+    }
+
+    /// <summary>
+    /// Calculates attack damage for the given character
+    /// </summary>
+    /// <param name="character">The character being attacked</param>
+    /// <returns>An <see cref="AttackResult"/> representing the randomized outcome</returns>
+    public AttackResult CalculateRandomAttackResult(Character character)
     {
         var randomAttack = Random.Range(0, monsterData.attacks.Length);
+
+        // TODO: get character AC and calculate attack and damage
+        bool didAttackHit = true;
         var randomDamage = Random.Range(monsterData.attacks[randomAttack].minDamage, monsterData.attacks[randomAttack].maxDamage);
-        character.TakeDamage(randomDamage);
+
+        return new AttackResult(didAttackHit, monsterData.attacks[randomAttack].attackName, randomDamage);
     }
 
     public Character SelectAttackTarget(List<Character> characters)

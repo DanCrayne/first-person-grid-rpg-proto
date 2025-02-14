@@ -19,7 +19,6 @@ public class EncounterManager : MonoBehaviour
 
     private uint _playerTotalSteps = 0;
     private int _currentEncounterRate;
-    private List<Monster> _monstersInEncounter = new List<Monster>();
     private const int MOST_FREQUENT_ENCOUNTER_RATE = 5;
 
     private void OnEnable()
@@ -46,21 +45,24 @@ public class EncounterManager : MonoBehaviour
 
         // Spawn random monsters (for this dungeon) across the encounter's monster position slots
         var monsterPositions = GetMonsterPositions();
-        SpawnMonstersAtPositions(monsterPositions);
+        var spawnedMonsters = SpawnMonstersAtPositions(monsterPositions);
+
+        var party = GameManager.Instance.GetComponent<PartyManager>().GetPartyMembers();
 
         var battleManager = GameManager.Instance.GetComponent<BattleManager>();
-        var party = GameManager.Instance.GetComponent<PartyManager>().GetPartyMembers();
-        battleManager.StartBattle(party, _monstersInEncounter);
+        battleManager.partyMembersInEncounter = party;
+        battleManager.monstersInEncounter = spawnedMonsters;
+        battleManager.StartBattle();
     }
 
     /// <summary>
     /// Spawns monsters at the given positions using the monster spawners defined in the dungeon data
     /// </summary>
     /// <param name="positions">The <see cref="Vector3"/> positions to spawn monsters</param>
-    private void SpawnMonstersAtPositions(IEnumerable<Vector3> positions)
+    /// <returns>The spawned monsters</returns>
+    private List<Monster> SpawnMonstersAtPositions(IEnumerable<Vector3> positions)
     {
-        var ps = positions.ToList();
-
+        var spawnedMonsters = new List<Monster>();
         foreach (var position in positions)
         {
             // pick a random monster spawner and spawn a monster at the given position
@@ -68,24 +70,14 @@ public class EncounterManager : MonoBehaviour
             if (numberOfMonsterSpawnersForDungeon <= 0)
             {
                 Debug.Log("No monster spawners found in dungeon data");
-                return;
+                return null;
             }
             var monsterSpawner = GameManager.Instance.DungeonData.monsterSpawners[Random.Range(0, numberOfMonsterSpawnersForDungeon)];
             var spawnedMonster = monsterSpawner.SpawnMonster(GameManager.Instance.GetEncounterGameObject().transform, position);
-            _monstersInEncounter.Add(spawnedMonster.GetComponent<Monster>());
+            spawnedMonsters.Add(spawnedMonster.GetComponent<Monster>());
         }
-    }
 
-    /// <summary>
-    /// Destroy all monsters in the encounter and clear the list of monsters in encounter
-    /// </summary>
-    private void DestroyMonstersInEncounter()
-    {
-        foreach (var monster in _monstersInEncounter)
-        {
-            Destroy(monster);
-        }
-        _monstersInEncounter.Clear();
+        return spawnedMonsters;
     }
 
     public void EndBattle()
