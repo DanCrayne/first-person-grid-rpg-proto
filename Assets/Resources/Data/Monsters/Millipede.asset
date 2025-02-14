@@ -22,6 +22,8 @@ MonoBehaviour:
   treasureType: 85
   minNumberAppearing: 1
   maxNumberAppearing: 4
-  attacks: []
+  attacks:
+  - {fileID: 11400000, guid: 0e1e304f7e91d214190359dd5ac38aad, type: 2}
+  - {fileID: 11400000, guid: 3c2369939e94de64ca7b67895e81a510, type: 2}
   items: []
   monsterPrefab: {fileID: 3536735218046874060, guid: aab6c6bc0e31a1d4cade81edf0570223, type: 3}
