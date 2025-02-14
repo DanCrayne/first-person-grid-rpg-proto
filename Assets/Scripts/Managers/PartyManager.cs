@@ -10,7 +10,7 @@ public class PartyManager : MonoBehaviour
     /// <summary>
     /// The prefab for the <see cref="CharacterPanel"/> used for each character
     /// </summary>
-    public GameObject encounterCharacterInfoPanelPrefab;
+    public GameObject characterPanelPrefab;
 
     /// <summary>
     /// The <see cref="Transform"/> for the party member display panel
@@ -26,8 +26,6 @@ public class PartyManager : MonoBehaviour
     public Transform partyGameObject;
     public CharacterData defaultCharacterData;
     public List<Character> partyMembers = new List<Character>();
-
-    private List<GameObject> encounterCharacterInfoPanels = new List<GameObject>();
 
     private void Start()
     {
@@ -93,17 +91,6 @@ public class PartyManager : MonoBehaviour
     public void RemoveCharacterFromParty(Character character)
     {
         partyMembers.Remove(character);
-    }
-
-    /// <summary>
-    /// Instantiates the <see cref="CharacterPanel"/> prefab and adds it to the party panel UI
-    /// </summary>
-    /// <param name="parent">The <see cref="Transform"> to set as the parent of the instance</param>
-    /// <param name="infoPanelPrefab">The prefab <see cref="GameObject"/> to instantiate</param>
-    /// <returns>The instantiated <see cref="GameObject"/></returns>
-    private GameObject InstantiateEncounterCharacterInfoPrefab(Transform parent, GameObject infoPanelPrefab)
-    {
-        return Instantiate(infoPanelPrefab, parent);
     }
 }
 

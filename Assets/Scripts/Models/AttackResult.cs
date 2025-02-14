@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class AttackResult
 {
     public bool didAttackHit;
