@@ -22,9 +22,9 @@ public class BattleMenuManager : MonoBehaviour
     public List<GameObject> characterPanels;
 
     /// <summary>
-    /// A map of <see cref="Character"/> to their corresponding <see cref="GameObject"/> in the Party Panel
+    /// A map of <see cref="Character"/> to their corresponding character panels
     /// </summary>
-    private Dictionary<Character, GameObject> _characterInfoMap = new Dictionary<Character, GameObject>();
+    private Dictionary<Character, GameObject> characterToPanelMap = new Dictionary<Character, GameObject>();
 
     void Start()
     {
@@ -65,26 +65,6 @@ public class BattleMenuManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the Party Panel game object
-    /// </summary>
-    /// <returns>The Party Panel <see cref="GameObject"/></returns>
-    /// <remarks>The Party Panel is a Unity UI container where character info will be displayed</remarks>
-    public GameObject GetPartyPanel()
-    {
-        return partyPanel;
-    }
-
-    /// <summary>
-    /// Returns the Actions Panel game object
-    /// </summary>
-    /// <returns>The Actions Panel <see cref="GameObject"/></returns>
-    /// <remarks>The Actions Panel is a Unity UI container where the list of character actions will be displayed</remarks>
-    public GameObject GetActionsPanel()
-    {
-        return actionsPanel;
-    }
-
-    /// <summary>
     /// Populates the Party Panel with the given list of characters
     /// </summary>
     /// <param name="party">A list of <see cref="Character"/> representing the party in the battle</param>
@@ -92,7 +72,7 @@ public class BattleMenuManager : MonoBehaviour
     {
         // clear the PartyPanel
         DeleteChildrenOfGameObject(partyPanel);
-        _characterInfoMap.Clear();
+        characterToPanelMap.Clear();
 
         // add characters to party panel
         foreach (var character in party)
@@ -102,13 +82,13 @@ public class BattleMenuManager : MonoBehaviour
             characterInfo.SetCharacterInfo(character.GetCharacterName(), character.GetHitPoints());
             characterPanels.Add(characterPanel);
 
-            _characterInfoMap.Add(character, characterPanel);
+            characterToPanelMap.Add(character, characterPanel);
         }
     }
 
     public void ShowCharacterAsSelectedInPartyPanel(Character character)
     {
-        var characterPanel = _characterInfoMap[character];
+        var characterPanel = characterToPanelMap[character];
         if (characterPanel == null)
         {
             Debug.Log("Character panel doesn't exist!");
@@ -119,7 +99,7 @@ public class BattleMenuManager : MonoBehaviour
 
     public void ShowCharacterAsDeselectedInPartyPanel(Character character)
     {
-        var characterPanel = _characterInfoMap[character];
+        var characterPanel = characterToPanelMap[character];
         if (characterPanel == null)
         {
             Debug.Log("Character panel doesn't exist!");
@@ -130,7 +110,7 @@ public class BattleMenuManager : MonoBehaviour
 
     public void ShowCharacterAsDeadInPartyPanel(Character character)
     {
-        var characterPanel = _characterInfoMap[character];
+        var characterPanel = characterToPanelMap[character];
         if (characterPanel == null)
         {
             Debug.Log("Character panel doesn't exist!");
@@ -141,7 +121,7 @@ public class BattleMenuManager : MonoBehaviour
 
     public void ShowCharacterAsTargetedInPartyPanel(Character character)
     {
-        var characterPanel = _characterInfoMap[character];
+        var characterPanel = characterToPanelMap[character];
         if (characterPanel == null)
         {
             Debug.Log("Character panel doesn't exist!");
@@ -158,9 +138,9 @@ public class BattleMenuManager : MonoBehaviour
     {
         foreach (var character in party)
         {
-            if (_characterInfoMap.ContainsKey(character))
+            if (characterToPanelMap.ContainsKey(character))
             {
-                GameObject characterPanel = _characterInfoMap[character];
+                GameObject characterPanel = characterToPanelMap[character];
                 var characterInfo = characterPanel.GetComponent<CharacterPanel>();
                 characterInfo.SetCharacterInfo(character.GetCharacterName(), character.GetHitPoints());
             }

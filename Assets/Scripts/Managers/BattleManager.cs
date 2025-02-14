@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -206,14 +205,14 @@ public class BattleManager : MonoBehaviour
     /// <returns>True if the encounter should end and false otherwise</returns>
     private bool IsEncounterOver()
     {
-        return AreMonstersWiped() || partyMembersInEncounter.Count <= 0 || AreAllPartyMembersDead();
+        return AreMonstersWiped() || IsPartyWiped();
     }
 
     /// <summary>
     /// Checks if all party members are dead
     /// </summary>
     /// <returns>Returns true is all party members are dead and false otherwise</returns>
-    private bool AreAllPartyMembersDead()
+    private bool IsPartyWiped()
     {
         return !partyMembersInEncounter.Any(partyMember => partyMember.GetHitPoints() > 0);
     }
