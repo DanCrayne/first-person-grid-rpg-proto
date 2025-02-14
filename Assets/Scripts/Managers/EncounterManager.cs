@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
 {
-    public BattleMenuManager battleMenuManager;
+    public BattleUIManager battleMenuManager;
 
     /// <summary>
     /// The base encounter rate for the dungeon (higher is less frequent)

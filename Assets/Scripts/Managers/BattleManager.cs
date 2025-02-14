@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
-    public BattleMenuManager battleMenuManager;
+    public BattleUIManager battleMenuManager;
 
     public List<Character> partyMembersInEncounter = new List<Character>();
     public List<Monster> monstersInEncounter = new List<Monster>();

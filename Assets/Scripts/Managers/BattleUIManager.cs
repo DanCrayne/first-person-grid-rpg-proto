@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BattleMenuManager : MonoBehaviour
+public class BattleUIManager : MonoBehaviour
 {
     public GameObject rootMenuObject;
     public GameObject battleMenuCanvas;
