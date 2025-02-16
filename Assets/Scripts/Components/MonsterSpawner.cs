@@ -5,12 +5,7 @@ using UnityEngine;
 /// </summary>
 public class MonsterSpawner : MonoBehaviour
 {
-    public MonsterData monsterData;
-
-    public MonsterSpawner(MonsterData monster)
-    {
-        this.monsterData = monster;
-    }
+    public GameObject monster;
 
     /// <summary>
     /// Spawns a monster at the given position
@@ -20,21 +15,21 @@ public class MonsterSpawner : MonoBehaviour
     /// <returns>The spawned monster <see cref="GameObject"/></returns>
     public GameObject SpawnMonster(Transform parent, Vector3 position)
     {
-        if (monsterData == null || monsterData.monsterPrefab == null)
+        var monsterComponent = monster.GetComponent<Monster>();
+
+        if (monsterComponent == null || monsterComponent.monsterData.monsterPrefab == null)
         {
             Debug.LogError("MonsterData or monsterPrefab is missing.");
             return null;
         }
 
-        GameObject monster = Instantiate(monsterData.monsterPrefab, position, Quaternion.identity);
+        // instantiate monster and setup initial values
+        var monsterInstance = Instantiate(monsterComponent.monsterData.monsterPrefab, position, Quaternion.identity);
+        var spawnedMonsterComponent = monsterInstance.GetComponent<Monster>();
+        spawnedMonsterComponent.monsterData = monsterComponent.monsterData;
+        // TODO: do I need to instantiate and assign the MonsterUI here?
+        spawnedMonsterComponent.RollAndSetStats();
 
-        Monster monsterComponent = monster.GetComponent<Monster>();
-
-        if (monsterComponent != null)
-        {
-            monsterComponent.monsterData = monsterData;
-        }
-
-        return monster;
+        return monsterInstance;
     }
 }

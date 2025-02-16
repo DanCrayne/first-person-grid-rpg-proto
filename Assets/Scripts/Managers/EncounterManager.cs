@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
 {
-    public BattleUIManager battleMenuManager;
-
     /// <summary>
     /// The base encounter rate for the dungeon (higher is less frequent)
     /// </summary>
@@ -41,7 +39,6 @@ public class EncounterManager : MonoBehaviour
     /// </summary>
     public void SetupEncounter()
     {
-        battleMenuManager.OpenBattleMenu();
 
         // Spawn random monsters (for this dungeon) across the encounter's monster position slots
         var monsterPositions = GetMonsterPositions();
@@ -50,8 +47,8 @@ public class EncounterManager : MonoBehaviour
         var party = GameManager.Instance.GetComponent<PartyManager>().GetPartyMembers();
 
         var battleManager = GameManager.Instance.GetComponent<BattleManager>();
-        battleManager.partyMembersInEncounter = party;
-        battleManager.monstersInEncounter = spawnedMonsters;
+        battleManager.SetPartyMembersInEncounter(party);
+        battleManager.SetMonstersInEncounter(spawnedMonsters);
         battleManager.StartBattle();
     }
 
@@ -74,7 +71,15 @@ public class EncounterManager : MonoBehaviour
             }
             var monsterSpawner = GameManager.Instance.DungeonData.monsterSpawners[Random.Range(0, numberOfMonsterSpawnersForDungeon)];
             var spawnedMonster = monsterSpawner.SpawnMonster(GameManager.Instance.GetEncounterGameObject().transform, position);
-            spawnedMonsters.Add(spawnedMonster.GetComponent<Monster>());
+            var monsterComponent = spawnedMonster.GetComponent<Monster>();
+            if (monsterComponent != null)
+            {
+                spawnedMonsters.Add(monsterComponent);
+            }
+            else
+            {
+                Debug.Log($"Could not add monster to list of spawned monsters: no Monster component on {spawnedMonster.name}");
+            }
         }
 
         return spawnedMonsters;
@@ -83,7 +88,6 @@ public class EncounterManager : MonoBehaviour
     public void EndBattle()
     {
         Debug.Log("Encounter ended");
-        battleMenuManager.ExitBattleMenu();
     }
 
     /// <summary>

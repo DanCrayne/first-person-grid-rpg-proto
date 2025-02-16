@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -5,11 +6,15 @@ using UnityEngine.EventSystems;
 
 public class BattleUIManager : MonoBehaviour
 {
-    public GameObject rootMenuObject;
-    public GameObject battleMenuCanvas;
+    public GameObject battleUIRoot;
+    public GameObject battleUICanvas;
     public GameObject partyPanel;
     public GameObject actionsPanel;
+    public GameObject monsterSelectionPanel;
+    public GameObject castButton;
+    public GameObject defaultMonsterSelectControl;
     public TMP_Text battleLogText;
+    public BattleManager battleManager;
 
     /// <summary>
     /// The first selected button in the Actions Panel
@@ -17,40 +22,34 @@ public class BattleUIManager : MonoBehaviour
     public GameObject firstSelectedActionsButton;
 
     /// <summary>
-    /// A list of character panels in the Party Panel
-    /// </summary>
-    public List<GameObject> characterPanels;
-
-    /// <summary>
     /// A map of <see cref="Character"/> to their corresponding character panels
     /// </summary>
     private Dictionary<Character, GameObject> characterToPanelMap = new Dictionary<Character, GameObject>();
 
+    private Dictionary<Monster, MonsterSelectControl> monsterToActionControlMap = new Dictionary<Monster, MonsterSelectControl>();
+
     void Start()
     {
-        rootMenuObject.SetActive(false);
+        battleUIRoot.SetActive(false);
     }
 
     /// <summary>
     /// Opens the main menu and sets the first selected button
     /// </summary>
-    public void OpenBattleMenu()
+    public void OpenBattleUI()
     {
-        Debug.Log("Opening main menu");
-        CloseAllBattleMenus();
-        rootMenuObject.SetActive(true);
-        battleMenuCanvas.SetActive(true);
-
-        EventSystem.current.SetSelectedGameObject(firstSelectedActionsButton);
+        CloseAllBattleUIElements();
+        battleUIRoot.SetActive(true);
+        battleUICanvas.SetActive(true);
+        ActivateActionsPanel(battleManager.GetActiveCharacter());
     }
 
     /// <summary>
     /// Exits the main menu and resumes the game
     /// </summary>
-    public void ExitBattleMenu()
+    public void CloseBattleUI()
     {
-        Debug.Log("Exiting main menu");
-        CloseAllBattleMenus();
+        CloseAllBattleUIElements();
     }
 
     public void LogBattleMessage(string message, bool append = false)
@@ -62,6 +61,38 @@ public class BattleUIManager : MonoBehaviour
         }
 
         battleLogText.text = message;
+    }
+
+    public void DeactivateActionsPanel()
+    {
+        actionsPanel.SetActive(false);
+    }
+
+    public void ActivateActionsPanel(Character currentCharacter)
+    {
+        castButton.SetActive(false);
+        switch (currentCharacter.characterData.characterClass.className)
+        {
+            case "Cleric":
+            case "Mage":
+                castButton.SetActive(true);
+                break;
+        }
+
+        monsterSelectionPanel.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(firstSelectedActionsButton);
+        actionsPanel.SetActive(true);
+    }
+
+    public void DeactivateMonsterSelectionPanel()
+    {
+        monsterSelectionPanel.SetActive(false);
+    }
+
+    public void ActivateMonsterSelectionPanel()
+    {
+        actionsPanel.SetActive(false);
+        monsterSelectionPanel.SetActive(true);
     }
 
     /// <summary>
@@ -80,10 +111,46 @@ public class BattleUIManager : MonoBehaviour
             var characterPanel = Instantiate(character.characterData.encounterCharacterInfoPrefab, partyPanel.transform);
             var characterInfo = characterPanel.GetComponent<CharacterPanel>();
             characterInfo.SetCharacterInfo(character.GetCharacterName(), character.GetHitPoints());
-            characterPanels.Add(characterPanel);
+            //characterPanels.Add(characterPanel);
 
             characterToPanelMap.Add(character, characterPanel);
         }
+    }
+
+    public void PopulateMonsterSelectionPanel(List<Monster> monsters)
+    {
+        // clear the monster panel
+        DeleteChildrenOfGameObject(monsterSelectionPanel);
+        monsterToActionControlMap.Clear();
+
+        foreach (var monster in monsters)
+        {
+            if (monster != null)
+            {
+                var monsterSelectControlInstance = Instantiate(defaultMonsterSelectControl, monsterSelectionPanel.transform);
+                var monsterSelectControlComponent = monsterSelectControlInstance.GetComponent<MonsterSelectControl>();
+                monsterSelectControlComponent.SetMonsterNameOnControl(monster.monsterData.monsterName);
+                monsterSelectControlComponent.SetOnClick(() => OnMonsterSelected(monster));
+                EventSystem.current.SetSelectedGameObject(monsterSelectControlInstance);
+
+                monsterToActionControlMap.Add(monster, monsterSelectControlComponent);
+            }
+        }
+
+        ActivateMonsterSelectionPanel();
+    }
+
+    private void OnMonsterSelected(Monster monster)
+    {
+        Debug.Log($"Monster {monster.monsterData.monsterName} was selected!");
+        
+        battleManager.ExecuteCurrentCharacterAttack(monster);
+        ActivateActionsPanel(battleManager.GetActiveCharacter());
+    }
+
+    public void RemoveMonsterSelectionControlFromMonsterSelectionPanel(Monster monsterToRemove)
+    {
+        monsterToActionControlMap.Remove(monsterToRemove);
     }
 
     public void ShowCharacterAsSelectedInPartyPanel(Character character)
@@ -157,7 +224,7 @@ public class BattleUIManager : MonoBehaviour
     /// <param name="parent">The parent <see cref="GameObject"/> from which to delete children</param>
     private void DeleteChildrenOfGameObject(GameObject parent)
     {
-        foreach (Transform child in partyPanel.transform)
+        foreach (Transform child in parent.transform)
         {
             Destroy(child.gameObject);
         }
@@ -166,11 +233,9 @@ public class BattleUIManager : MonoBehaviour
     /// <summary>
     /// Deactivates all menus and clears the currently selected game object
     /// </summary>
-    private void CloseAllBattleMenus()
+    private void CloseAllBattleUIElements()
     {
-        Debug.Log("Closing all menus");
-        battleMenuCanvas.SetActive(false);
-
+        battleUICanvas.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);
     }
 }

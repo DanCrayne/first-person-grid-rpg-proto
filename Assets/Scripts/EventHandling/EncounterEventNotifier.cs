@@ -9,6 +9,8 @@ public class EncounterEventNotifier : MonoBehaviour
     public static event Action OnEncounterStart;
     public static event Action OnEncounterEnd;
     public static event Action<GameObject> OnMonsterDefeated;
+    public static event Action OnPlayerSelectingTarget;
+    public static event Action<Transform> OnPlayerSelectedTarget;
 
     /// <summary>
     /// Notify listeners that an encounter has started
@@ -33,5 +35,22 @@ public class EncounterEventNotifier : MonoBehaviour
     public static void MonsterDefeated(GameObject monster)
     {
         OnMonsterDefeated?.Invoke(monster);
+    }
+
+    /// <summary>
+    /// Notifies listeners that the player is currently selecting a target in battle
+    /// </summary>
+    public static void PlayerSelectingTarget()
+    {
+        OnPlayerSelectingTarget?.Invoke();
+    }
+
+    /// <summary>
+    /// Notifies listeners that the player selected a target and provides the target for reference
+    /// </summary>
+    /// <param name="target">The selected target</param>
+    public static void PlayerSelectedTarget(Transform target)
+    {
+        OnPlayerSelectedTarget?.Invoke(target);
     }
 }

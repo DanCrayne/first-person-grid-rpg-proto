@@ -7,24 +7,12 @@ using UnityEngine;
 /// </summary>
 public class PartyManager : MonoBehaviour
 {
-    /// <summary>
-    /// The prefab for the <see cref="CharacterPanel"/> used for each character
-    /// </summary>
-    public GameObject characterPanelPrefab;
-
-    /// <summary>
-    /// The <see cref="Transform"/> for the party member display panel
-    /// </summary>
-    public Transform partyPanel;
-
-    /// <summary>
-    /// The <see cref="Transform"/> for the actions panel (e.g. the panel for attack, cast spell, etc. controls)
-    /// </summary>
-    public Transform actionsPanel;
-
-    public GameObject defaultCharacterPrefab;
-    public Transform partyGameObject;
+    // TODO: Delete - for example party only
+    public GameObject fighterCharacterPrefab;
+    public GameObject mageCharacterPrefab;
     public CharacterData defaultCharacterData;
+
+    public Transform partyGameObject;
     public List<Character> partyMembers = new List<Character>();
 
     private void Start()
@@ -36,17 +24,23 @@ public class PartyManager : MonoBehaviour
     {
         // Create a couple of example characters - normally this would be done through a character creation screen
         // This is just for testing purposes
-        var character = Instantiate(defaultCharacterPrefab, partyGameObject);
+        var character = Instantiate(fighterCharacterPrefab, partyGameObject);
         var characterComponent = character.GetComponent<Character>();
         characterComponent.SetHitPoints(defaultCharacterData.characterClass.hitDie);
-        characterComponent.SetCharacterName("Biff");
+        characterComponent.SetCharacterName("Balin");
         partyMembers.Add(characterComponent);
 
-        var character1 = Instantiate(defaultCharacterPrefab, partyGameObject);
+        var character1 = Instantiate(fighterCharacterPrefab, partyGameObject);
         var characterComponent1 = character1.GetComponent<Character>();
         characterComponent1.SetHitPoints(defaultCharacterData.characterClass.hitDie);
-        characterComponent1.SetCharacterName("Marty");
+        characterComponent1.SetCharacterName("Gimli");
         partyMembers.Add(characterComponent1);
+
+        var character2 = Instantiate(mageCharacterPrefab, partyGameObject);
+        var characterComponent2 = character2.GetComponent<Character>();
+        characterComponent2.SetHitPoints(defaultCharacterData.characterClass.hitDie);
+        characterComponent2.SetCharacterName("Gandalf");
+        partyMembers.Add(characterComponent2);
     }
 
     public Character GetRandomCharacter()

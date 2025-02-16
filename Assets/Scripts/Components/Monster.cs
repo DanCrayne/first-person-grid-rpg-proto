@@ -1,5 +1,3 @@
-using NUnit.Framework;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,16 +8,13 @@ using UnityEngine;
 public class Monster : MonoBehaviour
 {
     public MonsterData monsterData;
+    //public MonsterUI monsterUI;
 
-    private int currentHitPoints;
+    private int _currentHitPoints;
 
     void Start()
     {
-        if (monsterData != null)
-        {
-            currentHitPoints = RollHp();
-            gameObject.name = monsterData.monsterName;
-        }
+        //monsterUI = transform.GetComponent<MonsterUI>();
     }
 
     public int GetMaxHitPoints()
@@ -29,12 +24,33 @@ public class Monster : MonoBehaviour
 
     public int GetHitPoints()
     {
-        return currentHitPoints;
+        return _currentHitPoints;
     }
 
     public bool IsMonsterDead()
     {
-        return currentHitPoints <= 0;
+        return _currentHitPoints <= 0;
+    }
+
+    public void SetHitPoints(int hitPoints)
+    {
+        _currentHitPoints = hitPoints;
+    }
+
+    public void RollAndSetStats()
+    {
+        _currentHitPoints = RollHp();
+        // Set other stats if needed
+        // For example, if you have other stats like strength, dexterity, etc.
+        // You can roll and set them here
+
+        // Example:
+        // _strength = Random.Range(1, 20);
+        // _dexterity = Random.Range(1, 20);
+        // _constitution = Random.Range(1, 20);
+        // _intelligence = Random.Range(1, 20);
+        // _wisdom = Random.Range(1, 20);
+        // _charisma = Random.Range(1, 20);
     }
 
     /// <summary>
@@ -61,12 +77,22 @@ public class Monster : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        currentHitPoints -= damage;
-        if (currentHitPoints <= 0)
+        _currentHitPoints -= damage;
+        if (_currentHitPoints <= 0)
         {
             Die();
         }
     }
+
+    //public void ShowMonsterAsSelected()
+    //{
+    //    monsterUI.ShowMonsterAsSelected();
+    //}
+
+    //public void ShowMonsterAsDeselected()
+    //{
+    //    monsterUI.ShowMonsterAsDeselected();
+    //}
 
     private void Die()
     {

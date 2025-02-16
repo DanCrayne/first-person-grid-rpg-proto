@@ -5,18 +5,45 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
-    public BattleUIManager battleMenuManager;
+    public BattleUIManager battleUIManager;
 
-    public List<Character> partyMembersInEncounter = new List<Character>();
-    public List<Monster> monstersInEncounter = new List<Monster>();
+    private List<Character> partyMembersInEncounter = new List<Character>();
+    private List<Monster> monstersInEncounter = new List<Monster>();
 
     private int currentCharacterIndex = 0;
     private bool isFirstRound = true;
 
+    private void OnEnable()
+    {
+        isFirstRound = true;
+        currentCharacterIndex = 0;
+    }
+
+    private void OnDisable()
+    {
+        
+    }
+
+    public void SetPartyMembersInEncounter(List<Character> partyMembers)
+    {
+        partyMembersInEncounter = partyMembers;
+    }
+
+    public void SetMonstersInEncounter(List<Monster> monsters)
+    {
+        monstersInEncounter = monsters;
+    }
+
+    public Character GetActiveCharacter()
+    {
+        return partyMembersInEncounter[currentCharacterIndex];
+    }
+
     public void StartBattle()
     {
-        battleMenuManager.LogBattleMessage($"The monsters attack!");
-        battleMenuManager.PopulatePartyPanel(partyMembersInEncounter);
+        battleUIManager.OpenBattleUI();
+        battleUIManager.LogBattleMessage($"The monsters attack!");
+        battleUIManager.PopulatePartyPanel(partyMembersInEncounter);
 
         StartPlayerTurn();
     }
@@ -33,9 +60,7 @@ public class BattleManager : MonoBehaviour
             }
         }
 
-        HandleAttackForCharacter();
         ShowCurrentCharacterAsSelected();
-
 
         if (isFirstRound)
         {
@@ -47,18 +72,17 @@ public class BattleManager : MonoBehaviour
     /// Handles the attack for the current character by reducing the targeted monster's hit points
     /// and signalling the encounter end if the monster is dead
     /// </summary>
-    private void HandleAttackForCharacter()
+    public void ExecuteCurrentCharacterAttack(Monster targetedMonster)
     {
-        var targetedMonster = SelectMonsterToAttack();
         if (targetedMonster != null)
         {
             var damage = partyMembersInEncounter[currentCharacterIndex].GetEquippedWeaponAttack();
             targetedMonster.TakeDamage(damage);
-            battleMenuManager.LogBattleMessage($"{partyMembersInEncounter[currentCharacterIndex].GetCharacterName()} dealt {damage} damage to {targetedMonster.monsterData.monsterName}");
+            battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} dealt {damage} damage to {targetedMonster.monsterData.monsterName}");
 
             if (targetedMonster.IsMonsterDead())
             {
-                battleMenuManager.LogBattleMessage($"\n{targetedMonster.monsterData.monsterName} is defeated!", true);
+                battleUIManager.LogBattleMessage($"\n{targetedMonster.monsterData.monsterName} is defeated!", true);
 
                 if (AreMonstersWiped())
                 {
@@ -68,15 +92,45 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            battleMenuManager.LogBattleMessage($"Monsters are defeated!", true);
+            battleUIManager.LogBattleMessage($"Monsters are defeated!", true);
             EndEncounter();
         }
+
+        battleUIManager.ActivateActionsPanel(GetActiveCharacter());
+    }
+
+    public void ExecuteCurrentCharacterDefend()
+    {
+        battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} is defending");
+
+        // TODO: defend logic
+    }
+
+    public void ExecuteCurrentCharacterFlee()
+    {
+        battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} is trying to flee");
+
+        // TODO: flee logic
+    }
+
+    public void ExecuteCurrentCharacterUseItem()
+    {
+        battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} is using an item");
+
+        // TODO: open item use menu
+    }
+
+    public void ExecuteCurrentCharacterCast()
+    {
+        battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} is casting a spell");
+
+        // TODO: open item use menu
     }
 
     /// <summary>
     /// Handles the attack for the current monster by reducing the targeted character's hit points
     /// </summary>
-    public void HandleAttackForMonster(Monster monster)
+    public void ExecuteMonsterAttack(Monster monster)
     {
         if (monster == null)
         {
@@ -89,12 +143,12 @@ public class BattleManager : MonoBehaviour
         if (attackResult.didAttackHit)
         {
             targetedCharacter.TakeDamage(attackResult.damage);
-            battleMenuManager.LogBattleMessage($"Monster dealt {attackResult.damage} damage to {targetedCharacter.GetCharacterName()}");
+            battleUIManager.LogBattleMessage($"Monster dealt {attackResult.damage} damage to {targetedCharacter.GetCharacterName()}");
 
             if (targetedCharacter.IsCharacterDead())
             {
-                battleMenuManager.ShowCharacterAsDeadInPartyPanel(targetedCharacter);
-                battleMenuManager.LogBattleMessage($"{targetedCharacter.GetCharacterName()} dies!");
+                battleUIManager.ShowCharacterAsDeadInPartyPanel(targetedCharacter);
+                battleUIManager.LogBattleMessage($"{targetedCharacter.GetCharacterName()} dies!");
             }
         }
 
@@ -104,22 +158,13 @@ public class BattleManager : MonoBehaviour
     private void EndEncounter()
     {
         isFirstRound = true;
+        battleUIManager.CloseBattleUI();
         EncounterEventNotifier.EncounterEnd();
     }
 
-    private Monster SelectMonsterToAttack()
+    public void SetupMonsterSelectionPanel()
     {
-        // just attack the first non-null monster for now
-        Debug.Log("Selecting monster to attack");
-        foreach (var monster in monstersInEncounter)
-        {
-            if (monster != null)
-            {
-                return monster;
-            }
-        }
-
-        return null;
+        battleUIManager.PopulateMonsterSelectionPanel(monstersInEncounter);
     }
 
     /// <summary>
@@ -127,24 +172,28 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     private void StartPlayerTurn()
     {
+        currentCharacterIndex = 0;
+
         if (IsEncounterOver())
         {
+            Debug.Log("Encounter is over on first round - is the party / monster HP being set properly?");
             return;
         }
 
         ShowCurrentCharacterAsSelected();
+        battleUIManager.ActivateActionsPanel(GetActiveCharacter());
     }
 
     private void ShowCurrentCharacterAsSelected()
     {
         var character = partyMembersInEncounter[currentCharacterIndex];
-        battleMenuManager.ShowCharacterAsSelectedInPartyPanel(character);
+        battleUIManager.ShowCharacterAsSelectedInPartyPanel(character);
     }
 
     private void ShowCurrentCharacterAsDeselected()
     {
         var character = partyMembersInEncounter[currentCharacterIndex];
-        battleMenuManager.ShowCharacterAsDeselectedInPartyPanel(character);
+        battleUIManager.ShowCharacterAsDeselectedInPartyPanel(character);
     }
 
     /// <summary>

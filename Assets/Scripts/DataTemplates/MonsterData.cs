@@ -17,4 +17,3 @@ public class MonsterData : ScriptableObject
     public ItemData[] items;
     public GameObject monsterPrefab;
 }
-
