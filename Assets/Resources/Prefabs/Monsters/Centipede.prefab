@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 1327998074919793418}
   - component: {fileID: 1476250272796713183}
   - component: {fileID: 5221639085632122994}
-  - component: {fileID: 5128738868293259221}
+  - component: {fileID: 2910297189479343599}
+  - component: {fileID: -3963009005523023733}
   m_Layer: 0
-  m_Name: Monster1Placeholder
+  m_Name: Centipede
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88,7 +89,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5128738868293259221
+--- !u!114 &2910297189479343599
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,7 +101,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b35af84d653d98745aba01e544fea155, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterData: {fileID: 0}
+  monsterData: {fileID: 11400000, guid: 6312402db33dd874b82dff1637159cd1, type: 2}
+  monsterUI: {fileID: 0}
+--- !u!114 &-3963009005523023733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3536735218046874060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c7a1a4486a90444aac477ee1c5ca076, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionIndicator: {fileID: 5760831506586861603}
+  selectionControl: {fileID: 537657749470061852, guid: 58571de89faec334d81d43c4a8adc94d, type: 3}
 --- !u!1 &5760831506586861603
 GameObject:
   m_ObjectHideFlags: 0

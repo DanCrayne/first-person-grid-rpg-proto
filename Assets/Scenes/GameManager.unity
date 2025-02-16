@@ -408,7 +408,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b648e6cfe5c07241b8d53ee1b5b96b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleMenuManager: {fileID: 60890749}
   baseEncounterRate: 10
 --- !u!114 &60890746
 MonoBehaviour:
@@ -422,12 +421,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3369af901b281e344a2d341618a524c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  encounterCharacterInfoPanelPrefab: {fileID: 6962742986289673839, guid: 5a80a23c118dc914aa933bcdcda24dd6, type: 3}
-  partyPanel: {fileID: 106350748}
-  actionsPanel: {fileID: 2118684407}
-  defaultCharacterPrefab: {fileID: 3105062440842698439, guid: d99476260de424345920845c6d145d1a, type: 3}
-  partyGameObject: {fileID: 1716054982}
+  fighterCharacterPrefab: {fileID: 3105062440842698439, guid: abb93d76593aab041b729476effb3fd7, type: 3}
+  mageCharacterPrefab: {fileID: 3105062440842698439, guid: a5382383f9abf154d8caa4625d6d54ea, type: 3}
   defaultCharacterData: {fileID: 11400000, guid: 7ff2dab8dee2bfc41aa2e6bd64c23a91, type: 2}
+  partyGameObject: {fileID: 1716054982}
   partyMembers: []
 --- !u!114 &60890747
 MonoBehaviour:
@@ -470,13 +467,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 616fcbd37f47dc445b365c34282fc28e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rootMenuObject: {fileID: 1187342373}
-  battleMenuCanvas: {fileID: 344900929}
+  battleUIRoot: {fileID: 1187342373}
+  battleUICanvas: {fileID: 344900929}
   partyPanel: {fileID: 106350747}
   actionsPanel: {fileID: 2118684406}
+  monsterSelectionPanel: {fileID: 648374357}
   battleLogText: {fileID: 432429562}
+  defaultMonsterSelectControl: {fileID: 6480287075496403366, guid: 58571de89faec334d81d43c4a8adc94d, type: 3}
+  battleManager: {fileID: 60890750}
+  castButton: {fileID: 155191794}
   firstSelectedActionsButton: {fileID: 140807613}
-  characterPanels: []
 --- !u!114 &60890750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,7 +489,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89b23a39ca9a5ce46b043ff4f65855ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleMenuManager: {fileID: 60890749}
+  battleUIManager: {fileID: 60890749}
+  partyMembersInEncounter: []
+  monstersInEncounter: []
 --- !u!1001 &68390883
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -577,6 +579,18 @@ PrefabInstance:
     - target: {fileID: 162958564270807920, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 60890750}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ExecuteCurrentCharacterCast
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BattleManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6480287075496403366, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
       propertyPath: m_Name
@@ -845,6 +859,11 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &155191794 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6480287075496403366, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+  m_PrefabInstance: {fileID: 68390883}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &186667155
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -933,6 +952,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 60890750}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ExecuteCurrentCharacterUseItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BattleManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 6480287075496403366, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
       propertyPath: m_Name
       value: ItemButton
@@ -963,7 +994,7 @@ GameObject:
   - component: {fileID: 199252377}
   - component: {fileID: 199252376}
   m_Layer: 0
-  m_Name: GameScreenPanel
+  m_Name: BattleViewPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1219,7 +1250,7 @@ GameObject:
   - component: {fileID: 344900932}
   - component: {fileID: 344900931}
   m_Layer: 0
-  m_Name: BattleMenuCanvas
+  m_Name: BattleUICanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2699,6 +2730,108 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 614135713}
   m_CullTransparentMesh: 1
+--- !u!1 &648374357
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 648374358}
+  - component: {fileID: 648374361}
+  - component: {fileID: 648374360}
+  - component: {fileID: 648374359}
+  m_Layer: 0
+  m_Name: MonsterSelectionPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &648374358
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648374357}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1973397255}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 2000, y: -535}
+  m_SizeDelta: {x: 200, y: 1020}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &648374359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648374357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 25
+    m_Right: 25
+    m_Top: 25
+    m_Bottom: 25
+  m_ChildAlignment: 4
+  m_Spacing: 25
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &648374360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648374357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.36078432, g: 0.4516157, b: 0.9254902, a: 0.23529412}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &648374361
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648374357}
+  m_CullTransparentMesh: 1
 --- !u!1 &676586373
 GameObject:
   m_ObjectHideFlags: 0
@@ -3448,6 +3581,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 60890750}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ExecuteCurrentCharacterFlee
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BattleManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 6480287075496403366, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
       propertyPath: m_Name
       value: FleeButton
@@ -3901,6 +4046,18 @@ PrefabInstance:
     - target: {fileID: 162958564270807920, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 60890750}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ExecuteCurrentCharacterDefend
+      objectReference: {fileID: 0}
+    - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BattleManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6480287075496403366, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
       propertyPath: m_Name
@@ -4745,6 +4902,7 @@ RectTransform:
   - {fileID: 106350748}
   - {fileID: 199252375}
   - {fileID: 2118684407}
+  - {fileID: 648374358}
   m_Father: {fileID: 344900930}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5096,7 +5254,7 @@ PrefabInstance:
       objectReference: {fileID: 60890750}
     - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartNextCharacterTurn
+      value: SetupMonsterSelectionPanel
       objectReference: {fileID: 0}
     - target: {fileID: 3183898520326114849, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

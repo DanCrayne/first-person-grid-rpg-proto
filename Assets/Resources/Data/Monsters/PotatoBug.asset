@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11a861cab819abe44a40627c49c2ab48, type: 3}
   m_Name: PotatoBug
   m_EditorClassIdentifier: 
-  monsterName: Monster 3
+  monsterName: Potato Bug
   armorClass: 0
-  hitDice: 0
+  hitDice: 4
   maxMovementInFeet: 0
   morale: 0
-  xp: 0
+  xp: 150
   alignment: 78
   treasureType: 85
   minNumberAppearing: 1
