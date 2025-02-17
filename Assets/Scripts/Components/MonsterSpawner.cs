@@ -25,9 +25,10 @@ public class MonsterSpawner : MonoBehaviour
 
         // instantiate monster and setup initial values
         var monsterInstance = Instantiate(monsterComponent.monsterData.monsterPrefab, position, Quaternion.identity);
+
+        // Set initial stats for this monster
         var spawnedMonsterComponent = monsterInstance.GetComponent<Monster>();
         spawnedMonsterComponent.monsterData = monsterComponent.monsterData;
-        // TODO: do I need to instantiate and assign the MonsterUI here?
         spawnedMonsterComponent.RollAndSetStats();
 
         return monsterInstance;

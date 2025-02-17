@@ -1,8 +1,9 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class BattleUIManager : MonoBehaviour
 {
@@ -52,15 +53,25 @@ public class BattleUIManager : MonoBehaviour
         CloseAllBattleUIElements();
     }
 
-    public void LogBattleMessage(string message, bool append = false)
+    public void LogBattleMessage(string message)
     {
-        if (append)
-        {
-            battleLogText.text += message;
-            return;
-        }
+        //battleLogText.text = message;
 
-        battleLogText.text = message;
+        // TODO: implement battle log auto-scrolling - by default, the scroll rect is set to the bottom
+
+        if (battleLogText.text == string.Empty)
+        {
+            battleLogText.text = message;
+        }
+        else
+        {
+            battleLogText.text += "\n" + message;
+        }
+    }
+
+    public void ClearBattleLog()
+    {
+        battleLogText.text = string.Empty;
     }
 
     public void DeactivateActionsPanel()
@@ -129,22 +140,34 @@ public class BattleUIManager : MonoBehaviour
             {
                 var monsterSelectControlInstance = Instantiate(defaultMonsterSelectControl, monsterSelectionPanel.transform);
                 var monsterSelectControlComponent = monsterSelectControlInstance.GetComponent<MonsterSelectControl>();
-                monsterSelectControlComponent.SetMonsterNameOnControl(monster.monsterData.monsterName);
-                monsterSelectControlComponent.SetOnClick(() => OnMonsterSelected(monster));
-                EventSystem.current.SetSelectedGameObject(monsterSelectControlInstance);
+                var monsterUIComponent = monster.GetComponent<MonsterUI>();
 
-                monsterToActionControlMap.Add(monster, monsterSelectControlComponent);
+                if (monsterSelectControlComponent != null && monsterUIComponent != null)
+                {
+                    Debug.Log("MonsterSelectControl component found on instantiated prefab.");
+                    monsterSelectControlComponent.SetMonsterNameOnControl(monster.monsterData.monsterName);
+                    monsterSelectControlComponent.SetOnClick(() => OnMonsterSelected(monster));
+                    monsterSelectControlComponent.SetMonsterUI(monsterUIComponent);
+
+                    monsterToActionControlMap.Add(monster, monsterSelectControlComponent);
+                }
+                else
+                {
+                    Debug.LogError("MonsterSelectControl or MonsterUI component not found on instantiated prefab.");
+                }
             }
         }
 
+        // set the first item in the control map as the selected monster
+        EventSystem.current.SetSelectedGameObject(monsterToActionControlMap.FirstOrDefault().Value.gameObject);
         ActivateMonsterSelectionPanel();
     }
 
-    private void OnMonsterSelected(Monster monster)
+    private void OnMonsterSelected(Monster selectedMonster)
     {
-        Debug.Log($"Monster {monster.monsterData.monsterName} was selected!");
-        
-        battleManager.ExecuteCurrentCharacterAttack(monster);
+        Debug.Log($"Monster {selectedMonster.monsterData.monsterName} was selected!");
+
+        battleManager.ExecuteCurrentCharacterAttack(selectedMonster);
         ActivateActionsPanel(battleManager.GetActiveCharacter());
     }
 

@@ -2,21 +2,43 @@ using UnityEngine;
 
 public class MonsterUI : MonoBehaviour
 {
-    public GameObject selectionIndicator;
+    public Transform selectionIndicator;
     public MonsterSelectControl selectionControl;
 
-    //public void SetSelectionControlName(string monsterName)
-    //{
-    //    selectionControl.GetComponent<MonsterSelectControl>().monsterName = name;
-    //}
-
-    public void ShowMonsterAsSelected()
+    private void Start()
     {
-        selectionIndicator.SetActive(true);
+        HideSelectionIndicator();
+
+        if (selectionControl != null)
+        {
+            selectionControl.SetOnFocus(OnMonsterFocus);
+            selectionControl.SetOnDefocus(OnMonsterDefocus);
+        }
     }
 
-    public void ShowMonsterAsDeselected()
+    public void OnMonsterFocus()
     {
-        selectionIndicator.SetActive(false);
+        ShowSelectionIndicator();
+    }
+
+    public void OnMonsterDefocus()
+    {
+        HideSelectionIndicator();
+    }
+
+    private void ShowSelectionIndicator()
+    {
+        if (selectionIndicator != null)
+        {
+            selectionIndicator.gameObject.SetActive(true);
+        }
+    }
+
+    public void HideSelectionIndicator()
+    {
+        if (selectionIndicator != null)
+        {
+            selectionIndicator.gameObject.SetActive(false);
+        }
     }
 }

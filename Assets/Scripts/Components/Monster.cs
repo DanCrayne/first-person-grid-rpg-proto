@@ -8,13 +8,11 @@ using UnityEngine;
 public class Monster : MonoBehaviour
 {
     public MonsterData monsterData;
-    //public MonsterUI monsterUI;
 
     private int _currentHitPoints;
 
     void Start()
     {
-        //monsterUI = transform.GetComponent<MonsterUI>();
     }
 
     public int GetMaxHitPoints()
@@ -83,16 +81,6 @@ public class Monster : MonoBehaviour
             Die();
         }
     }
-
-    //public void ShowMonsterAsSelected()
-    //{
-    //    monsterUI.ShowMonsterAsSelected();
-    //}
-
-    //public void ShowMonsterAsDeselected()
-    //{
-    //    monsterUI.ShowMonsterAsDeselected();
-    //}
 
     private void Die()
     {

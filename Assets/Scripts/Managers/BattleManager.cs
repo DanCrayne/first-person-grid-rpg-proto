@@ -82,7 +82,7 @@ public class BattleManager : MonoBehaviour
 
             if (targetedMonster.IsMonsterDead())
             {
-                battleUIManager.LogBattleMessage($"\n{targetedMonster.monsterData.monsterName} is defeated!", true);
+                battleUIManager.LogBattleMessage($"{targetedMonster.monsterData.monsterName} is defeated!");
 
                 if (AreMonstersWiped())
                 {
@@ -92,7 +92,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            battleUIManager.LogBattleMessage($"Monsters are defeated!", true);
+            battleUIManager.LogBattleMessage($"Monsters are defeated!");
             EndEncounter();
         }
 
@@ -104,6 +104,7 @@ public class BattleManager : MonoBehaviour
         battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} is defending");
 
         // TODO: defend logic
+        StartNextCharacterTurn();
     }
 
     public void ExecuteCurrentCharacterFlee()
@@ -111,6 +112,7 @@ public class BattleManager : MonoBehaviour
         battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} is trying to flee");
 
         // TODO: flee logic
+        StartNextCharacterTurn();
     }
 
     public void ExecuteCurrentCharacterUseItem()
@@ -118,6 +120,7 @@ public class BattleManager : MonoBehaviour
         battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} is using an item");
 
         // TODO: open item use menu
+        StartNextCharacterTurn();
     }
 
     public void ExecuteCurrentCharacterCast()
@@ -125,6 +128,7 @@ public class BattleManager : MonoBehaviour
         battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetCharacterName()} is casting a spell");
 
         // TODO: open item use menu
+        StartNextCharacterTurn();
     }
 
     /// <summary>
@@ -158,6 +162,7 @@ public class BattleManager : MonoBehaviour
     private void EndEncounter()
     {
         isFirstRound = true;
+        battleUIManager.ClearBattleLog();
         battleUIManager.CloseBattleUI();
         EncounterEventNotifier.EncounterEnd();
     }
