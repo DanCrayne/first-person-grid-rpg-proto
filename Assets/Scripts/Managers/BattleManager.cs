@@ -11,17 +11,14 @@ public class BattleManager : MonoBehaviour
     private List<Monster> monstersInEncounter = new List<Monster>();
 
     private int currentCharacterIndex = 0;
-    private bool isFirstRound = true;
 
     private void OnEnable()
     {
-        isFirstRound = true;
         currentCharacterIndex = 0;
     }
 
     private void OnDisable()
     {
-        
     }
 
     public void SetPartyMembersInEncounter(List<Character> partyMembers)
@@ -50,22 +47,14 @@ public class BattleManager : MonoBehaviour
 
     public void StartNextCharacterTurn()
     {
-        if (!isFirstRound)
-        {
-            ShowCurrentCharacterAsDeselected();
+        ShowCurrentCharacterAsDeselected();
 
-            if (!TryToIncrementToNextCharacter())
-            {
-                EndPlayerTurn();
-            }
+        if (!TryToIncrementToNextCharacter())
+        {
+            EndPlayerTurn();
         }
 
         ShowCurrentCharacterAsSelected();
-
-        if (isFirstRound)
-        {
-            isFirstRound = false;
-        }
     }
 
     /// <summary>
@@ -96,6 +85,8 @@ public class BattleManager : MonoBehaviour
             EndEncounter();
         }
 
+        StartNextCharacterTurn();
+        
         battleUIManager.ActivateActionsPanel(GetActiveCharacter());
     }
 
@@ -161,7 +152,6 @@ public class BattleManager : MonoBehaviour
 
     private void EndEncounter()
     {
-        isFirstRound = true;
         battleUIManager.ClearBattleLog();
         battleUIManager.CloseBattleUI();
         EncounterEventNotifier.EncounterEnd();
@@ -178,13 +168,6 @@ public class BattleManager : MonoBehaviour
     private void StartPlayerTurn()
     {
         currentCharacterIndex = 0;
-
-        if (IsEncounterOver())
-        {
-            Debug.Log("Encounter is over on first round - is the party / monster HP being set properly?");
-            return;
-        }
-
         ShowCurrentCharacterAsSelected();
         battleUIManager.ActivateActionsPanel(GetActiveCharacter());
     }

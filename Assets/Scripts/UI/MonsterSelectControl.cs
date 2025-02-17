@@ -47,6 +47,11 @@ public class MonsterSelectControl : MonoBehaviour
         monsterUI = ui;
     }
 
+    public MonsterUI GetMonsterUI()
+    {
+        return monsterUI;
+    }
+
     public void SetMonsterNameOnControl(string monsterName)
     {
         this.monsterNameSlot.text = monsterName;

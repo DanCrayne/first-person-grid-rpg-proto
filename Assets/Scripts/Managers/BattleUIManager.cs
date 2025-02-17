@@ -55,10 +55,6 @@ public class BattleUIManager : MonoBehaviour
 
     public void LogBattleMessage(string message)
     {
-        //battleLogText.text = message;
-
-        // TODO: implement battle log auto-scrolling - by default, the scroll rect is set to the bottom
-
         if (battleLogText.text == string.Empty)
         {
             battleLogText.text = message;
@@ -87,6 +83,8 @@ public class BattleUIManager : MonoBehaviour
             case "Cleric":
             case "Mage":
                 castButton.SetActive(true);
+                break;
+            default:
                 break;
         }
 
@@ -146,7 +144,7 @@ public class BattleUIManager : MonoBehaviour
                 {
                     Debug.Log("MonsterSelectControl component found on instantiated prefab.");
                     monsterSelectControlComponent.SetMonsterNameOnControl(monster.monsterData.monsterName);
-                    monsterSelectControlComponent.SetOnClick(() => OnMonsterSelected(monster));
+                    monsterSelectControlComponent.SetOnClick(() => OnMonsterChosenForAttack(monster));
                     monsterSelectControlComponent.SetMonsterUI(monsterUIComponent);
 
                     monsterToActionControlMap.Add(monster, monsterSelectControlComponent);
@@ -159,13 +157,15 @@ public class BattleUIManager : MonoBehaviour
         }
 
         // set the first item in the control map as the selected monster
-        EventSystem.current.SetSelectedGameObject(monsterToActionControlMap.FirstOrDefault().Value.gameObject);
         ActivateMonsterSelectionPanel();
+        EventSystem.current.SetSelectedGameObject(monsterToActionControlMap.FirstOrDefault().Value.gameObject);
     }
 
-    private void OnMonsterSelected(Monster selectedMonster)
+    private void OnMonsterChosenForAttack(Monster selectedMonster)
     {
         Debug.Log($"Monster {selectedMonster.monsterData.monsterName} was selected!");
+        // hide the selection indicator on the monster control
+        monsterToActionControlMap[selectedMonster].GetMonsterUI().HideSelectionIndicator();
 
         battleManager.ExecuteCurrentCharacterAttack(selectedMonster);
         ActivateActionsPanel(battleManager.GetActiveCharacter());
