@@ -53,7 +53,7 @@ public class BattleManager : MonoBehaviour
     {
         currentCharacterIndex = 0;
         ShowCurrentCharacterAsSelected();
-        battleUIManager.ActivateActionsPanel(GetActiveCharacter());
+        battleUIManager.ActivateActionsPanel();
     }
 
     public void StartNextCharacterTurn()
@@ -66,7 +66,7 @@ public class BattleManager : MonoBehaviour
         }
 
         ShowCurrentCharacterAsSelected();
-        battleUIManager.ActivateActionsPanel(GetActiveCharacter());
+        battleUIManager.ActivateActionsPanel();
     }
 
     /// <summary>

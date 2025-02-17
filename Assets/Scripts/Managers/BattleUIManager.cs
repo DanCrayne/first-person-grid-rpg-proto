@@ -42,7 +42,7 @@ public class BattleUIManager : MonoBehaviour
         CloseAllBattleUIElements();
         battleUIRoot.SetActive(true);
         battleUICanvas.SetActive(true);
-        ActivateActionsPanel(battleManager.GetActiveCharacter());
+        ActivateActionsPanel();
     }
 
     /// <summary>
@@ -75,16 +75,16 @@ public class BattleUIManager : MonoBehaviour
         actionsPanel.SetActive(false);
     }
 
-    public void ActivateActionsPanel(Character currentCharacter)
+    public void ActivateActionsPanel()
     {
-        castButton.SetActive(false);
-        switch (currentCharacter.characterData.characterClass.className)
+        switch (battleManager.GetActiveCharacter().characterData.characterClass.className)
         {
             case "Cleric":
             case "Mage":
                 castButton.SetActive(true);
                 break;
             default:
+                castButton.SetActive(false);
                 break;
         }
 
@@ -169,7 +169,7 @@ public class BattleUIManager : MonoBehaviour
         monsterToActionControlMap[selectedMonster].GetMonsterUI().HideSelectionIndicator();
 
         battleManager.AddCurrentCharacterAttackToActionsQueue(selectedMonster);
-        ActivateActionsPanel(battleManager.GetActiveCharacter());
+        ActivateActionsPanel();
     }
 
     public void RemoveMonsterSelectionControlFromMonsterSelectionPanel(Monster monsterToRemove)
