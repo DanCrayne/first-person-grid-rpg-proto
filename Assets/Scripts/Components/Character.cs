@@ -33,15 +33,21 @@ public class Character : MonoBehaviour, ICreature
         return _characterName;
     }
 
-    public void Defend()
+    public ICreatureAction Defend()
     {
         // TODO: implement
+        return new DefendAction(this);
     }
 
     public ICreatureAction Attack(ICreature creature, List<ICreature> fallbackCreatures)
     {
         var attackAction = new AttackAction(this, creature, fallbackCreatures);
         return attackAction;
+    }
+
+    public ICreatureAction Flee(List<ICreature> possibleBlockers)
+    {
+        return new FleeAction(this, possibleBlockers);
     }
 
     public WeaponData GetEquippedWeapon()

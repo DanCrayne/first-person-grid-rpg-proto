@@ -67,13 +67,18 @@ public class Monster : MonoBehaviour, ICreature
 
     public ICreatureAction Attack(ICreature creature, List<ICreature> fallbackCreatures)
     {
-        var attackAction = new AttackAction(this, creature, fallbackCreatures);
-        return attackAction;
+        return new AttackAction(this, creature, fallbackCreatures);
     }
 
-    public void Defend()
+    public ICreatureAction Flee(List<ICreature> possibleBlockers)
     {
-        // TODO: implement
+        return new FleeAction(this, possibleBlockers);
+    }
+
+    public ICreatureAction Defend()
+    {
+        // TODO: implement defend mechanics
+        return new DefendAction(this);
     }
 
     public ICreature SelectAttackTarget(List<ICreature> creatures)

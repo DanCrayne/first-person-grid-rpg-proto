@@ -74,27 +74,17 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     private void StartMonstersTurn()
     {
-        StartCoroutine(MonstersTurnCoroutine());
+        foreach (var monster in monstersInEncounter)
+        {
+            if (monster != null && !monster.IsDead())
+            {
+                var defendResult = ((Monster)monster).Defend();
+
+                battleActionQueue.Add(defendResult);
+            }
+        }
+
         ExecuteActionsInQueue();
-    }
-
-    /// <summary>
-    /// Coroutine to handle the turn for each monster in the encounter
-    /// </summary>
-    /// <returns>An enumerator representing the progress of the monsters turns</returns>
-    private IEnumerator MonstersTurnCoroutine()
-    {
-        yield return null;
-        //foreach (var monster in monstersInEncounter)
-        //{
-        //    if (monster != null)
-        //    {
-        //        var characterToAttack = ((Monster)monster).SelectAttackTarget(partyMembersInEncounter);
-        //        ((Monster)monster).CalculateAttackResult(characterToAttack);
-
-        //        yield return new WaitForSeconds(1);
-        //    }
-        //}
     }
 
     private void ExecuteActionsInQueue()
@@ -135,7 +125,7 @@ public class BattleManager : MonoBehaviour
 
         if (targetedMonster != null)
         {
-            var attackResult = partyMembersInEncounter[currentCharacterIndex].Attack(targetedMonster, monstersInEncounter);
+            var attackResult = GetActiveCharacter().Attack(targetedMonster, monstersInEncounter);
             battleActionQueue.Add(attackResult);
         }
 
@@ -144,17 +134,17 @@ public class BattleManager : MonoBehaviour
 
     public void ExecuteCurrentCharacterDefend()
     {
-        battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetName()} is defending");
+        // TODO: note that defend should probably go at the beginning of the queue so that attacks will not bypass it
 
-        // TODO: defend logic
+        battleActionQueue.Add(GetActiveCharacter().Defend());
         StartNextCharacterTurn();
     }
 
     public void ExecuteCurrentCharacterFlee()
     {
-        battleUIManager.LogBattleMessage($"{GetActiveCharacter().GetName()} is trying to flee");
-
         // TODO: flee logic
+
+        battleActionQueue.Add(GetActiveCharacter().Flee(monstersInEncounter));
         StartNextCharacterTurn();
     }
 
@@ -172,34 +162,6 @@ public class BattleManager : MonoBehaviour
 
         // TODO: open item use menu
         StartNextCharacterTurn();
-    }
-
-    /// <summary>
-    /// Handles the attack for the current monster by reducing the targeted character's hit points
-    /// </summary>
-    public void ExecuteMonsterAttack(Monster monster)
-    {
-        //if (monster == null)
-        //{
-        //    return;
-        //}
-
-        //var targetedCharacter = ((Monster)monster).SelectAttackTarget(partyMembersInEncounter);
-
-        //var attackResult = monster.Attack(targetedCharacter);
-        //if (attackResult.didAttackHit)
-        //{
-        //    targetedCharacter.TakeDamage(attackResult.damage);
-        //    battleUIManager.LogBattleMessage($"Monster dealt {attackResult.damage} damage to {((Character)targetedCharacter).GetName()}");
-
-        //    if (targetedCharacter.IsDead())
-        //    {
-        //        battleUIManager.ShowCharacterAsDeadInPartyPanel((Character) targetedCharacter);
-        //        battleUIManager.LogBattleMessage($"{((Character)targetedCharacter).GetName()} dies!");
-        //    }
-        //}
-
-        // TODO: handle party wipe - should this be calculated in the PartyManager?
     }
 
     private void EndEncounter()

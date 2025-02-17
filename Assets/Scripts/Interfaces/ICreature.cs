@@ -26,7 +26,9 @@ public interface ICreature
 
     public int GetLevel();
 
-    public void Defend();
+    public ICreatureAction Defend();
+
+    public ICreatureAction Flee(List<ICreature> possibleBlockers);
 
     public WeaponData GetEquippedWeapon();
 

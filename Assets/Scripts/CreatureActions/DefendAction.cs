@@ -1,10 +1,13 @@
 using System;
-using UnityEngine;
-using static Unity.VisualScripting.Member;
 
 public class DefendAction : ICreatureAction
 {
     public ICreature source;
+
+    public DefendAction(ICreature source)
+    {
+        this.source = source;
+    }
 
     public Func<string>[] Perform()
     {
