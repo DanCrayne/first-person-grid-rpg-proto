@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -6,36 +8,48 @@ using UnityEngine;
 /// </summary>
 /// <remarks>We're using a class instead of a scriptable object here since the character data will change frequently at run-time.</remarks>
 [Serializable]
-public class Character : MonoBehaviour
+public class Character : MonoBehaviour, ICreature
 {
     /// <summary>
     /// The basic static data for this character
     /// </summary>
     public CharacterData characterData;
 
-    /// <summary>
-    /// The <see cref="CharacterPanel"/> for this character representing their current status as a UI panel during battle
-    /// </summary>
-    //private EncounterCharacterInfo _encounterCharacterInfo;
-
     private string _characterName;
     private int _currentHitPoints;
     private int _level = 1;
     private int _experience = 0;
     private ItemData[] inventory;
+    private WeaponData equippedWeapon;
+    private ArmorData[] equippedArmor;
 
     private void Start()
     {
         _currentHitPoints = characterData.characterClass.hitDie * _level;
     }
 
-    public int GetEquippedWeaponAttack()
+    public string GetName()
     {
-        // TODO: make this based on equipped weapon
-        return UnityEngine.Random.Range(1, 20);
+        return _characterName;
     }
 
-    public bool IsCharacterDead()
+    public void Defend()
+    {
+        // TODO: implement
+    }
+
+    public ICreatureAction Attack(ICreature creature, List<ICreature> fallbackCreatures)
+    {
+        var attackAction = new AttackAction(this, creature, fallbackCreatures);
+        return attackAction;
+    }
+
+    public WeaponData GetEquippedWeapon()
+    {
+        return equippedWeapon;
+    }
+
+    public bool IsDead()
     {
         if (_currentHitPoints <= 0)
         {
@@ -60,14 +74,9 @@ public class Character : MonoBehaviour
         return characterData.characterClass.hitDie;
     }
 
-    public void SetCharacterName(string name)
+    public void SetName(string name)
     {
         _characterName = name;
-    }
-
-    public string GetCharacterName()
-    {
-        return _characterName;
     }
 
     public void TakeDamage(int damage)
@@ -105,4 +114,12 @@ public class Character : MonoBehaviour
     {
         return _level;
     }
+
+    public int GetArmorClass()
+    {
+        var equippedArmorBonus = equippedArmor.Select(a => a.ArmorClassBonus).Sum();
+        return equippedArmorBonus;
+    }
+
+    public AttackTypeData[] AttackTypeData { get { return equippedWeapon.attackTypeData; } }
 }

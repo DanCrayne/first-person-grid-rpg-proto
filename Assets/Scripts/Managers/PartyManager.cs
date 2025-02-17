@@ -13,7 +13,7 @@ public class PartyManager : MonoBehaviour
     public CharacterData defaultCharacterData;
 
     public Transform partyGameObject;
-    public List<Character> partyMembers = new List<Character>();
+    public List<ICreature> partyMembers = new List<ICreature>();
 
     private void Start()
     {
@@ -27,30 +27,20 @@ public class PartyManager : MonoBehaviour
         var character = Instantiate(fighterCharacterPrefab, partyGameObject);
         var characterComponent = character.GetComponent<Character>();
         characterComponent.SetHitPoints(defaultCharacterData.characterClass.hitDie);
-        characterComponent.SetCharacterName("Balin");
+        characterComponent.SetName("Balin");
         partyMembers.Add(characterComponent);
 
         var character1 = Instantiate(fighterCharacterPrefab, partyGameObject);
         var characterComponent1 = character1.GetComponent<Character>();
         characterComponent1.SetHitPoints(defaultCharacterData.characterClass.hitDie);
-        characterComponent1.SetCharacterName("Gimli");
+        characterComponent1.SetName("Gimli");
         partyMembers.Add(characterComponent1);
 
         var character2 = Instantiate(mageCharacterPrefab, partyGameObject);
         var characterComponent2 = character2.GetComponent<Character>();
         characterComponent2.SetHitPoints(defaultCharacterData.characterClass.hitDie);
-        characterComponent2.SetCharacterName("Gandalf");
+        characterComponent2.SetName("Gandalf");
         partyMembers.Add(characterComponent2);
-    }
-
-    public Character GetRandomCharacter()
-    {
-        if (partyMembers.Count == 0)
-        {
-            Debug.LogError("No party members found");
-            return null;
-        }
-        return partyMembers[Random.Range(0, partyMembers.Count)];
     }
 
     public bool IsPartyWiped()
@@ -58,26 +48,7 @@ public class PartyManager : MonoBehaviour
         return !partyMembers.Any(c => c.GetHitPoints() > 0);
     }
 
-    public Character GetWeakestCharacter()
-    {
-        if (partyMembers.Count == 0)
-        {
-            Debug.LogError("No party members found");
-            return null;
-        }
-
-        Character weakestCharacter = partyMembers.FirstOrDefault();
-        foreach (var character in partyMembers)
-        {
-            if (character.GetHitPoints() < weakestCharacter.GetHitPoints())
-            {
-                weakestCharacter = character;
-            }
-        }
-        return weakestCharacter;
-    }
-
-    public List<Character> GetPartyMembers()
+    public List<ICreature> GetPartyMembers()
     {
         return partyMembers;
     }

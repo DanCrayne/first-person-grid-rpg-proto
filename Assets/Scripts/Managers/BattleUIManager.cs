@@ -108,7 +108,7 @@ public class BattleUIManager : MonoBehaviour
     /// Populates the Party Panel with the given list of characters
     /// </summary>
     /// <param name="party">A list of <see cref="Character"/> representing the party in the battle</param>
-    public void PopulatePartyPanel(List<Character> party)
+    public void PopulatePartyPanel(List<ICreature> party)
     {
         // clear the PartyPanel
         DeleteChildrenOfGameObject(partyPanel);
@@ -117,16 +117,17 @@ public class BattleUIManager : MonoBehaviour
         // add characters to party panel
         foreach (var character in party)
         {
-            var characterPanel = Instantiate(character.characterData.encounterCharacterInfoPrefab, partyPanel.transform);
+            var characterPrefab = ((Character)character).characterData.encounterCharacterInfoPrefab;
+            var characterPanel = Instantiate(characterPrefab, partyPanel.transform);
             var characterInfo = characterPanel.GetComponent<CharacterPanel>();
-            characterInfo.SetCharacterInfo(character.GetCharacterName(), character.GetHitPoints());
+            characterInfo.SetCharacterInfo(((Character)character).GetName(), character.GetHitPoints());
             //characterPanels.Add(characterPanel);
 
-            characterToPanelMap.Add(character, characterPanel);
+            characterToPanelMap.Add((Character)character, characterPanel);
         }
     }
 
-    public void PopulateMonsterSelectionPanel(List<Monster> monsters)
+    public void PopulateMonsterSelectionPanel(List<ICreature> monsters)
     {
         // clear the monster panel
         DeleteChildrenOfGameObject(monsterSelectionPanel);
@@ -134,20 +135,20 @@ public class BattleUIManager : MonoBehaviour
 
         foreach (var monster in monsters)
         {
-            if (monster != null)
+            if ((Monster)monster != null)
             {
                 var monsterSelectControlInstance = Instantiate(defaultMonsterSelectControl, monsterSelectionPanel.transform);
                 var monsterSelectControlComponent = monsterSelectControlInstance.GetComponent<MonsterSelectControl>();
-                var monsterUIComponent = monster.GetComponent<MonsterUI>();
+                var monsterUIComponent = ((Monster)monster).GetComponent<MonsterUI>();
 
                 if (monsterSelectControlComponent != null && monsterUIComponent != null)
                 {
                     Debug.Log("MonsterSelectControl component found on instantiated prefab.");
-                    monsterSelectControlComponent.SetMonsterNameOnControl(monster.monsterData.monsterName);
-                    monsterSelectControlComponent.SetOnClick(() => OnMonsterChosenForAttack(monster));
+                    monsterSelectControlComponent.SetMonsterNameOnControl(((Monster)monster).monsterData.monsterName);
+                    monsterSelectControlComponent.SetOnClick(() => OnMonsterChosenForAttack(((Monster)monster)));
                     monsterSelectControlComponent.SetMonsterUI(monsterUIComponent);
 
-                    monsterToActionControlMap.Add(monster, monsterSelectControlComponent);
+                    monsterToActionControlMap.Add(((Monster)monster), monsterSelectControlComponent);
                 }
                 else
                 {
@@ -167,7 +168,7 @@ public class BattleUIManager : MonoBehaviour
         // hide the selection indicator on the monster control
         monsterToActionControlMap[selectedMonster].GetMonsterUI().HideSelectionIndicator();
 
-        battleManager.ExecuteCurrentCharacterAttack(selectedMonster);
+        battleManager.AddCurrentCharacterAttackToActionsQueue(selectedMonster);
         ActivateActionsPanel(battleManager.GetActiveCharacter());
     }
 
@@ -232,11 +233,11 @@ public class BattleUIManager : MonoBehaviour
             {
                 GameObject characterPanel = characterToPanelMap[character];
                 var characterInfo = characterPanel.GetComponent<CharacterPanel>();
-                characterInfo.SetCharacterInfo(character.GetCharacterName(), character.GetHitPoints());
+                characterInfo.SetCharacterInfo(character.GetName(), character.GetHitPoints());
             }
             else
             {
-                Debug.LogError($"Character {character.GetCharacterName()} not found in character info map.");
+                Debug.LogError($"Character {character.GetName()} not found in character info map.");
             }
         }
     }

@@ -16,6 +16,8 @@ public class CharacterData : ScriptableObject
     public int charisma;
 
     public ItemData[] inventory;
+    public WeaponData equippedWeapon;
+    public ArmorData[] equippedArmor;
     public GameObject encounterCharacterInfoPrefab;
     public GameObject actionControlPrefab;
 }

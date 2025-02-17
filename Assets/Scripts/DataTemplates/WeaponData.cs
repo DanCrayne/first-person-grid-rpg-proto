@@ -9,4 +9,6 @@ public class WeaponData : ScriptableObject
     public int valueInGold;
     public int minDamage;
     public int maxDamage;
+
+    public AttackTypeData[] attackTypeData;
 }

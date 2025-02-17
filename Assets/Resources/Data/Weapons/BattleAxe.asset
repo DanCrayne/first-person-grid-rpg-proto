@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 206fba7c46b225242a9181d663c2e748, type: 3}
+  m_Name: BattleAxe
+  m_EditorClassIdentifier: 
+  weaponName: Battle Axe
+  description: A mean-looking two sided axe
+  weightInPounds: 10
+  valueInGold: 10
+  minDamage: 1
+  maxDamage: 8
+  attackTypeData:
+  - {fileID: 0}

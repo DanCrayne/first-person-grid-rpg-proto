@@ -1,18 +1,32 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Represents a monster in the game
 /// </summary>
-public class Monster : MonoBehaviour
+public class Monster : MonoBehaviour, ICreature
 {
     public MonsterData monsterData;
 
     private int _currentHitPoints;
+    private int _level;
 
     void Start()
     {
+    }
+
+    public string GetName()
+    {
+        return monsterData.monsterName;
+    }
+
+    public WeaponData GetEquippedWeapon()
+    {
+        return monsterData.equippedWeapon;
     }
 
     public int GetMaxHitPoints()
@@ -25,7 +39,7 @@ public class Monster : MonoBehaviour
         return _currentHitPoints;
     }
 
-    public bool IsMonsterDead()
+    public bool IsDead()
     {
         return _currentHitPoints <= 0;
     }
@@ -51,26 +65,21 @@ public class Monster : MonoBehaviour
         // _charisma = Random.Range(1, 20);
     }
 
-    /// <summary>
-    /// Calculates attack damage for the given character
-    /// </summary>
-    /// <param name="character">The character being attacked</param>
-    /// <returns>An <see cref="AttackResult"/> representing the randomized outcome</returns>
-    public AttackResult CalculateRandomAttackResult(Character character)
+    public ICreatureAction Attack(ICreature creature, List<ICreature> fallbackCreatures)
     {
-        var randomAttack = Random.Range(0, monsterData.attacks.Length);
-
-        // TODO: get character AC and calculate attack and damage
-        bool didAttackHit = true;
-        var randomDamage = Random.Range(monsterData.attacks[randomAttack].minDamage, monsterData.attacks[randomAttack].maxDamage);
-
-        return new AttackResult(didAttackHit, monsterData.attacks[randomAttack].attackName, randomDamage);
+        var attackAction = new AttackAction(this, creature, fallbackCreatures);
+        return attackAction;
     }
 
-    public Character SelectAttackTarget(List<Character> characters)
+    public void Defend()
+    {
+        // TODO: implement
+    }
+
+    public ICreature SelectAttackTarget(List<ICreature> creatures)
     {
         // just attack the first character for now
-        return characters.FirstOrDefault();
+        return creatures.FirstOrDefault();
     }
 
     public void TakeDamage(int damage)
@@ -91,4 +100,26 @@ public class Monster : MonoBehaviour
     {
         return Random.Range(1, (monsterData.hitDice * 6) + 1);
     }
+
+    public void Heal(int healing)
+    {
+        _currentHitPoints += healing;
+    }
+
+    public void SetLevel(int level)
+    {
+        _level = level;
+    }
+
+    public int GetLevel()
+    {
+        return _level;
+    }
+
+    public int GetArmorClass()
+    {
+        return monsterData.armorClass;
+    }
+
+    public AttackTypeData[] AttackTypeData { get { return AttackTypeData; } }
 }

@@ -57,9 +57,9 @@ public class EncounterManager : MonoBehaviour
     /// </summary>
     /// <param name="positions">The <see cref="Vector3"/> positions to spawn monsters</param>
     /// <returns>The spawned monsters</returns>
-    private List<Monster> SpawnMonstersAtPositions(IEnumerable<Vector3> positions)
+    private List<ICreature> SpawnMonstersAtPositions(IEnumerable<Vector3> positions)
     {
-        var spawnedMonsters = new List<Monster>();
+        var spawnedMonsters = new List<ICreature>();
         foreach (var position in positions)
         {
             // pick a random monster spawner and spawn a monster at the given position

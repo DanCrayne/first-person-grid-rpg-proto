@@ -4,6 +4,10 @@ using UnityEngine;
 public class MonsterData : ScriptableObject
 {
     public string monsterName;
+    public RaceData race;
+    public ClassData characterClass;
+    public string background;
+
     public int armorClass;
     public int hitDice;
     public int maxMovementInFeet;
@@ -13,7 +17,17 @@ public class MonsterData : ScriptableObject
     public char treasureType = 'U';
     public int minNumberAppearing = 1;
     public int maxNumberAppearing = 4;
-    public AttackTypeData[] attacks;
-    public ItemData[] items;
+
+    public int strength;
+    public int dexterity;
+    public int constitution;
+    public int intelligence;
+    public int wisdom;
+    public int charisma;
+
     public GameObject monsterPrefab;
+
+    public ItemData[] inventory;
+    public WeaponData equippedWeapon;
+    public ArmorData[] equippedArmor;
 }
