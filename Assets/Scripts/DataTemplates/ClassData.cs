@@ -42,4 +42,8 @@ public class ClassData : ScriptableObject
     /// The prefab for the action control for this class (e.g. the buttons for the actions)
     /// </summary>
     public GameObject actionControlPrefab;
+
+    public EquipmentSlot[] allowableEquipmentSlots;
+    public ArmorType[] allowableArmorTypes;
+    public WeaponType[] allowableWeaponTypes;
 }

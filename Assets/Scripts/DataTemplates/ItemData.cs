@@ -8,4 +8,11 @@ public class ItemData : ScriptableObject
     public int weightInPounds;
     public int valueInGold;
     public bool isConsumable;
+    public bool isStackable;
+
+    public bool isWeapon;
+    public WeaponData weaponData;
+
+    public bool isArmor;
+    public ArmorData armorData;
 }
