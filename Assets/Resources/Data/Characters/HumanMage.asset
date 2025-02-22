@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HumanMage
   m_EditorClassIdentifier: 
   race: {fileID: 11400000, guid: 1e900a4107afffa4e89a8a7a5e23b327, type: 2}
-  characterClass: {fileID: 11400000, guid: c5a9e3f7e4eba9540a8870f3dd0688b7, type: 2}
+  characterClass: {fileID: 11400000, guid: a8e3f28f761e7a04eb28295c1428b7ec, type: 2}
   background: 
   alignment: 78
   strength: 0
