@@ -4,8 +4,8 @@ using Random = UnityEngine.Random;
 
 public class ClericSpellAction : ICreatureAction
 {
-    public ICreature source;
-    public ICreature target;
+    public Creature source;
+    public Creature target;
     public ClericSpellData spellData;
 
     public Func<string>[] Perform()

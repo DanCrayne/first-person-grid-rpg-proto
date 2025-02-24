@@ -2,9 +2,9 @@ using System;
 
 public class DefendAction : ICreatureAction
 {
-    public ICreature source;
+    public Creature source;
 
-    public DefendAction(ICreature source)
+    public DefendAction(Creature source)
     {
         this.source = source;
     }

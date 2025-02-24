@@ -22,6 +22,6 @@ MonoBehaviour:
   entrance: {fileID: 0}
   exit: {fileID: 0}
   monsterSpawners:
-  - {fileID: 7628202929046384209, guid: fa5402e80a5527b4f8529bd4756f8d27, type: 3}
+  - {fileID: -2398132931424419093, guid: fa5402e80a5527b4f8529bd4756f8d27, type: 3}
   - {fileID: 7628202929046384209, guid: 035d2730ffc10eb4985f6c82d1bbeef3, type: 3}
   - {fileID: 7628202929046384209, guid: 89720e993f9572a4dae38bbcaac27e95, type: 3}

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 public class FleeAction : ICreatureAction
 {
-    public ICreature source;
-    public List<ICreature> targets;
+    public Creature source;
+    public List<Creature> targets;
 
-    public FleeAction(ICreature source, List<ICreature> targets)
+    public FleeAction(Creature source, List<Creature> targets)
     {
         this.source = source;
         this.targets = targets;

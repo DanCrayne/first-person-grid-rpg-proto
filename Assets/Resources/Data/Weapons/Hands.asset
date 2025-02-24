@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206fba7c46b225242a9181d663c2e748, type: 3}
   m_Name: Hands
   m_EditorClassIdentifier: 
-  weaponName: Hands
-  description: Just bare hands
-  weightInPounds: 0
-  valueInGold: 0
   minDamage: 1
   maxDamage: 6
   attackTypeData:
   - {fileID: 11400000, guid: 3c2369939e94de64ca7b67895e81a510, type: 2}
+  weaponType: {fileID: 11400000, guid: b127b9cfb78acc04c904ab035452e16e, type: 2}
+  slotWhereEquipped: {fileID: 11400000, guid: 96cf3cbf37ab8c64b97fa0b6e8166425, type: 2}

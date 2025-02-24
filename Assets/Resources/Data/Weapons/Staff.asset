@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206fba7c46b225242a9181d663c2e748, type: 3}
   m_Name: Staff
   m_EditorClassIdentifier: 
-  weaponName: Staff
-  description: An old wooden staff
-  weightInPounds: 5
-  valueInGold: 10
   minDamage: 1
   maxDamage: 4
   attackTypeData:
   - {fileID: 11400000, guid: 4ba48904fa4ee8045ae9f4de6e8aecc0, type: 2}
+  weaponType: {fileID: 11400000, guid: 75637279be9da1e4fa8ee262ea82fb3b, type: 2}
+  slotWhereEquipped: {fileID: 11400000, guid: 96cf3cbf37ab8c64b97fa0b6e8166425, type: 2}

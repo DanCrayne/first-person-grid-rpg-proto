@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206fba7c46b225242a9181d663c2e748, type: 3}
   m_Name: BattleAxe
   m_EditorClassIdentifier: 
-  weaponName: Battle Axe
-  description: A mean-looking two sided axe
-  weightInPounds: 10
-  valueInGold: 10
   minDamage: 1
   maxDamage: 8
   attackTypeData:
   - {fileID: 0}
+  weaponType: {fileID: 11400000, guid: 2fb13e376a2b3474288c690396d4f579, type: 2}
+  slotWhereEquipped: {fileID: 11400000, guid: f5421d72050cb5e4e9e48f7f255c9f69, type: 2}

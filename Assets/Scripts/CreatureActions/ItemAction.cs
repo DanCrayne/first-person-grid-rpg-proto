@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class ItemAction : ICreatureAction
 {
-    public ICreature source;
-    public ICreature target;
+    public Creature source;
+    public Creature target;
     public ItemData itemData;
 
     // TODO : Implement this method

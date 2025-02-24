@@ -7,23 +7,18 @@ using Random = UnityEngine.Random;
 
 public class AttackAction : ICreatureAction
 {
-    public ICreature source;
-    public ICreature target;
-    public List<ICreature> fallbackTargets;
+    public Creature source;
+    public Creature target;
+    public List<Creature> fallbackTargets;
 
-    public AttackAction(ICreature source, ICreature target, List<ICreature> fallbackTargets = null)
+    public AttackAction(Creature source, Creature target, List<Creature> fallbackTargets = null)
     {
         this.source = source;
         this.target = target;
         this.fallbackTargets = fallbackTargets;
     }
 
-    //public void SetFallbackAttackTargets(List<ICreature> fallbackTargets)
-    //{
-    //    this.fallbackTargets = fallbackTargets;
-    //}
-
-    private (bool, int, string) TryToHitTargetAndCalculateDamage(ICreature originalOrFallbackTarget)
+    private (bool, int, string) TryToHitTargetAndCalculateDamage(Creature originalOrFallbackTarget)
     {
         if (originalOrFallbackTarget == null)
         {
@@ -39,8 +34,7 @@ public class AttackAction : ICreatureAction
         if (didAttackHit)
         {
             var equippedWeapon = source.GetEquippedWeapon();
-            //randomDamage = Random.Range(equippedWeapon.minDamage, equippedWeapon.maxDamage);
-            damage = Random.Range(1, 20);
+            damage = Random.Range(equippedWeapon.weaponData.minDamage, equippedWeapon.weaponData.maxDamage);
             resultMessage = $"{source.GetName()} attacks {originalOrFallbackTarget.GetName()} and deals {damage} damage";
         }
 

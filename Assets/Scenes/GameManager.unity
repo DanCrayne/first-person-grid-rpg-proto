@@ -421,9 +421,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3369af901b281e344a2d341618a524c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterCharacterPrefab: {fileID: 3105062440842698439, guid: abb93d76593aab041b729476effb3fd7, type: 3}
-  mageCharacterPrefab: {fileID: 3105062440842698439, guid: a5382383f9abf154d8caa4625d6d54ea, type: 3}
-  defaultCharacterData: {fileID: 11400000, guid: 7ff2dab8dee2bfc41aa2e6bd64c23a91, type: 2}
+  defaultCharacterData: {fileID: 11400000, guid: d9441b4bf3332134c82c301ebea2a555, type: 2}
+  fighterClassData: {fileID: 11400000, guid: c5a9e3f7e4eba9540a8870f3dd0688b7, type: 2}
+  mageClassData: {fileID: 11400000, guid: a8e3f28f761e7a04eb28295c1428b7ec, type: 2}
+  dwarfRaceData: {fileID: 11400000, guid: a153b4f7eaa254f4fab56f70bca5f223, type: 2}
+  humanRaceData: {fileID: 11400000, guid: 1e900a4107afffa4e89a8a7a5e23b327, type: 2}
+  defaultWeaponData: {fileID: 11400000, guid: 811e036099a99f849aea89822ae24dae, type: 2}
+  defaultArmorData: {fileID: 11400000, guid: 0b111fa42d64c2344a0ee6ed91e85622, type: 2}
+  defaultWeaponSlot: {fileID: 11400000, guid: f5421d72050cb5e4e9e48f7f255c9f69, type: 2}
   partyGameObject: {fileID: 1716054982}
   partyMembers: []
 --- !u!114 &60890747
@@ -490,6 +495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleUIManager: {fileID: 60890749}
+  isAutoBattle: 0
 --- !u!1001 &68390883
 PrefabInstance:
   m_ObjectHideFlags: 0

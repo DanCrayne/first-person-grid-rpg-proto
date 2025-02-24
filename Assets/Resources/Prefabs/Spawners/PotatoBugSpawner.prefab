@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e76fd64dd79e233489a9c3a15a2054a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monster: {fileID: 3536735218046874060, guid: 3eda6505c1bb5954ab3b590a6a122ef9, type: 3}
+  monsterData: {fileID: 11400000, guid: 7b245424d2e223c488db585adf3525ca, type: 2}

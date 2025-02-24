@@ -12,5 +12,5 @@ public class DungeonData : ScriptableObject
     public int dungeonDifficulty;
     public GameObject entrance;
     public GameObject exit;
-    public MonsterSpawner[] monsterSpawners;
+    public CreatureSpawner[] monsterSpawners;
 }

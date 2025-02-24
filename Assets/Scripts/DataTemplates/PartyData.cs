@@ -4,5 +4,5 @@ using UnityEngine;
 public class PartyData : ScriptableObject
 {
     public string partyName;
-    public CharacterData[] characters;
+    public CreatureStaticData[] characters;
 }

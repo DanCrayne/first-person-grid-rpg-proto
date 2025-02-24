@@ -2,8 +2,8 @@ using System;
 
 public class MageSpellAction : ICreatureAction
 {
-    public ICreature source;
-    public ICreature target;
+    public Creature source;
+    public Creature target;
     public MageSpellData spellData;
 
     public Func<string>[] Perform()

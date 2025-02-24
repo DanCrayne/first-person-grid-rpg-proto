@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206fba7c46b225242a9181d663c2e748, type: 3}
   m_Name: Teeth
   m_EditorClassIdentifier: 
-  weaponName: Teeth
-  description: Chompers
-  weightInPounds: 0
-  valueInGold: 0
   minDamage: 1
   maxDamage: 6
   attackTypeData:
   - {fileID: 11400000, guid: 0e1e304f7e91d214190359dd5ac38aad, type: 2}
+  weaponType: {fileID: 11400000, guid: b24aead82e093d84e84f41ef11cab8de, type: 2}
+  slotWhereEquipped: {fileID: 11400000, guid: 807f1f82c958ba543ab014e5a4b06cff, type: 2}

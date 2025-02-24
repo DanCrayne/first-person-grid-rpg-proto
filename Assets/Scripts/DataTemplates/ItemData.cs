@@ -10,9 +10,8 @@ public class ItemData : ScriptableObject
     public bool isConsumable;
     public bool isStackable;
 
-    public bool isWeapon;
-    public WeaponData weaponData;
+    public GameObject prefab;
 
-    public bool isArmor;
+    public WeaponData weaponData;
     public ArmorData armorData;
 }

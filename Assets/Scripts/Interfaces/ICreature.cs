@@ -2,35 +2,41 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ICreature
-{
-    public string GetName();
+//public interface ICreature
+//{
+//    public CreatureData GetCharacterData();
 
-    public ICreatureAction Attack(ICreature target, List<ICreature> fallbackTargets = null);
+//    public string GetName();
 
-    public bool IsDead();
+//    public ICreatureAction Attack(Creature target, List<Creature> fallbackTargets = null);
 
-    public int GetHitPoints();
+//    public bool IsDead();
 
-    public void SetHitPoints(int hitPoints);
+//    public int GetHitPoints();
 
-    public int GetMaxHitPoints();
+//    public void SetHitPoints(int hitPoints);
 
-    public int GetArmorClass();
+//    public int GetMaxHitPoints();
 
-    public void TakeDamage(int damage);
+//    public int GetArmorClass();
 
-    public void Heal(int healing);
+//    public ItemData GetEquippedWeapon();
 
-    public void SetLevel(int level);
+//    public void TakeDamage(int damage);
 
-    public int GetLevel();
+//    public ICreatureAction DecideAction(List<Creature> possibleTargets);
 
-    public ICreatureAction Defend();
+//    public void Heal(int healing);
 
-    public ICreatureAction Flee(List<ICreature> possibleBlockers);
+//    public void SetLevel(int level);
 
-    public WeaponData GetEquippedWeapon();
+//    public int GetLevel();
 
-    public AttackTypeData[] AttackTypeData { get; }
-}
+//    public ICreatureAction Defend();
+
+//    public ICreatureAction Flee(List<Creature> possibleBlockers);
+
+//    public AttackTypeData[] AvailableAttackTypes { get; }
+
+//    public void RollAndSetRandomStats();
+//}
