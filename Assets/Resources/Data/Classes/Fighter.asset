@@ -20,6 +20,14 @@ MonoBehaviour:
   - Defend
   - Item
   - Flee
+  actionTypes:
+  - {fileID: 11400000, guid: 80aba14ebb9dff745ac856bbe41c00c8, type: 2}
+  - {fileID: 11400000, guid: 38503f9f05f3ea242bf9f32ef6daf272, type: 2}
+  - {fileID: 11400000, guid: 58c2048ccbc7d5d4fb1c28d9015b612a, type: 2}
+  - {fileID: 11400000, guid: b27d1d19fdc7def4691186eda9aad9b4, type: 2}
   classActions: []
   spellList: []
   actionControlPrefab: {fileID: 6480287075496403366, guid: 5032014cd9f6a57498fe1bd3ae920abd, type: 3}
+  restrictedEquipmentSlots: []
+  restrictedArmorTypes: []
+  restrictedWeaponTypes: []

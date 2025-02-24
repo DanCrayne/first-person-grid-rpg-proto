@@ -1,21 +1,34 @@
+using System;
 using TMPro;
 using UnityEngine;
 
 public class ActionButton : MonoBehaviour
 {
-    public TMP_Text actionName;
+    public TMP_Text actionNameUIText;
+    public ActionData actionData;
 
-    public static ActionButton Create(Transform parent, GameObject prefab)
+    private void Start()
     {
-        var actionButton = Instantiate(prefab, parent);
-        return actionButton.GetComponent<ActionButton>();
+        SetActionName(actionData.actionName);
     }
 
-    public static void Destroy(Transform parent, GameObject prefab)
+    public void SetActionName(string name)
     {
-        foreach (Transform child in parent)
+        actionNameUIText.text = name;
+    }
+
+    public void SetActionData(ActionData data)
+    {
+        actionData = data;
+    }
+
+    public void SetupOnClick(Action onClickCallback)
+    {
+        var button = GetComponent<UnityEngine.UI.Button>();
+
+        if (button != null)
         {
-            Destroy(child.gameObject);
+            button.onClick.AddListener(() => onClickCallback());
         }
     }
 }

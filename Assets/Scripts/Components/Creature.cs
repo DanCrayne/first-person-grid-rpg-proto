@@ -253,18 +253,22 @@ public class Creature : MonoBehaviour
 
     private void CalculateAndSetMaxHp()
     {
-        int hitDice = 1;
+        int hitDie = 6;
 
         if (creatureStaticData == null)
         {
-            hitDice = classData.hitDie <= 0 ? classData.hitDie : hitDice;
+            hitDie = classData.hitDie <= 0 ? classData.hitDie : hitDie;
         }
         else
         {
-            hitDice = creatureStaticData.hitDice <= 0 ? creatureStaticData.hitDice : hitDice;
+            hitDie = creatureStaticData.hitDice <= 0 ? creatureStaticData.hitDice : hitDie;
         }
 
-        _maxHitPoints = Random.Range(1, (hitDice * 6) + 1);
+        for (int i = 0; i < _level; i++)
+        {
+            _maxHitPoints += Random.Range(1, hitDie + 1);
+        }
+
         _currentHitPoints = _maxHitPoints;
     }
 

@@ -23,25 +23,7 @@ public class ClassData : ScriptableObject
     /// </summary>
     public int[][] spellSlotsPerLevel;
 
-    /// <summary>
-    /// The default actions for all classes
-    /// </summary>
-    public string [] defaultActions = new [] { "Attack", "Defend",  "Item", "Flee" };
-
-    /// <summary>
-    /// The actions that are unique to this class
-    /// </summary>
-    public string [] classActions;
-
-    /// <summary>
-    /// The spells that are unique to this class
-    /// </summary>
-    public string [] spellList;
-
-    /// <summary>
-    /// The prefab for the action control for this class (e.g. the buttons for the actions)
-    /// </summary>
-    public GameObject actionControlPrefab;
+    public ActionData[] actionTypes;
 
     public EquipmentSlot[] restrictedEquipmentSlots;
     public ArmorType[] restrictedArmorTypes;

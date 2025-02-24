@@ -11,15 +11,9 @@ public class BattleUIManager : MonoBehaviour
     public GameObject partyPanel;
     public GameObject actionsPanel;
     public GameObject monsterSelectionPanel;
-    public GameObject castButton;
     public GameObject defaultMonsterSelectControl;
     public TMP_Text battleLogText;
     public BattleManager battleManager;
-
-    /// <summary>
-    /// The first selected button in the Actions Panel
-    /// </summary>
-    public GameObject firstSelectedActionsButton;
 
     /// <summary>
     /// A map of <see cref="Character"/> to their corresponding character panels
@@ -27,6 +21,8 @@ public class BattleUIManager : MonoBehaviour
     private Dictionary<Creature, GameObject> characterToPanelMap = new Dictionary<Creature, GameObject>();
 
     private Dictionary<Creature, MonsterSelectControl> monsterToActionControlMap = new Dictionary<Creature, MonsterSelectControl>();
+
+    private List<GameObject> actionControls = new List<GameObject>();
 
     void Start()
     {
@@ -76,20 +72,40 @@ public class BattleUIManager : MonoBehaviour
 
     public void ActivateActionsPanel()
     {
-        switch (battleManager.GetActiveCharacter().GetClassData().className)
+        monsterSelectionPanel.SetActive(false);
+
+        ClearActionsPanel();
+        InstantiateActionControlsForCharacter(battleManager.GetActiveCharacter());
+        // set currently selected game object to the first action control
+        EventSystem.current.SetSelectedGameObject(actionControls.FirstOrDefault());
+
+        actionsPanel.SetActive(true);
+    }
+
+    private void InstantiateActionControlsForCharacter(Creature character)
+    {
+        var characterActionTypes = character.GetClassData().actionTypes;
+        if (characterActionTypes != null)
         {
-            case "Cleric":
-            case "Mage":
-                castButton.SetActive(true);
-                break;
-            default:
-                castButton.SetActive(false);
-                break;
+            foreach (var actionType in characterActionTypes)
+            {
+                var actionControl = Instantiate(actionType.actionControlPrefab, actionsPanel.transform);
+                actionControl.GetComponent<ActionButton>().actionData = actionType;
+                actionControl.GetComponent<ActionButton>().SetActionName(actionType.actionName);
+                actionControl.GetComponent<ActionButton>().SetupOnClick(() => battleManager.SetupMonsterSelectionPanel());
+                actionControls.Add(actionControl);
+            }
+        }
+    }
+
+    public void ClearActionsPanel()
+    {
+        foreach (var actionControl in actionControls)
+        {
+            Destroy(actionControl);
         }
 
-        monsterSelectionPanel.SetActive(false);
-        EventSystem.current.SetSelectedGameObject(firstSelectedActionsButton);
-        actionsPanel.SetActive(true);
+        actionControls.Clear();
     }
 
     public void DeactivateMonsterSelectionPanel()
