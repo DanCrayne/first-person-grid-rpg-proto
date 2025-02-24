@@ -27,6 +27,7 @@ public class BattleUIManager : MonoBehaviour
     void Start()
     {
         battleUIRoot.SetActive(false);
+        EncounterEventNotifier.OnAttack += OnAttack;
     }
 
     /// <summary>
@@ -108,6 +109,34 @@ public class BattleUIManager : MonoBehaviour
         actionControls.Clear();
     }
 
+    public void OnAttack(AttackResult attackResult)
+    {
+        if (characterToPanelMap.TryGetValue(attackResult.target, out var characterPanel))
+        {
+            //ShowCharacterAsTargetedInPartyPanel(attackResult.target);
+            UpdateCharacterPanelWithCurrentStats(attackResult.target);
+        }
+    }
+
+    public void UpdateCharacterPanelWithCurrentStats(Creature creature)
+    {
+        if (creature.IsDead())
+        {
+            ShowCharacterAsDeadInPartyPanel(creature);
+        }
+        else
+        {
+            if (characterToPanelMap.TryGetValue(creature, out var characterPanel))
+            {
+                characterPanel.GetComponent<CharacterPanel>().SetCharacterInfo(creature.GetName(), creature.GetHitPoints());
+            }
+            else
+            {
+                Debug.LogError($"Could not find character panel for {creature.GetName()}");
+            }
+        }
+    }
+
     public void DeactivateMonsterSelectionPanel()
     {
         monsterSelectionPanel.SetActive(false);
@@ -136,8 +165,17 @@ public class BattleUIManager : MonoBehaviour
             var characterPanel = Instantiate(characterPrefab, partyPanel.transform);
             var characterInfo = characterPanel.GetComponent<CharacterPanel>();
             characterInfo.SetCharacterInfo(character.GetName(), character.GetHitPoints());
+            ShowCharacterStatusInCharacterPanel(character, characterPanel.GetComponent<CharacterPanel>());
 
             characterToPanelMap.Add(character, characterPanel);
+        }
+    }
+
+    public void ShowCharacterStatusInCharacterPanel(Creature character, CharacterPanel panel)
+    {
+        if (character.IsDead())
+        {
+            panel.ShowCharacterPanelAsDead();
         }
     }
 
@@ -173,12 +211,19 @@ public class BattleUIManager : MonoBehaviour
 
         // set the first item in the control map as the selected monster
         ActivateMonsterSelectionPanel();
-        EventSystem.current.SetSelectedGameObject(monsterToActionControlMap.FirstOrDefault().Value.gameObject);
+
+        // set selected button to the first available one
+        var firstControl = monsterToActionControlMap.FirstOrDefault().Value?.gameObject;
+        if (firstControl != null)
+        {
+            EventSystem.current.SetSelectedGameObject(monsterToActionControlMap.FirstOrDefault().Value.gameObject);
+        }
     }
 
     private void OnMonsterChosenForAttack(Creature selectedMonster)
     {
         Debug.Log($"Monster {selectedMonster.GetName()} was selected!");
+
         // hide the selection indicator on the monster control
         monsterToActionControlMap[selectedMonster].GetMonsterUI().HideSelectionIndicator();
 
@@ -193,46 +238,38 @@ public class BattleUIManager : MonoBehaviour
 
     public void ShowCharacterAsSelectedInPartyPanel(Creature character)
     {
-        var characterPanel = characterToPanelMap[character];
-        if (characterPanel == null)
-        {
-            Debug.Log("Character panel doesn't exist!");
-        }
-
-        characterPanel.GetComponent<CharacterPanel>().ShowCharacterPanelAsSelected();
+        TryToGetCharacterPanelAndHandleFailure(character).ShowCharacterPanelAsSelected();
     }
 
     public void ShowCharacterAsDeselectedInPartyPanel(Creature character)
     {
-        var characterPanel = characterToPanelMap[character];
-        if (characterPanel == null)
-        {
-            Debug.Log("Character panel doesn't exist!");
-        }
-
-        characterPanel.GetComponent<CharacterPanel>().ShowCharacterPanelAsDeselected();
+        TryToGetCharacterPanelAndHandleFailure(character).ShowCharacterPanelAsDeselected();
     }
 
     public void ShowCharacterAsDeadInPartyPanel(Creature character)
     {
-        var characterPanel = characterToPanelMap[character];
-        if (characterPanel == null)
-        {
-            Debug.Log("Character panel doesn't exist!");
-        }
-
-        characterPanel.GetComponent<CharacterPanel>().ShowCharacterPanelAsDead();
+        TryToGetCharacterPanelAndHandleFailure(character).ShowCharacterPanelAsDead();
     }
 
     public void ShowCharacterAsTargetedInPartyPanel(Creature character)
     {
-        var characterPanel = characterToPanelMap[character];
-        if (characterPanel == null)
+        TryToGetCharacterPanelAndHandleFailure(character).ShowCharacterPanelAsTargeted();
+    }
+
+    private CharacterPanel TryToGetCharacterPanelAndHandleFailure(Creature character)
+    {
+        if (characterToPanelMap.TryGetValue(character, out var characterPanelGameObject))
         {
-            Debug.Log("Character panel doesn't exist!");
+
+            var characterPanel = characterPanelGameObject.GetComponent<CharacterPanel>();
+            if (characterPanel != null)
+            {
+                return characterPanel;
+            }
         }
 
-        characterPanel.GetComponent<CharacterPanel>().ShowCharacterPanelAsTargeted();
+        Debug.LogError($"Could not find character panel for {character.GetName()}");
+        return null;
     }
 
     /// <summary>

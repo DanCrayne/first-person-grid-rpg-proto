@@ -9,17 +9,13 @@ using UnityEngine;
 public class PartyManager : MonoBehaviour
 {
     // TODO: Delete - for example party only
-    //public GameObject playerCharacterPrefab;
-    //public GameObject mageCharacterPrefab;
     public CreatureStaticData defaultCharacterData;
     public ClassData fighterClassData;
     public ClassData mageClassData;
     public RaceData dwarfRaceData;
     public RaceData humanRaceData;
-
     public ItemData defaultWeaponData;
     public ItemData defaultArmorData;
-    public EquipmentSlot defaultWeaponSlot;
 
     public Transform partyGameObject;
     public List<Creature> partyMembers = new List<Creature>();
@@ -48,9 +44,10 @@ public class PartyManager : MonoBehaviour
         var creature = character.GetComponent<Creature>();
         creature.classData = classData;
         creature.raceData = raceData;
-        creature.RollAndSetRandomStats();
+        creature.SetLevel(5);
         creature.SetName(name);
-        creature.shouldDestroyOnDeath = false;
+        creature.SetAsPlayerControlled();
+        creature.RollAndSetRandomStats();
 
         var inventoryManager = character.GetComponent<InventoryManager>();
         inventoryManager.AddItem(defaultWeaponData);

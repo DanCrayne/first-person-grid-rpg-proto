@@ -14,6 +14,7 @@ public class CreatureStaticData : ScriptableObject
     public int minNumberAppearing = 1;
     public int maxNumberAppearing = 4;
     public bool shouldDestroyOnDeath = true;
+    public bool isPlayerControlled = false;
 
     public int strength;
     public int dexterity;

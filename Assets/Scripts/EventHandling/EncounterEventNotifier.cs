@@ -11,6 +11,7 @@ public class EncounterEventNotifier : MonoBehaviour
     public static event Action<GameObject> OnMonsterDefeated;
     public static event Action OnPlayerSelectingTarget;
     public static event Action<Transform> OnPlayerSelectedTarget;
+    public static event Action<AttackResult> OnAttack;
 
     /// <summary>
     /// Notify listeners that an encounter has started
@@ -52,5 +53,14 @@ public class EncounterEventNotifier : MonoBehaviour
     public static void PlayerSelectedTarget(Transform target)
     {
         OnPlayerSelectedTarget?.Invoke(target);
+    }
+
+    /// <summary>
+    /// Notifies listeners that a creature has been attacked
+    /// </summary>
+    /// <param name="attackResult">The <see cref="AttackResult"/> for the attack</param>
+    public static void NotifyAttack(AttackResult attackResult)
+    {
+        OnAttack?.Invoke(attackResult);
     }
 }

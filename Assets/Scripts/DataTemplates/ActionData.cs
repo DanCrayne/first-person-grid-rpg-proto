@@ -6,5 +6,4 @@ public class ActionData : ScriptableObject
     public string actionName;
     public string actionDescription;
     public GameObject actionControlPrefab;
-    public GameObject script;
 }

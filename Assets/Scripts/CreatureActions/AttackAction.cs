@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +17,11 @@ public class AttackAction : ICreatureAction
         this.fallbackTargets = fallbackTargets;
     }
 
-    private (bool, int, string) TryToHitTargetAndCalculateDamage(Creature originalOrFallbackTarget)
+    private AttackResult TryToHitTargetAndCalculateDamage(Creature originalOrFallbackTarget)
     {
         if (originalOrFallbackTarget == null)
         {
-            return (false, 0, "Nothing to attack");
+            return new AttackResult(source, originalOrFallbackTarget, 0, false, $"{source.GetName()} cannot see a target to attack!");
         }
 
         // TODO: get character AC and calculate attack and damage
@@ -45,7 +44,7 @@ public class AttackAction : ICreatureAction
             }
         }
 
-        return (didAttackHit, damage, resultMessage);
+        return new AttackResult(source, originalOrFallbackTarget, damage, didAttackHit, resultMessage);
     }
 
     public Func<string>[] Perform()
@@ -55,13 +54,19 @@ public class AttackAction : ICreatureAction
             () =>
             {
                 var resultMessage = "";
+                AttackResult attackResult = null;
+
+                // if target is dead, try to attack a fallback target
                 var currentTarget = target != null && !target.IsDead() ? target : fallbackTargets?.FirstOrDefault(t => t != null && !t.IsDead());
 
                 if (currentTarget != null)
                 {
-                    (var didAttackHit, var damage, var actualResultMessage) = TryToHitTargetAndCalculateDamage(currentTarget);
+                    attackResult = TryToHitTargetAndCalculateDamage(currentTarget);
+                    EncounterEventNotifier.NotifyAttack(attackResult);
 
-                    currentTarget.TakeDamage(damage);
+                    var actualResultMessage = attackResult.resultMessage;   
+
+                    currentTarget.TakeDamage(attackResult.damage);
                     if (currentTarget.IsDead())
                     {
                         actualResultMessage += $" ... target is defeated!";
@@ -73,6 +78,7 @@ public class AttackAction : ICreatureAction
                 {
                     resultMessage = "No valid targets to attack.";
                 }
+
 
                 return resultMessage;
             }

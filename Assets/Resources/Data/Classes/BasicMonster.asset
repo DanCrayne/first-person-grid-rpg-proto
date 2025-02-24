@@ -15,10 +15,10 @@ MonoBehaviour:
   className: Basic Monster
   hitDie: 6
   XpPerLevel: 
-  defaultActions: []
-  classActions: []
-  spellList: []
-  actionControlPrefab: {fileID: 0}
+  actionTypes:
+  - {fileID: 11400000, guid: 80aba14ebb9dff745ac856bbe41c00c8, type: 2}
+  - {fileID: 11400000, guid: 38503f9f05f3ea242bf9f32ef6daf272, type: 2}
+  - {fileID: 11400000, guid: 58c2048ccbc7d5d4fb1c28d9015b612a, type: 2}
   restrictedEquipmentSlots: []
   restrictedArmorTypes: []
   restrictedWeaponTypes: []

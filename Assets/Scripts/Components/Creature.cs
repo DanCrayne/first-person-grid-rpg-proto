@@ -21,6 +21,7 @@ public class Creature : MonoBehaviour
     private int _maxHitPoints;
     private int _level = 1;
     private int _experience = 0;
+    private bool _isPlayerControlled;
 
     private void Start()
     {
@@ -28,6 +29,22 @@ public class Creature : MonoBehaviour
         {
             shouldDestroyOnDeath = creatureStaticData.shouldDestroyOnDeath;
         }
+
+        if (creatureStaticData?.isPlayerControlled != null)
+        {
+            _isPlayerControlled = creatureStaticData.isPlayerControlled;
+        }
+    }
+
+    public void SetAsPlayerControlled()
+    {
+        _isPlayerControlled = true;
+        shouldDestroyOnDeath = false;
+    }
+
+    public bool IsPlayerControlled()
+    {
+        return _isPlayerControlled;
     }
 
     public string GetName()
@@ -195,7 +212,7 @@ public class Creature : MonoBehaviour
     private void Die()
     {
         Debug.Log($"{_creatureName} dies!");
-        if (shouldDestroyOnDeath)
+        if (!IsPlayerControlled())
         {
             Debug.Log($"Destroying {_creatureName} GameObject");
             Destroy(gameObject);
