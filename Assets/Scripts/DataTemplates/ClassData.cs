@@ -43,7 +43,7 @@ public class ClassData : ScriptableObject
     /// </summary>
     public GameObject actionControlPrefab;
 
-    public EquipmentSlot[] allowableEquipmentSlots;
-    public ArmorType[] allowableArmorTypes;
-    public WeaponType[] allowableWeaponTypes;
+    public EquipmentSlot[] restrictedEquipmentSlots;
+    public ArmorType[] restrictedArmorTypes;
+    public WeaponType[] restrictedWeaponTypes;
 }

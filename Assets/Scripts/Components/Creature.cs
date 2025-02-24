@@ -14,19 +14,20 @@ public class Creature : MonoBehaviour
     public GameObject creatureUIPanelPrefab;
     public GameObject actionControlPrefab;
 
+    public bool shouldDestroyOnDeath = true;
+
     private string _creatureName;
     private int _currentHitPoints;
     private int _maxHitPoints;
     private int _level = 1;
     private int _experience = 0;
 
-    private InventoryManager _inventoryManager;
-    private EquipmentManager _equipmentManager;
-
     private void Start()
     {
-        _inventoryManager = GetComponent<InventoryManager>();
-        _equipmentManager = GetComponent<EquipmentManager>();
+        if (creatureStaticData?.shouldDestroyOnDeath != null)
+        {
+            shouldDestroyOnDeath = creatureStaticData.shouldDestroyOnDeath;
+        }
     }
 
     public string GetName()
@@ -102,7 +103,7 @@ public class Creature : MonoBehaviour
 
     public ItemData GetEquippedWeapon()
     {
-        return _equipmentManager.GetEquippedWeapon();
+        return GetEquipmentManager().GetEquippedWeapon();
     }
 
     public ICreatureAction Flee(List<Creature> possibleBlockers)
@@ -112,32 +113,32 @@ public class Creature : MonoBehaviour
 
     public void EquipWeapon(ItemData weapon)
     {
-        _equipmentManager.EquipWeapon(weapon);
+        GetEquipmentManager().EquipWeapon(weapon);
     }
 
     public void EquipArmor(ItemData armor)
     {
-        _equipmentManager.EquipArmor(armor);
+        GetEquipmentManager().EquipArmor(armor);
     }
 
-    public void UnequipArmor()
+    public void UnequipArmor(ItemData armor)
     {
-        _equipmentManager.UnequipArmor();
+        GetEquipmentManager().UnequipArmor(armor);
     }
 
     public void UnequipWeapon()
     {
-        _equipmentManager.UnequipWeapon();
+        GetEquipmentManager().UnequipWeapon(GetEquippedWeapon());
     }
 
     public void AddItemToInventory(ItemData item)
     {
-        _inventoryManager.AddItem(item);
+        GetComponent<InventoryManager>().AddItem(item);
     }
 
     public void RemoveItemFromInventory(ItemData item)
     {
-        _inventoryManager.RemoveItem(item);
+        GetComponent<InventoryManager>().RemoveItem(item);
     }
 
     public bool IsDead()
@@ -193,14 +194,15 @@ public class Creature : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log($"{this._creatureName} dies!");
-        if (creatureStaticData.shouldDestroyOnDeath)
+        Debug.Log($"{_creatureName} dies!");
+        if (shouldDestroyOnDeath)
         {
-            Debug.Log($"Destroying {this._creatureName} GameObject");
+            Debug.Log($"Destroying {_creatureName} GameObject");
             Destroy(gameObject);
         }
         else
         {
+            Debug.Log("Creature is configured to not destroy on death");
             // TODO: handle death
         }
     }
@@ -227,7 +229,7 @@ public class Creature : MonoBehaviour
 
     public int GetArmorClass()
     {
-        var equippedArmor = _equipmentManager.GetEquippedArmor();
+        var equippedArmor = GetEquipmentManager().GetEquippedArmor();
         var totalArmorClass = equippedArmor.Select(a => a.armorData.armorClass).Sum();
         return totalArmorClass;
     }
@@ -237,6 +239,16 @@ public class Creature : MonoBehaviour
         CalculateAndSetMaxHp();
 
         // TODO: roll other stats
+    }
+
+    private InventoryManager GetInventoryManager()
+    {
+        return GetComponent<InventoryManager>();
+    }
+
+    private EquipmentManager GetEquipmentManager()
+    {
+        return GetComponent<EquipmentManager>();
     }
 
     private void CalculateAndSetMaxHp()
@@ -256,5 +268,5 @@ public class Creature : MonoBehaviour
         _currentHitPoints = _maxHitPoints;
     }
 
-    public AttackTypeData[] AvailableAttackTypes { get { return _equipmentManager.GetEquippedWeapon().weaponData.attackTypeData; } }
+    public AttackTypeData[] AvailableAttackTypes { get { return GetEquipmentManager().GetEquippedWeapon().weaponData.attackTypeData; } }
 }

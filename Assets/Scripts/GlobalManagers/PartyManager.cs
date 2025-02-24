@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -49,12 +50,12 @@ public class PartyManager : MonoBehaviour
         creature.raceData = raceData;
         creature.RollAndSetRandomStats();
         creature.SetName(name);
+        creature.shouldDestroyOnDeath = false;
 
-        var inventoryManager = character.AddComponent<InventoryManager>();
+        var inventoryManager = character.GetComponent<InventoryManager>();
         inventoryManager.AddItem(defaultWeaponData);
 
-        var equipmentManager = character.AddComponent<EquipmentManager>();
-        equipmentManager.defaultWeaponSlot = defaultWeaponSlot;
+        var equipmentManager = character.GetComponent<EquipmentManager>();
         equipmentManager.EquipWeapon(defaultWeaponData);
         equipmentManager.EquipArmor(defaultArmorData);
 

@@ -34,7 +34,12 @@ public class BattleManager : MonoBehaviour
 
     public Creature GetActiveCharacter()
     {
-        return  partyMembersInEncounter[currentCharacterIndex];
+        if (partyMembersInEncounter.Count > 0)
+        {
+            return partyMembersInEncounter[currentCharacterIndex];
+        }
+
+        return null;
     }
 
     public void StartBattle()

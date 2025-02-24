@@ -13,18 +13,20 @@ public class CreatureSpawner : MonoBehaviour
     /// <returns>The spawned creature <see cref="GameObject"/></returns>
     public GameObject SpawnCreature(Transform parent, Vector3 position)
     {
-        var creatureInstance = Instantiate(creatureData.creaturePrefab, position, Quaternion.identity);
-        var creatureComponent = creatureInstance.GetOrAddComponent<Creature>();
-        creatureComponent.creatureStaticData = creatureData;
+        var creatureGameObject = Instantiate(creatureData.creaturePrefab, position, Quaternion.identity);
+        var creature = creatureGameObject.GetOrAddComponent<Creature>();
+        creature.creatureStaticData = creatureData;
+        creature.AddComponent<InventoryManager>();
+        creature.AddComponent<EquipmentManager>();
 
-        creatureComponent.RollAndSetRandomStats();
-        if (creatureComponent.creatureStaticData != null)
+        creature.RollAndSetRandomStats();
+        if (creature.creatureStaticData != null)
         {
-            AddDefaultInventoryAndEquipmentToCreature(creatureComponent.creatureStaticData, creatureComponent);
-            creatureComponent.SetName(creatureComponent.creatureStaticData.creatureName);
+            AddDefaultInventoryAndEquipmentToCreature(creature.creatureStaticData, creature);
+            creature.SetName(creature.creatureStaticData.creatureName);
         }
 
-        return creatureInstance;
+        return creatureGameObject;
     }
 
     private void AddDefaultInventoryAndEquipmentToCreature(CreatureStaticData creatureStaticData, Creature creatureInstance)

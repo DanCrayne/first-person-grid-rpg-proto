@@ -34,8 +34,15 @@ public class AttackAction : ICreatureAction
         if (didAttackHit)
         {
             var equippedWeapon = source.GetEquippedWeapon();
-            damage = Random.Range(equippedWeapon.weaponData.minDamage, equippedWeapon.weaponData.maxDamage);
-            resultMessage = $"{source.GetName()} attacks {originalOrFallbackTarget.GetName()} and deals {damage} damage";
+            if (equippedWeapon != null)
+            {
+                damage = Random.Range(equippedWeapon.weaponData.minDamage, equippedWeapon.weaponData.maxDamage);
+                resultMessage = $"{source.GetName()} attacks {originalOrFallbackTarget.GetName()} and deals {damage} damage";
+            }
+            else
+            {
+                Debug.LogError($"Could not get equipped weapon for {source.GetName()}'s attack");
+            }
         }
 
         return (didAttackHit, damage, resultMessage);

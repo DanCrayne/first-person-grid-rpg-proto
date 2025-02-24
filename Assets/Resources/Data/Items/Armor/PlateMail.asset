@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d20db6d9bf4df7a41a6cbae6917acb20, type: 3}
-  m_Name: LeatherArmor
+  m_Name: PlateMail
   m_EditorClassIdentifier: 
-  itemName: LeatherArmor
-  description: Leather armor
-  weightInPounds: 4
-  valueInGold: 16
+  itemName: 
+  description: 
+  weightInPounds: 0
+  valueInGold: 0
   isConsumable: 0
   isStackable: 0
-  itemPrefab: {fileID: 0}
+  prefab: {fileID: 0}
   weaponData: {fileID: 0}
-  armorData: {fileID: 0}
+  armorData: {fileID: 11400000, guid: 0a5731a8007e64f4cac7628e6923ac5a, type: 2}
