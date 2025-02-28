@@ -23,16 +23,10 @@ public class GameManager : MonoBehaviour
     private Scene _dungeonScene;
     private GameObject _encounterGameObject;
     private GameObject _dungeonGameObject;
-    private PartyManager _partyManager;
 
     public GameObject GetEncounterGameObject()
     {
         return _encounterGameObject;
-    }
-
-    public PartyManager GetPartyManager()
-    {
-        return _partyManager;
     }
 
     /// <summary>
@@ -59,7 +53,6 @@ public class GameManager : MonoBehaviour
         SetupSingletonInstance();
         SubscribeToEvents();
         LoadScene(DungeonData.dungeonSceneName, InitializeDungeonSceneAndGameObjects);
-        _partyManager = GetComponent<PartyManager>();
     }
 
     private void SetupSingletonInstance()

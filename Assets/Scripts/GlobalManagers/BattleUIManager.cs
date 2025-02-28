@@ -24,6 +24,12 @@ public class BattleUIManager : MonoBehaviour
 
     private List<GameObject> actionControls = new List<GameObject>();
 
+    /// <summary>
+    /// The tag name for the monster position placeholders in the encounter.
+    /// A prefab with this tag will be instantiated in the encounter scene to indicate where monsters will spawn.
+    /// </summary>
+    public const string MonsterPositionSlotTagName = "EncounterMonsterPositionSlot";
+
     void Start()
     {
         battleUIRoot.SetActive(false);
@@ -312,5 +318,60 @@ public class BattleUIManager : MonoBehaviour
     {
         battleUICanvas.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    /// <summary>
+    /// Returns the positions of the monster position slots in the encounter (where monsters will be spawned)
+    /// </summary>
+    /// <returns>A list of <see cref="Vector3"/> for each position</returns>
+    /// <remarks>These positions are defined through the Unity editor by instantiating a prefab with a tag matching MonsterPositionSlotTagName</remarks>
+    public IEnumerable<Vector3> GetMonsterSpawnPositionsForEncounterScreen()
+    {
+        var positionSlots = GameManager.Instance.GetEncounterGameObject().GetComponentsInChildren<Transform>()
+            .Where(t => t.CompareTag(MonsterPositionSlotTagName))
+            .Select(t => t.position);
+        return positionSlots;
+    }
+
+    /// <summary>
+    /// Spawns creatures at the given positions
+    /// </summary>
+    /// <param name="positions">The <see cref="Vector3"/> positions to spawn monsters</param>
+    /// <returns>The spawned creatures</returns>
+    public List<Creature> SpawnCreaturesAtPositions(CreatureSpawner[] creatureSpawners)
+    {
+        var spawnedCreatures = new List<Creature>();
+
+        if (creatureSpawners == null)
+        {
+            Debug.LogError("No creature spawners are defined for this party");
+            return spawnedCreatures;
+        }
+
+        var positions = GetMonsterSpawnPositionsForEncounterScreen();
+
+        foreach (var position in positions)
+        {
+            // pick a random monster spawner and spawn a monster at the given position
+            var numberOfMonsterSpawnersForDungeon = creatureSpawners.Length;
+            if (numberOfMonsterSpawnersForDungeon <= 0)
+            {
+                Debug.Log("No monster spawners found in dungeon data");
+                return null;
+            }
+            var creatureSpawner = creatureSpawners[Random.Range(0, numberOfMonsterSpawnersForDungeon)];
+            var spawnedCreature = creatureSpawner.SpawnCreature(GameManager.Instance.GetEncounterGameObject().transform, position);
+            var creature = spawnedCreature.GetComponent<Creature>();
+            if (creature != null)
+            {
+                spawnedCreatures.Add(creature);
+            }
+            else
+            {
+                Debug.Log($"Could not add monster to list of spawned monsters: no Monster component on {spawnedCreature.name}");
+            }
+        }
+
+        return spawnedCreatures;
     }
 }

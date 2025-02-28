@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class EncounterManager : MonoBehaviour
@@ -8,13 +6,6 @@ public class EncounterManager : MonoBehaviour
     /// The base encounter rate for the dungeon (higher is less frequent)
     /// </summary>
     public int baseEncounterRate = 10;
-
-    /// <summary>
-    /// The tag name for the monster position placeholders in the encounter.
-    /// A prefab with this tag will be instantiated in the encounter scene to indicate where monsters will spawn.
-    /// </summary>
-    public const string MonsterPositionSlotTagName = "EncounterMonsterPositionSlot";
-
     private uint _playerTotalSteps = 0;
     private int _currentEncounterRate;
     private const int MOST_FREQUENT_ENCOUNTER_RATE = 5;
@@ -23,7 +14,6 @@ public class EncounterManager : MonoBehaviour
     {
         PlayerActionNotifier.OnPlayerMadeNoise += OnPlayerMadeNoise;
         PlayerActionNotifier.OnPlayerMoved += OnPlayerMoved;
-        EncounterEventNotifier.OnEncounterEnd += EndBattle;
         _currentEncounterRate = baseEncounterRate;
     }
 
@@ -31,63 +21,6 @@ public class EncounterManager : MonoBehaviour
     {
         PlayerActionNotifier.OnPlayerMadeNoise -= OnPlayerMadeNoise;
         PlayerActionNotifier.OnPlayerMoved -= OnPlayerMoved;
-        EncounterEventNotifier.OnEncounterEnd -= EndBattle;
-    }
-
-    /// <summary>
-    /// Sets up the encounter by spawning monsters and starting the battle
-    /// </summary>
-    public void SetupEncounter()
-    {
-
-        // Spawn random monsters (for this dungeon) across the encounter's monster position slots
-        var monsterPositions = GetMonsterPositions();
-        var spawnedMonsters = SpawnMonstersAtPositions(monsterPositions);
-
-        var party = GameManager.Instance.GetComponent<PartyManager>().GetPartyMembers();
-
-        var battleManager = GameManager.Instance.GetComponent<BattleManager>();
-        battleManager.SetPartyMembersInEncounter(party);
-        battleManager.SetMonstersInEncounter(spawnedMonsters);
-        battleManager.StartBattle();
-    }
-
-    /// <summary>
-    /// Spawns monsters at the given positions using the monster spawners defined in the dungeon data
-    /// </summary>
-    /// <param name="positions">The <see cref="Vector3"/> positions to spawn monsters</param>
-    /// <returns>The spawned monsters</returns>
-    private List<Creature> SpawnMonstersAtPositions(IEnumerable<Vector3> positions)
-    {
-        var spawnedMonsters = new List<Creature>();
-        foreach (var position in positions)
-        {
-            // pick a random monster spawner and spawn a monster at the given position
-            var numberOfMonsterSpawnersForDungeon = GameManager.Instance.DungeonData.monsterSpawners.Length;
-            if (numberOfMonsterSpawnersForDungeon <= 0)
-            {
-                Debug.Log("No monster spawners found in dungeon data");
-                return null;
-            }
-            var monsterSpawner = GameManager.Instance.DungeonData.monsterSpawners[Random.Range(0, numberOfMonsterSpawnersForDungeon)];
-            var spawnedMonster = monsterSpawner.SpawnCreature(GameManager.Instance.GetEncounterGameObject().transform, position);
-            var monsterComponent = spawnedMonster.GetComponent<Creature>();
-            if (monsterComponent != null)
-            {
-                spawnedMonsters.Add(monsterComponent);
-            }
-            else
-            {
-                Debug.Log($"Could not add monster to list of spawned monsters: no Monster component on {spawnedMonster.name}");
-            }
-        }
-
-        return spawnedMonsters;
-    }
-
-    public void EndBattle()
-    {
-        Debug.Log("Encounter ended");
     }
 
     /// <summary>
@@ -101,7 +34,6 @@ public class EncounterManager : MonoBehaviour
         {
             Debug.Log($"Encounter manager: Encounter triggered! Total steps {_playerTotalSteps}, encounter rate: {_currentEncounterRate}");
             EncounterEventNotifier.EncounterStart();
-            SetupEncounter();
         }
     }
 
@@ -129,18 +61,5 @@ public class EncounterManager : MonoBehaviour
         }
 
         return false;
-    }
-
-    /// <summary>
-    /// Returns the positions of the monster position slots in the encounter (where monsters will be spawned)
-    /// </summary>
-    /// <returns>A list of <see cref="Vector3"/> for each position</returns>
-    /// <remarks>These positions are defined through the Unity editor by instantiating a prefab with a tag matching MonsterPositionSlotTagName</remarks>
-    private IEnumerable<Vector3> GetMonsterPositions()
-    {
-        var positionSlots = GameManager.Instance.GetEncounterGameObject().GetComponentsInChildren<Transform>()
-            .Where(t => t.CompareTag(MonsterPositionSlotTagName))
-            .Select(t => t.position);
-        return positionSlots;
     }
 }

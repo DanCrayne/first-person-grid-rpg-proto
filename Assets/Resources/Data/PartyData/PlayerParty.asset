@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a3f0bb34e1fee4409af3ef47f8975b4, type: 3}
+  m_Name: PlayerParty
+  m_EditorClassIdentifier: 
+  partyName: Player's party
+  creatures:
+  - {fileID: 11400000, guid: 97082d1e91fd26242ad4122a2e61b0d8, type: 2}
+  - {fileID: 11400000, guid: f76ec3e49c245604dbe21289d7d13003, type: 2}
+  - {fileID: 11400000, guid: 66af2a176524a3f47972542c34dc440c, type: 2}
+  creatureSpawners: []

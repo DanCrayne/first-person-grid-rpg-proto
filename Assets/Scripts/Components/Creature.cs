@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Creature : MonoBehaviour
@@ -22,6 +23,7 @@ public class Creature : MonoBehaviour
     private int _level = 1;
     private int _experience = 0;
     private bool _isPlayerControlled;
+    private int _gold = 0;
 
     private void Start()
     {
@@ -178,6 +180,11 @@ public class Creature : MonoBehaviour
         return creatureStaticData.hitDice;
     }
 
+    public int GetGold()
+    {
+        return _gold;
+    }
+
     public void RestoreAllHitPoints()
     {
         _currentHitPoints = _maxHitPoints;
@@ -290,4 +297,39 @@ public class Creature : MonoBehaviour
     }
 
     public AttackTypeData[] AvailableAttackTypes { get { return GetEquipmentManager().GetEquippedWeapon().weaponData.attackTypeData; } }
+
+    public static Creature LoadPlayerCreature(CreatureStaticData creatureData, Transform parent)
+    {
+        var character = Instantiate(creatureData.creaturePrefab, parent);
+        var creature = character.GetComponent<Creature>();
+        creature.classData = creatureData.classData;
+        creature.raceData = creatureData.raceData;
+
+        // TODO: this stuff should be set by the class definition instead of hard-coded
+        creature.SetLevel(5);
+        creature.SetName(creatureData.creatureName);
+        creature.SetAsPlayerControlled();
+        creature.RollAndSetRandomStats();
+
+        var inventoryManager = character.GetOrAddComponent<InventoryManager>();
+        foreach (var item in creatureData.defaultInventory)
+        {
+            inventoryManager.AddItem(item);
+        }
+
+        var equipmentManager = character.GetComponent<EquipmentManager>();
+        foreach (var item in creatureData.defaultEquipment)
+        {
+            if (item.armorData)
+            {
+                equipmentManager.EquipArmor(item);
+            }
+            else if (item.weaponData)
+            {
+                equipmentManager.EquipWeapon(item);
+            }
+        }
+
+        return creature;
+    }
 }

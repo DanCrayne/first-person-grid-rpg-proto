@@ -12,5 +12,6 @@ public class DungeonData : ScriptableObject
     public int dungeonDifficulty;
     public GameObject entrance;
     public GameObject exit;
-    public CreatureSpawner[] monsterSpawners;
+    public PartyData[] partiesInDungeon; // e.g. parties of wandering monsters appearing here
+    public DungeonAreaData[] dungeonAreas; // not used yet... but could be used for defining specfic rooms, etc
 }

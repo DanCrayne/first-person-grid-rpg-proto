@@ -7,6 +7,9 @@ public class BattleManager : MonoBehaviour
     public BattleUIManager battleUIManager;
     public bool isAutoBattle = false;
 
+    public PartyManager playerParty;
+    public PartyManager opposingParty;
+
     private List<Creature> partyMembersInEncounter = new List<Creature>();
     private List<Creature> monstersInEncounter = new List<Creature>();
 
@@ -16,20 +19,12 @@ public class BattleManager : MonoBehaviour
     private void OnEnable()
     {
         currentCharacterIndex = 0;
+        EncounterEventNotifier.OnEncounterStart += StartBattle;
     }
 
     private void OnDisable()
     {
-    }
-
-    public void SetPartyMembersInEncounter(List<Creature> partyMembers)
-    {
-        partyMembersInEncounter = partyMembers;
-    }
-
-    public void SetMonstersInEncounter(List<Creature> monsters)
-    {
-        monstersInEncounter = monsters;
+        EncounterEventNotifier.OnEncounterStart -= StartBattle;
     }
 
     public Creature GetActiveCharacter()
@@ -44,11 +39,33 @@ public class BattleManager : MonoBehaviour
 
     public void StartBattle()
     {
+        // Set player party
+        partyMembersInEncounter = playerParty.GetPartyMembers();
+
+        // Determine random opposing party for this encounter and spawn them in the encounter screen
+        var spawnedMonsters = battleUIManager.SpawnCreaturesAtPositions(GetWanderingPartyForEncounter().creatureSpawners);
+        monstersInEncounter = spawnedMonsters;
+
         battleUIManager.OpenBattleUI();
         battleUIManager.LogBattleMessage($"The monsters attack!");
         battleUIManager.PopulatePartyPanel(partyMembersInEncounter);
 
         StartPlayerTurn();
+    }
+
+    private PartyData GetWanderingPartyForEncounter()
+    {
+        // get possible wandering parties and pick one for the opposing party
+        var possibleWanderingParties = GameManager.Instance.DungeonData.partiesInDungeon;
+        if (possibleWanderingParties == null || possibleWanderingParties.Length <= 0)
+        {
+            Debug.LogError("No wandering parties found in dungeon data");
+            return null;
+        }
+
+        var selectedWanderingParty = possibleWanderingParties[Random.Range(0, possibleWanderingParties.Length)];
+
+        return selectedWanderingParty;
     }
 
     /// <summary>

@@ -355,7 +355,6 @@ GameObject:
   - component: {fileID: 60890743}
   - component: {fileID: 60890748}
   - component: {fileID: 60890744}
-  - component: {fileID: 60890746}
   - component: {fileID: 60890747}
   - component: {fileID: 60890745}
   - component: {fileID: 60890749}
@@ -409,28 +408,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseEncounterRate: 10
---- !u!114 &60890746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 60890741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3369af901b281e344a2d341618a524c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultCharacterData: {fileID: 11400000, guid: d9441b4bf3332134c82c301ebea2a555, type: 2}
-  fighterClassData: {fileID: 11400000, guid: c5a9e3f7e4eba9540a8870f3dd0688b7, type: 2}
-  mageClassData: {fileID: 11400000, guid: a8e3f28f761e7a04eb28295c1428b7ec, type: 2}
-  dwarfRaceData: {fileID: 11400000, guid: a153b4f7eaa254f4fab56f70bca5f223, type: 2}
-  humanRaceData: {fileID: 11400000, guid: 1e900a4107afffa4e89a8a7a5e23b327, type: 2}
-  defaultWeaponData: {fileID: 11400000, guid: 811e036099a99f849aea89822ae24dae, type: 2}
-  defaultArmorData: {fileID: 11400000, guid: 0b111fa42d64c2344a0ee6ed91e85622, type: 2}
-  defaultWeaponSlot: {fileID: 11400000, guid: f5421d72050cb5e4e9e48f7f255c9f69, type: 2}
-  partyGameObject: {fileID: 1716054982}
-  partyMembers: []
 --- !u!114 &60890747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -477,11 +454,9 @@ MonoBehaviour:
   partyPanel: {fileID: 106350747}
   actionsPanel: {fileID: 2118684406}
   monsterSelectionPanel: {fileID: 648374357}
-  castButton: {fileID: 0}
   defaultMonsterSelectControl: {fileID: 6480287075496403366, guid: 58571de89faec334d81d43c4a8adc94d, type: 3}
   battleLogText: {fileID: 432429562}
   battleManager: {fileID: 60890750}
-  firstSelectedActionsButton: {fileID: 0}
 --- !u!114 &60890750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -496,6 +471,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleUIManager: {fileID: 60890749}
   isAutoBattle: 0
+  playerParty: {fileID: 1716054983}
+  opposingParty: {fileID: 1539689132}
 --- !u!1 &104339438
 GameObject:
   m_ObjectHideFlags: 0
@@ -1837,6 +1814,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 416987677}
   m_CullTransparentMesh: 1
+--- !u!1 &417673236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 417673237}
+  m_Layer: 0
+  m_Name: PartyObjects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &417673237
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417673236}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1115.7012, y: 420.47653, z: 831.3538}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1716054982}
+  - {fileID: 1539689131}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &421412362
 GameObject:
   m_ObjectHideFlags: 0
@@ -3863,6 +3873,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1265190819}
   m_CullTransparentMesh: 1
+--- !u!1 &1539689130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1539689131}
+  - component: {fileID: 1539689132}
+  m_Layer: 0
+  m_Name: OpposingParty
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1539689131
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1539689130}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 417673237}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1539689132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1539689130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369af901b281e344a2d341618a524c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  partyStaticData: {fileID: 0}
+  maxPartySize: 3
 --- !u!1 &1625287883
 GameObject:
   m_ObjectHideFlags: 0
@@ -3974,8 +4030,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1716054982}
+  - component: {fileID: 1716054983}
   m_Layer: 0
-  m_Name: ExampleParty
+  m_Name: PlayerParty
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3989,13 +4046,27 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1716054981}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1145.8497, y: 669.0437, z: -55.46362}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 30.14856, y: 248.56717, z: -886.81744}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 417673237}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1716054983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716054981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369af901b281e344a2d341618a524c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  partyStaticData: {fileID: 11400000, guid: 4cc089473e997db4785dcd488eda5a1f, type: 2}
+  maxPartySize: 3
 --- !u!1 &1722308682
 GameObject:
   m_ObjectHideFlags: 0
@@ -5054,4 +5125,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 60890743}
   - {fileID: 104339439}
-  - {fileID: 1716054982}
+  - {fileID: 417673237}

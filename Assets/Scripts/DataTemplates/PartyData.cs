@@ -4,5 +4,6 @@ using UnityEngine;
 public class PartyData : ScriptableObject
 {
     public string partyName;
-    public CreatureStaticData[] characters;
+    public CreatureStaticData[] creatures;
+    public CreatureSpawner[] creatureSpawners;
 }

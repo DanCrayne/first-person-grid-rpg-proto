@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a3f0bb34e1fee4409af3ef47f8975b4, type: 3}
-  m_Name: ExampleParty
+  m_Name: Dung01Flr01Type1
   m_EditorClassIdentifier: 
-  partyName: 
-  characters:
-  - {fileID: 11400000, guid: 511a96c7465b2704886bfdabea2ecc14, type: 2}
-  - {fileID: 11400000, guid: 6b0cdcae62e346d4d88be22c1a43aadf, type: 2}
+  partyName: Dungeon 01 Floor 01 Random Creatures
+  creatures: []
+  creatureSpawners:
+  - {fileID: -2398132931424419093, guid: fa5402e80a5527b4f8529bd4756f8d27, type: 3}
+  - {fileID: 7628202929046384209, guid: 035d2730ffc10eb4985f6c82d1bbeef3, type: 3}
+  - {fileID: 7628202929046384209, guid: 89720e993f9572a4dae38bbcaac27e95, type: 3}
