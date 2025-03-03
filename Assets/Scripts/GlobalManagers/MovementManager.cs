@@ -30,6 +30,7 @@ public class MovementManager : MonoBehaviour
     private bool _isActionInProgress = false; // Flag to prevent overlapping actions that would cause the player to be in an invalid state (e.g. moving forward while turning)
     private Vector3 _collisionVectorOffset = new Vector3(0, 5, 0); // Offset to move the collision raycast to a more appropriate position (e.g. up from the center of the player)
     private Vector3 _currentFacingDirection = Vector3.forward;
+    private bool movementEnabled = true;
 
     private void OnEnable()
     {
@@ -57,6 +58,8 @@ public class MovementManager : MonoBehaviour
         InputManager.Instance.OnStrafeRight += OnStrafeRight;
         InputManager.Instance.OnRotateLeft += OnRotateLeft;
         InputManager.Instance.OnRotateRight += OnRotateRight;
+        GeneralNotifier.OnPauseGame += OnPauseGame;
+        GeneralNotifier.OnResumeGame += OnResumeGame;
     }
 
     private void UnsubscribeFromEvents()
@@ -67,6 +70,28 @@ public class MovementManager : MonoBehaviour
         InputManager.Instance.OnStrafeRight -= OnStrafeRight;
         InputManager.Instance.OnRotateLeft -= OnRotateLeft;
         InputManager.Instance.OnRotateRight -= OnRotateRight;
+        GeneralNotifier.OnPauseGame -= OnPauseGame;
+        GeneralNotifier.OnResumeGame -= OnResumeGame;
+    }
+
+    private void OnPauseGame()
+    {
+        DisableMovement();
+    }
+
+    private void OnResumeGame()
+    {
+        EnableMovement();
+    }
+
+    private void DisableMovement()
+    {
+        movementEnabled = false;
+    }
+
+    private void EnableMovement()
+    {
+        movementEnabled = true;
     }
 
     private void OnStepForward()
@@ -92,7 +117,7 @@ public class MovementManager : MonoBehaviour
         var startPosition = transform.position;
         var targetPosition = transform.position + transform.TransformDirection(direction) * moveDistance;
 
-        if (IsGridCellAccessible(targetPosition))
+        if (IsGridCellAccessible(targetPosition) && movementEnabled)
         {
             _isActionInProgress = true;
 
@@ -176,26 +201,29 @@ public class MovementManager : MonoBehaviour
     /// <returns>An IEnumerator that performs the rotation over time.</returns>
     private IEnumerator RotatePlayer(float angle)
     {
-        _isActionInProgress = true;
-
-        float currentAngle = 0f; // Track rotation progress
-        Quaternion startRotation = transform.rotation;
-        Quaternion targetRotation = startRotation * Quaternion.Euler(0, angle, 0);
-
-        while (currentAngle < Mathf.Abs(angle))
+        if (movementEnabled)
         {
-            float rotationStep = rotationSpeed * Time.deltaTime;
-            currentAngle += rotationStep;
+            _isActionInProgress = true;
 
-            if (currentAngle > Mathf.Abs(angle)) currentAngle = Mathf.Abs(angle); // Prevent overshoot
+            float currentAngle = 0f; // Track rotation progress
+            Quaternion startRotation = transform.rotation;
+            Quaternion targetRotation = startRotation * Quaternion.Euler(0, angle, 0);
 
-            transform.rotation = Quaternion.Lerp(startRotation, targetRotation, currentAngle / Mathf.Abs(angle));
-            yield return null;
+            while (currentAngle < Mathf.Abs(angle))
+            {
+                float rotationStep = rotationSpeed * Time.deltaTime;
+                currentAngle += rotationStep;
+
+                if (currentAngle > Mathf.Abs(angle)) currentAngle = Mathf.Abs(angle); // Prevent overshoot
+
+                transform.rotation = Quaternion.Lerp(startRotation, targetRotation, currentAngle / Mathf.Abs(angle));
+                yield return null;
+            }
+
+            _currentFacingDirection = targetRotation * Vector3.forward; // Update the facing direction
+            transform.rotation = targetRotation; // Snap to the final rotation
+            _isActionInProgress = false;
         }
-
-        _currentFacingDirection = targetRotation * Vector3.forward; // Update the facing direction
-        transform.rotation = targetRotation; // Snap to the final rotation
-        _isActionInProgress = false;
     }
 
     /// <summary>

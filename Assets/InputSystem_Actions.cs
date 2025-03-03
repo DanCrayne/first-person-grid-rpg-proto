@@ -170,6 +170,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenCharacterMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""9175133c-a5a7-4c74-92ad-15512da982a6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -698,6 +707,39 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""OpenMainMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c622f50e-853a-4a85-9bc4-0acf543c4b87"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMainMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e9dc3a7-e509-4832-acd7-012a74989f70"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenCharacterMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cae280e0-de8a-42df-af21-2bf1ca50b609"",
+                    ""path"": ""<XInputController>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenCharacterMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1301,6 +1343,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_StepForward = m_Player.FindAction("StepForward", throwIfNotFound: true);
         m_Player_StepBackward = m_Player.FindAction("StepBackward", throwIfNotFound: true);
         m_Player_OpenMainMenu = m_Player.FindAction("OpenMainMenu", throwIfNotFound: true);
+        m_Player_OpenCharacterMenu = m_Player.FindAction("OpenCharacterMenu", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1396,6 +1439,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_StepForward;
     private readonly InputAction m_Player_StepBackward;
     private readonly InputAction m_Player_OpenMainMenu;
+    private readonly InputAction m_Player_OpenCharacterMenu;
     public struct PlayerActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1416,6 +1460,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @StepForward => m_Wrapper.m_Player_StepForward;
         public InputAction @StepBackward => m_Wrapper.m_Player_StepBackward;
         public InputAction @OpenMainMenu => m_Wrapper.m_Player_OpenMainMenu;
+        public InputAction @OpenCharacterMenu => m_Wrapper.m_Player_OpenCharacterMenu;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1473,6 +1518,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @OpenMainMenu.started += instance.OnOpenMainMenu;
             @OpenMainMenu.performed += instance.OnOpenMainMenu;
             @OpenMainMenu.canceled += instance.OnOpenMainMenu;
+            @OpenCharacterMenu.started += instance.OnOpenCharacterMenu;
+            @OpenCharacterMenu.performed += instance.OnOpenCharacterMenu;
+            @OpenCharacterMenu.canceled += instance.OnOpenCharacterMenu;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1525,6 +1573,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @OpenMainMenu.started -= instance.OnOpenMainMenu;
             @OpenMainMenu.performed -= instance.OnOpenMainMenu;
             @OpenMainMenu.canceled -= instance.OnOpenMainMenu;
+            @OpenCharacterMenu.started -= instance.OnOpenCharacterMenu;
+            @OpenCharacterMenu.performed -= instance.OnOpenCharacterMenu;
+            @OpenCharacterMenu.canceled -= instance.OnOpenCharacterMenu;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1723,6 +1774,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnStepForward(InputAction.CallbackContext context);
         void OnStepBackward(InputAction.CallbackContext context);
         void OnOpenMainMenu(InputAction.CallbackContext context);
+        void OnOpenCharacterMenu(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

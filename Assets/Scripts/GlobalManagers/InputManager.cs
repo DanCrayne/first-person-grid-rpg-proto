@@ -14,7 +14,6 @@ public class InputManager : MonoBehaviour
     public event InputAction OnStrafeRight;
     public event InputAction OnRotateLeft;
     public event InputAction OnRotateRight;
-    public event InputAction OnToggleMainMenu;
 
     private InputSystem_Actions _inputActions;
 
@@ -39,7 +38,8 @@ public class InputManager : MonoBehaviour
         _inputActions.Player.StrafeRight.performed += ctx => OnStrafeRight?.Invoke();
         _inputActions.Player.RotateLeft.performed += ctx => OnRotateLeft?.Invoke();
         _inputActions.Player.RotateRight.performed += ctx => OnRotateRight?.Invoke();
-        _inputActions.Player.OpenMainMenu.performed += ctx => OnToggleMainMenu?.Invoke();
+        _inputActions.Player.OpenMainMenu.performed += ctx => MenuNotifier.ToggleMenu(MenuTypes.main);
+        _inputActions.Player.OpenCharacterMenu.performed += ctx => MenuNotifier.ToggleMenu(MenuTypes.character);
     }
 
     private void OnEnable()

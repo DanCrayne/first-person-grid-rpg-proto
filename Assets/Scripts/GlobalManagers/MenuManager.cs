@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -6,87 +7,60 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class MenuManager : MonoBehaviour
 {
-    public GameObject rootMenuObject;
-    public GameObject mainMenuCanvas;
-    public GameObject settingsMenuCanvas;
+    public GameObject menuCanvas;
+    public GameObject firstSelectedButton;
 
-    public GameObject mainMenuFirstSelectedButton;
-    public GameObject settingsMenuFirstSelectedButton;
+    public MenuTypes menuType;
+    public MenuTypes previousMenu;
 
     void Start()
     {
-        rootMenuObject.SetActive(false);
-        InputManager.Instance.OnToggleMainMenu += MainMenuToggle;
-    }
-
-    /// <summary>
-    /// Opens the main menu and sets the first selected button
-    /// </summary>
-    public void OpenMainMenu()
-    {
-        Debug.Log("Opening main menu");
-        CloseAllMenus();
-        rootMenuObject.SetActive(true);
-        mainMenuCanvas.SetActive(true);
-
-        EventSystem.current.SetSelectedGameObject(mainMenuFirstSelectedButton);
-    }
-
-    /// <summary>
-    /// Opens the settings menu and sets the first selected button
-    /// </summary>
-    public void OpenSettingsMenu()
-    {
-        Debug.Log("Opening settings menu");
-        settingsMenuCanvas.SetActive(true);
-        mainMenuCanvas.SetActive(false);
-
-        EventSystem.current.SetSelectedGameObject(settingsMenuFirstSelectedButton);
+        menuCanvas.SetActive(false);
+        MenuNotifier.OnMenuToggled += MenuToggle;
     }
 
     /// <summary>
     /// Exits the main menu and resumes the game
     /// </summary>
-    public void ExitMainMenu()
+    public void ExitMenus()
     {
-        Debug.Log("Exiting main menu");
-        CloseAllMenus();
+        Debug.Log("Exiting menu");
+        menuCanvas.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(null);
         GameManager.Instance.ResumeGame();
     }
 
-    public void QuitApplication()
+    public void NavigateToPreviousMenu()
     {
-        Debug.Log("Quitting application");
-        Application.Quit();
+        MenuNotifier.ToggleMenu(previousMenu);
     }
 
-    /// <summary>
-    /// Toggles the main menu on and off and pauses / unpauses the game as appropriate
-    /// </summary>
-    private void MainMenuToggle()
+    private void OpenMenu()
     {
-        Debug.Log("Toggling main menu");
-        if (rootMenuObject.activeSelf == false || mainMenuCanvas.activeSelf == false)
+        menuCanvas.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(firstSelectedButton); 
+    }
+
+    private void MenuToggle(MenuTypes menu)
+    {
+        if (menu == menuType)
         {
-            GameManager.Instance.PauseGame();
-            OpenMainMenu();
+            Debug.Log($"Toggling {menu.ToString()} menu");
+            if (menuCanvas.activeSelf == false)
+            {
+                GameManager.Instance.PauseGame();
+                OpenMenu();
+            }
+            else
+            {
+                ExitMenus();
+                GameManager.Instance.ResumeGame();
+            }
         }
         else
         {
-            ExitMainMenu();
-            GameManager.Instance.ResumeGame();
+            // make sure this menu is not showing up
+            menuCanvas.SetActive(false);
         }
-    }
-
-    /// <summary>
-    /// Deactivates all menus and clears the currently selected game object
-    /// </summary>
-    private void CloseAllMenus()
-    {
-        Debug.Log("Closing all menus");
-        mainMenuCanvas.SetActive(false);
-        settingsMenuCanvas.SetActive(false);
-
-        EventSystem.current.SetSelectedGameObject(null);
     }
 }
