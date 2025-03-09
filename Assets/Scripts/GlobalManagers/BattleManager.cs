@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class BattleManager : MonoBehaviour
     private List<Creature> monstersInEncounter = new List<Creature>();
 
     private int currentCharacterIndex = 0;
+    private Creature currentCreature => partyMembersInEncounter[currentCharacterIndex];
     private List<ICreatureAction> battleActionQueue = new List<ICreatureAction>();
 
     private void OnEnable()
@@ -48,7 +50,6 @@ public class BattleManager : MonoBehaviour
 
         battleUIManager.OpenBattleUI();
         battleUIManager.LogBattleMessage($"The monsters attack!");
-        battleUIManager.PopulatePartyPanel(partyMembersInEncounter);
 
         StartPlayerTurn();
     }
@@ -63,7 +64,7 @@ public class BattleManager : MonoBehaviour
             return null;
         }
 
-        var selectedWanderingParty = possibleWanderingParties[Random.Range(0, possibleWanderingParties.Length)];
+        var selectedWanderingParty = possibleWanderingParties[UnityEngine.Random.Range(0, possibleWanderingParties.Length)];
 
         return selectedWanderingParty;
     }
@@ -74,7 +75,7 @@ public class BattleManager : MonoBehaviour
     private void StartPlayerTurn()
     {
         currentCharacterIndex = 0;
-        ShowCurrentCharacterAsSelected();
+        UiNotifier.CreatureSelected(currentCreature);
         battleUIManager.ActivateActionsPanel();
 
         // TODO: implement auto-battle logic
@@ -82,14 +83,15 @@ public class BattleManager : MonoBehaviour
 
     public void StartNextCharacterTurn()
     {
-        ShowCurrentCharacterAsDeselected();
+        UiNotifier.CreatureDeselected(currentCreature);
 
         if (!TryToIncrementToNextCharacter())
         {
             StartMonstersTurn();
         }
 
-        ShowCurrentCharacterAsSelected();
+        UiNotifier.CreatureSelected(currentCreature);
+
         battleUIManager.ActivateActionsPanel();
     }
 
@@ -202,18 +204,6 @@ public class BattleManager : MonoBehaviour
     public void SetupMonsterSelectionPanel()
     {
         battleUIManager.PopulateMonsterSelectionPanel(monstersInEncounter);
-    }
-
-    private void ShowCurrentCharacterAsSelected()
-    {
-        var character = partyMembersInEncounter[currentCharacterIndex];
-        battleUIManager.ShowCharacterAsSelectedInPartyPanel(character);
-    }
-
-    private void ShowCurrentCharacterAsDeselected()
-    {
-        var character = partyMembersInEncounter[currentCharacterIndex];
-        battleUIManager.ShowCharacterAsDeselectedInPartyPanel(character);
     }
 
     /// <summary>

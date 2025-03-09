@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -11,6 +12,9 @@ public class PartyManager : MonoBehaviour
     public PartyData partyStaticData;
     public int maxPartySize = 3;
 
+    public event Action OnPartyLoaded;
+    public event Action OnPartyWiped;
+
     private List<Creature> partyMembers = new List<Creature>();
 
     private void Start()
@@ -19,6 +23,7 @@ public class PartyManager : MonoBehaviour
         if (partyStaticData?.creatures != null)
         {
             LoadPartyData();
+            OnPartyLoaded?.Invoke();
         }
     }
 
@@ -40,7 +45,13 @@ public class PartyManager : MonoBehaviour
 
     public bool IsPartyWiped()
     {
-        return !partyMembers.Any(c => c.GetHitPoints() > 0);
+        if (!partyMembers.Any(c => c.GetHitPoints() > 0))
+        {
+            OnPartyWiped?.Invoke();
+            return true;
+        }
+
+        return false;
     }
 
     public void AddCreatureToParty(Creature creature)
